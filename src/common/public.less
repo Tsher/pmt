@@ -1,0 +1,211 @@
+@blue : #2db7f5;
+
+body{
+	background: #e1e1e1;
+}
+.ant-menu-inline{
+	border:0;
+}
+.ant-menu{
+	background: #406d99;
+}
+.ant-menu-item-active, .ant-menu-submenu-title:hover{
+	background: #406d99;
+}
+.ant-menu-submenu > .ant-menu{
+	background: #35597c;
+}
+.ant-menu-submenu{
+	border-bottom:1px solid #35597c;
+}
+.ant-menu-inline .ant-menu-item-selected{
+	border:0; background: #2db7f5;
+}
+.ant-menu-submenu-inline > .ant-menu-submenu-title:after{
+	display: none;
+}
+.ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title{
+	height: 82px; line-height: 82px; font-size: 16px;
+}
+.ant-menu-item a{
+	display: block;
+	padding:0 0 0 30px; 
+	background: url(./icon-point.png) no-repeat left center;
+}
+.ant-tag{
+	background: #fff; border-radius: 0; height: 36px; line-height: 36px; margin-bottom:0;
+	font-size: 14px; margin-right:20px;
+	&.on{
+		color:#2db7f5; border-bottom: 2px solid #2db7f5;
+	}
+}
+.ant-tag-blue{
+	border-bottom: 2px solid #2db7f5; color:#2db7f5;
+	a{
+		color:#2db7f5;
+		&:hover{
+			color:#2db7f5;
+		}
+	}
+	.anticon-cross{
+		color:#2db7f5;
+	}
+}
+.ant-tag .anticon-cross{
+	margin-left:10px;
+}
+.m-header{
+	height:70px; overflow: hidden; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+	.logo{
+		float: left; padding:10px 0 0 30px;
+		div{
+			height: 50px; padding:0 0 0 110px; line-height: 50px; font-size: 20px; color:#b5b5b5;
+			background: url(./logo.png) no-repeat;
+		}
+	}
+	.userinfo{
+		
+		ul{
+			float: right;padding:0 50px 0 0;
+			li{
+				float: left; padding:20px 10px 0 0;
+				&.username{
+					padding:25px 10px 0 0; color:#999; font-size: 14px;
+				}
+			}
+		}
+	}
+}
+.fright{
+	float: right;
+}
+.fleft{
+	float: left;
+}
+.m-content{
+	padding:10px 15px 0 10px;
+	.m-left-menu{
+		float: left; overflow: hidden; width: 200px; background: #406d99;
+		a{
+			color:#fff;
+		}
+		.menu-base,.menu-user,.menu-rule,.menu-sale,.menu-saledata{
+			a{
+				display: block; height: 82px; line-height: 82px; padding:0 0 0 52px;
+			}
+		}
+		.menu-base a{
+			background: url(./icon-base.png) no-repeat left center;
+		}
+		.menu-user a{
+			background: url(./icon-user.png) no-repeat left center;
+		}
+		.menu-rule a{
+			background: url(./icon-rule.png) no-repeat left center;
+		}
+		.menu-sale a{
+			background: url(./icon-sale.png) no-repeat left center;
+		}
+		.menu-saledata a{
+			background: url(./icon-saledata.png) no-repeat left center;
+		}
+	}
+	.m-right-content{
+		float: right; background: #fff; overflow: hidden; padding:10px 40px 25px;
+		.m-right-tags{
+			height: 40px; line-height: 40px; border-bottom: 1px solid #e9e9e9; margin:0 0 20px;
+		}
+		.group-set-tree{
+			border:1px solid #e9e9e9; border-radius: 10px; padding:10px;
+			li{
+				padding:5px 0;
+			}
+		}
+		.group-set-title{
+			color:#2db7f5; border-bottom: 1px solid #e9e9e9; margin:0 0 10px;
+		}
+	}
+}
+.m-form{
+	width: 100%;
+	.m-form-title{
+		font-size: 16px; color:#2db7f5;  line-height: 30px; padding: 0; border-bottom: 1px solid #e6e6e6;
+	}
+	.m-form-con{
+		padding:20px 0; border-bottom: 1px solid #e6e6e6; margin:0 0 20px;
+		// 设置权限
+		.group-set-list{
+			.row{
+				padding:10px 0;
+			}
+		}
+		.group-set-info{
+			padding: 10px 0; border-bottom: 1px solid #e6e6e6; margin:0 0 10px;
+		}
+	}
+}
+
+.ant-checkbox-checked .ant-checkbox-inner:after{
+	filter : progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+}
+
+.userSetRole{
+	.ant-transfer-list{
+		width: 35%;
+	}
+}
+
+
+.layer-user-search{
+	width: 720px;
+}
+
+.border{
+	border:1px solid #e9e9e9;
+	border-radius: 10px;
+	padding: 20px;
+	margin:20px 20px 0 0; height: 450px; overflow-y: auto;
+	.title{
+		color:@blue; font-size: 16px; padding:0 0 10px; margin:0 0 15px;
+		border-bottom: 1px solid #e9e9e9;
+	}
+}
+
+.ant-tree-node-selected {
+    background-color: #2db7f5;
+    color: #fff !important;
+}
+.label-datapicker{
+	float: left;
+}
+.date-picker{
+	width: 310px;
+	.ant-form-item{
+		width: 310px;
+	}
+	.ant-form-item > label{
+		width: 70px;
+	}
+	.ant-form-item > div{
+		width: 240px;
+	}
+}
+
+.do-add-time-con{
+	margin:0 0 10px;
+}
+.do-add-time{
+	margin:0 0 10px;
+	li.fleft{
+
+	}
+	.do-add-time-title{
+		width: 100px; text-align: right; display: inline-block; float: left;
+	}
+	.timepicker{
+		width: 150px; float: left;
+	}
+	.timepicker-space{
+		width: 40px; display: inline-block; float: left; text-align: center; padding:7px 0 0;
+	}
+}
