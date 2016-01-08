@@ -55,7 +55,7 @@ class Layout extends React.Component{
 			let w = $(window).width();
 			
 			that.setState({
-				width : w - that.state.menuWidth-40
+				width : w - that.state.menuWidth-50
 			})
 		}
 		size();
