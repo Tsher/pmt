@@ -60,14 +60,14 @@ class SaleDoAdd extends React.Component{
   //mixins: [Validation.FieldMixin],
 
   constructor(props) {
-  	super(props);
-  	this.state = {
+    super(props);
+    this.state = {
       status : {
         
         name : {}, // 活动名称
         
         url : {}, // 活动url
-        
+        times : {},
         startTime : {}, // 活动开始时间
         endTime : {}, // 活动结束时间
         
@@ -77,6 +77,7 @@ class SaleDoAdd extends React.Component{
         title : '新增促销活动',
         name : undefined, // 活动名称
         url : undefined, // 活动url
+        times : undefined, // 初始首次抽奖次数
         startTime : undefined, // 活动开始时间
         endTime : undefined, // 活动结束时间
         rules : {
@@ -113,6 +114,7 @@ class SaleDoAdd extends React.Component{
         id : this.props.params.id,
         title : '编辑促销活动',
         url : 'http://www.baidu.com',
+        times : 3,
         startTime : '2015-12-12 10:30:00',
         endTime : '2016-01-03 10:30:00',
         rules : {
@@ -316,6 +318,14 @@ class SaleDoAdd extends React.Component{
                 id="url">
                   <Input placeholder="" id="url" name="url" onChange={this.setValue} value={this.state.formData.url} />
                   <Button type="primary" onClick={this.handleUrl} data-url={formData.url}>浏览</Button>
+              </FormItem>
+              </li>
+              <li className="fleft">
+                <FormItem
+                label="初始首次参与抽奖次数："
+                id="times">
+                  <Input placeholder="" id="times" name="times" onChange={this.setValue} value={this.state.formData.times} />
+                  
               </FormItem>
               </li>
               <li className="fleft date-picker">

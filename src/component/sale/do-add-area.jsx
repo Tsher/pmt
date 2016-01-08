@@ -103,6 +103,7 @@ class SelectForm extends React.Component{
       prizeLevel : undefined, // 奖品级别
       probability_first:undefined, // 首次中奖率
       probability : undefined, // 非首次中奖率
+      prizeQuota:undefined, // 中奖名额
       prize_startTime : undefined, // 中奖时间
       prize_endTime : undefined, // 中奖时间
       prize_type : 1, // 抽奖模式  1 = 时间区间  2=区域  3 = 产品
@@ -206,6 +207,10 @@ class SelectForm extends React.Component{
         <Input placeholder="" id="probability" name="probability" style={{width:140}}   value={this.state.probability}  onChange={this.setValue} />
                     <span className="ant-form-text"> %</span>
          
+        </li>
+        <li className="fleft" style={{width:'30%'}}  span="8">
+        <label className="do-add-time-title">中奖名额：</label>
+        <Input placeholder="" id="prizeQuota" name="prizeQuota" style={{width:100}}   value={this.state.prizeQuota}  onChange={this.setValue} />
         </li>
       </ul>
       <ul className="do-add-time clearfix">
