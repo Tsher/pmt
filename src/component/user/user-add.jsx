@@ -124,7 +124,7 @@ class UserUserAdd extends React.Component{
         },
         success:function(res){
 
-          if(res == 'False' || res == 'NULL'){
+          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
             msg_error();
             // 跳转回列表页
             return;

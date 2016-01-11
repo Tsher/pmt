@@ -348,7 +348,7 @@ class UserUser extends React.Component{
       },
       success:function(res){
         console.log(res)
-        if(res.Result == 'True'){
+        if(res.ReturnOperateStatus == 'True'){
           this.setState({
             visible : false
           })
@@ -362,7 +362,7 @@ class UserUser extends React.Component{
           //**********************更新table数据****************
           return
         }
-        if(res.Result == 'False'){
+        if(res.ReturnOperateStatus == 'False'){
           console.log('删除失败')
         }
       }.bind(this)
