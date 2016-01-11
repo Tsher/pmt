@@ -1,4 +1,4 @@
-//  用户管理   企业用户管理  新增
+//  基础管理   产品管理  新增、编辑
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -65,7 +65,7 @@ const urlUserInfo = config.__URL + config.user.user.info;
 
 
 
-class UserUserAdd extends React.Component{
+class UserProductAdd extends React.Component{
 
   //mixins: [Validation.FieldMixin],
 
@@ -445,7 +445,7 @@ class UserUserAdd extends React.Component{
 
 
 module.exports = {
-  UserUserAdd : UserUserAdd
+  UserProductAdd : UserProductAdd
 }
 
 

@@ -99,6 +99,7 @@ class SaleDoAdd extends React.Component{
     this.setValue = this.setValue.bind(this);
 
     this.addPrizeTime = this.addPrizeTime.bind(this);
+    this.sendEndTime = this.sendEndTime.bind(this);
   }
 
   componentDidMount(){
@@ -204,6 +205,7 @@ class SaleDoAdd extends React.Component{
   addPrizeTime(type,data){
 
     var states = Object.assign({},this.state);
+
     states.formData.rules[type] = data;
     this.setState(states);
     var that = this;
@@ -226,6 +228,10 @@ class SaleDoAdd extends React.Component{
     });
 
     return classes;
+  }
+
+  sendEndTime(){
+    return this.state.formData.endTime
   }
 
   handleReset(e) {
@@ -355,7 +361,7 @@ class SaleDoAdd extends React.Component{
         <div className="m-form-title">抽奖设置</div>
         <Tabs defaultActiveKey="1" >
           <TabPane tab="时间区间中奖率" key="1">
-            <SaleADDTime addPrizeTime={this.addPrizeTime} data={this.state.formData.rules.time} />
+            <SaleADDTime addPrizeTime={this.addPrizeTime} data={this.state.formData.rules.time} endTime={this.sendEndTime} />
           </TabPane>
           <TabPane tab="区域中奖率" key="2">
             <SaleADDArea addPrizeTime={this.addPrizeTime} data={this.state.formData.rules.area} />
