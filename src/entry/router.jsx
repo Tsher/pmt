@@ -17,6 +17,7 @@ import { UserUserRole } from '../component/user/user-role';
 
 import { BaseInfo } from '../component/base/info';
 import { BaseProduct } from '../component/base/product';
+import { BaseProductAdd } from '../component/base/product-add';
 import { BaseArea } from '../component/base/area';
 
 import { RuleArea } from '../component/rules/area';
@@ -56,6 +57,7 @@ const Router = (
 		<Route path="/base" component={Welcome}></Route>
 		<Route path="/base/info" component={BaseInfo}></Route>
 		<Route path="/base/product" component={BaseProduct}></Route>
+		<Route path="/base/product/add" component={BaseProductAdd}></Route>
 		<Route path="/base/area" component={BaseArea}></Route>
 
 		<Route path="/user" component={Welcome}></Route>
