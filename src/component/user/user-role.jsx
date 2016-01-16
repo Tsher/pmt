@@ -95,7 +95,6 @@ class UserUserRole extends React.Component{
 
     const formData = this.state.formData;
     const status = this.state.status;
-    console.log(item)
     const classes = cx({
       'error': status[item].errors,
       'validating': status[item].isValidating,

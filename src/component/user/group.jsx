@@ -10,6 +10,7 @@ import { createHistory } from 'history';
 import Form from 'antd/lib/form';
 import Input from 'antd/lib/input';
 import Table from 'antd/lib/table';
+import Popover from 'antd/lib/popover';
 
 const FormItem = Form.Item;
 import Tree from 'antd/lib/tree';
@@ -164,6 +165,10 @@ class UserGroup extends React.Component{
 	      showDelBtn : false, // 是否可点 删除按钮
 	      editLink : '', // 编辑链接地址
 	      showInfo : 'none' , // none 隐藏， block 显示   右侧详细信息
+        rightClickMenuStyle:{
+          left : '0',
+          top : '-100'
+        }
 	    };
 	    this.checkhandle = this.checkhandle.bind(this);
 	    this.rightClickhandler = this.rightClickhandler.bind(this);
@@ -172,9 +177,19 @@ class UserGroup extends React.Component{
 	    this.showModal = this.showModal.bind(this);
 	    this.handleOk = this.handleOk.bind(this);
 	    this.handleCancel = this.handleCancel.bind(this);
+      this.hideRightClickMenu = this.hideRightClickMenu.bind(this);
 	}
 
+  hideRightClickMenu(){
+    this.setState({
+        rightClickMenuStyle : {
+          left:0,
+          top : -100
+        }
+      })
+  }
   componentDidMount(){
+    Event.add(document.body,'click',this.hideRightClickMenu)
     this.setState({
       treedata : _data
     });
@@ -196,15 +211,19 @@ class UserGroup extends React.Component{
   // 右键树菜单
   rightClickhandler(info){
   	this.setState({
-  		selectedKeys : [info.node.props.eventKey],
+  		  selectedKeys : [info.node.props.eventKey],
       	editLink : '/user/group/edit/'+ info.node.props.eventKey,
       	showEditBtn : true,
       	showInfo : 'block',
+        rightClickMenuStyle : {
+          left : info.event.pageX,
+          top : info.event.pageY + 10,
+        }
   	})
     console.log(info.event.pageX,info.event.pageY,info.node.props.eventKey)
   }
   componentWillUnmount(){
-    
+    Event.remove(document.body,'click',this.hideRightClickMenu)
   }
 
   showModal(){
@@ -244,6 +263,8 @@ class UserGroup extends React.Component{
     }
     const parseTree = (data) => loop(data);
     let treeNodes = parseTree(this.state.treedata);
+
+  
 	return(
 			<div className="m-list">
 				<Row>
@@ -305,13 +326,14 @@ class UserGroup extends React.Component{
 						</div>
 					</Col>
 				</Row>
-        		<Modal title="您正在进行删除操作，请确认！"
-		          visible={this.state.visible}
-		          onOk={this.handleOk}
-		          confirmLoading={this.state.confirmLoading}
-		          onCancel={this.handleCancel}>
-		          <p>{this.state.ModalText}</p>
-		        </Modal>
+      		<Modal title="您正在进行删除操作，请确认！"
+	          visible={this.state.visible}
+	          onOk={this.handleOk}
+	          confirmLoading={this.state.confirmLoading}
+	          onCancel={this.handleCancel}>
+	          <p>{this.state.ModalText}</p>
+	        </Modal>
+          <div className="layerMenu" style={{left:this.state.rightClickMenuStyle.left,top:this.state.rightClickMenuStyle.top}}><a href="#/user/group/add">新增</a><a href={"#/user/group/edit/"+this.state.selectedKeys[0]}>修改</a></div>
 			</div>
 		)
 	}

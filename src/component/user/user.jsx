@@ -176,6 +176,11 @@ class SelectForm extends React.Component{
                   <Button type="primary"  htmlType="submit">查询</Button>
                 </FormItem>
               </li>
+              <li className="fleft">
+                <FormItem>
+                  <Button type="primary" >导出excel</Button>
+                </FormItem>
+              </li>
             </ul>
             
             
