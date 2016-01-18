@@ -14,15 +14,7 @@ const FormItem = Form.Item;
 
 
 const columns = [{
-  title: '发送序号',
-  dataIndex: 'sendNo',
-  key: 'sendNo',
-  render: function(text,record) {
-  	var href= '/user/user/info/'+text;
-    return <Link to={href}>{text}</Link>;
-  }
-},{
-  title: '公共号',
+  title: '公用号',
   dataIndex: 'sendPublic',
   key: 'sendPublic'
 },{
@@ -30,7 +22,7 @@ const columns = [{
   dataIndex: 'sendMobile',
   key: 'sendMobile'
 },{
-  title: '接收状态',
+  title: '发送状态',
   dataIndex: 'sendStatus',
   key: 'sendStatus'
 },{
@@ -38,102 +30,76 @@ const columns = [{
   dataIndex: 'sendNumber',
   key: 'sendNumber',
   render: function(text,record) {
-  	var href= '/user/user/info/'+text;
+    var href= '/saledata/send/info/'+text;
     return <Link to={href}>{text}</Link>;
   }
-},{
-  title: '发送时间',
-  dataIndex: 'sendTime',
-  key: 'sendTime'
 }];
 const data = [{
   key: '1',
-  sendNo: '000001',
   sendPublic: 13888888888,
   sendMobile : 13661111111,
   sendStatus : '成功',
-  sendNumber : 2,
-  sendTime : '2015-01-10 10:30'
+  sendNumber : 2
 }, {
   key: '2',
-  sendNo: '000002',
   sendPublic: 13888888888,
   sendMobile : 13661111111,
   sendStatus : '成功',
-  sendNumber : 2,
-  sendTime : '2015-01-10 10:30'
+  sendNumber : 2
 }, {
   key: '3',
-  sendNo: '000003',
   sendPublic: 13888888888,
   sendMobile : 13661111111,
   sendStatus : '成功',
-  sendNumber : 2,
-  sendTime : '2015-01-10 10:30'
+  sendNumber : 2
 }, {
   key: '4',
-  sendNo: '000004',
   sendPublic: 13888888888,
   sendMobile : 13661111111,
   sendStatus : '成功',
-  sendNumber : 2,
-  sendTime : '2015-01-10 10:30'
+  sendNumber : 2
 }, {
   key: '5',
-  sendNo: '000005',
   sendPublic: 13888888888,
   sendMobile : 13661111111,
   sendStatus : '成功',
-  sendNumber : 2,
-  sendTime : '2015-01-10 10:30'
+  sendNumber : 2
 }, {
   key: '6',
-  sendNo: '000006',
   sendPublic: 13888888888,
   sendMobile : 13661111111,
   sendStatus : '成功',
-  sendNumber : 2,
-  sendTime : '2015-01-10 10:30'
+  sendNumber : 2
 }, {
   key: '7',
-  sendNo: '000007',
   sendPublic: 13888888888,
   sendMobile : 13661111111,
   sendStatus : '成功',
-  sendNumber : 2,
-  sendTime : '2015-01-10 10:30'
+  sendNumber : 2
 }, {
   key: '8',
-  sendNo: '000008',
   sendPublic: 13888888888,
   sendMobile : 13661111111,
   sendStatus : '成功',
-  sendNumber : 2,
-  sendTime : '2015-01-10 10:30'
+  sendNumber : 2
 }, {
   key: '9',
-  sendNo: '000009',
   sendPublic: 13888888888,
   sendMobile : 13661111111,
   sendStatus : '成功',
-  sendNumber : 2,
-  sendTime : '2015-01-10 10:30'
+  sendNumber : 2
 }, {
   key: '10',
-  sendNo: '000010',
   sendPublic: 13888888888,
   sendMobile : 13661111111,
   sendStatus : '成功',
-  sendNumber : 2,
-  sendTime : '2015-01-10 10:30'
+  sendNumber : 2
 }, {
   key: '11',
-  sendNo: '000011',
   sendPublic: 13888888888,
   sendMobile : 13661111111,
   sendStatus : '成功',
-  sendNumber : 2,
-  sendTime : '2015-01-10 10:30'
+  sendNumber : 2
 }];
 
 class DateRange extends React.Component{
@@ -180,21 +146,33 @@ class DateRange extends React.Component{
     return <div>
       <div style={{width:945, height:60}}>
         <Form inline onSubmit={this.handleSubmit}>
+        <Col span="2">
+        <div style={{fontSize:14,lineHeight:2.4}}>发送日期：</div>
+        </Col>
           <Col span="3">
-	        <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'startTime')} />
-	      </Col>
-	      <Col span="1">
-	        <p className="ant-form-split">-</p>
-	      </Col>
-	       <Col span="3">
-	        <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'endTime')} />
-	      </Col>
-	      <Col span="3">
-	      <FormItem>
-          <Button type="primary" htmlType="submit" style={{marginLeft:10}}>查询</Button>
+          <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'startTime')} />
+        </Col>
+        <Col span="1">
+          <p className="ant-form-split">-</p>
+        </Col>
+         <Col span="3">
+          <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'endTime')} />
+        </Col>
+        <Col span="1">
+        <FormItem>
+          <Button type="primary" shape="circle" size="large"  htmlType="submit" style={{marginLeft:10}}>
+                <Icon type="search" />
+              </Button>
           </FormItem>
-	      </Col>
-	    </Form>
+        </Col>
+        <Col span="3">
+        <FormItem>
+          <Link to='/saledata/send/exports'>
+            <Button type="primary" size="large"  htmlType="submit" style={{marginLeft:10}}><span>导出报表</span></Button>
+          </Link>
+        </FormItem>
+        </Col>
+      </Form>
       </div>
     </div>;
   }

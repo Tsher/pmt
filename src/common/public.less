@@ -256,6 +256,7 @@ a.setting{
 		width: 40px; display: inline-block; float: left; text-align: center; padding:7px 0 0;
 	}
 }
+
 .ant-alert{
 	padding:5px 10px;
 }
@@ -264,4 +265,31 @@ a.setting{
 .welcome{
 	width: 100%; height: 490px; background: url(./welcome.jpg) no-repeat center;
 }
+.exports{
+	width:800px;ovflow:hidden;margin-bottom:20px;
+	h2{height:40px;}
+	p{
+	  line-height:30px;font-size:14px;
+	  strong{margin-right:10px;display:block;width:100px;text-align:right;float:left;}
+	}
+}
 
+.navList{
+   width: 260px;overflow: hidden;
+   li{
+      width:228px;height: 30px;line-height: 30px;border: 1px solid #d9d9da;padding: 0 12px 0 18px;margin-bottom: 10px;color: #656565;cursor: pointer;border-radius: 4px;
+      em{
+        float: right;font-style: normal;display: none;
+        a{
+          color: #fff;text-decoration: none;
+        }
+      }
+      i{
+        font-style: normal;margin: 0 4px;color: #fff;
+      }
+      &.on{
+        background: #2cb7f5;border-color: #2cb7f5;color: #fff;cursor: auto;
+        em{display: block;}
+      }
+   }
+}

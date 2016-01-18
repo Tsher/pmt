@@ -6,6 +6,7 @@ import { Button } from 'antd/lib';
 import Form from 'antd/lib/form';
 import message from 'antd/lib/message';
 import Chart from 'rc-echarts';
+import Icon from 'antd/lib/icon';
 
 const FormItem = Form.Item;
 
@@ -53,6 +54,9 @@ class DateRange extends React.Component{
     return <div>
       <div style={{width:945, height:60}}>
         <Form inline onSubmit={this.handleSubmit}>
+        <Col span="2">
+        <div style={{fontSize:14,lineHeight:2.4}}>扫码日期：</div>
+        </Col>
           <Col span="3">
           <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'startTime')} />
         </Col>
@@ -64,7 +68,9 @@ class DateRange extends React.Component{
         </Col>
         <Col span="3">
         <FormItem>
-          <Button type="primary" htmlType="submit" style={{marginLeft:10}}>查询</Button>
+          <Button type="primary" shape="circle" size="large"  htmlType="submit" style={{marginLeft:10}}>
+                <Icon type="search" />
+              </Button>
           </FormItem>
         </Col>
       </Form>
@@ -94,7 +100,7 @@ class Map extends React.Component{
     const options = {
       title : {
         text: '消费者扫码量',
-        subtext: '纯属虚构',
+        subtext: '',
         x:'center'
     },
     tooltip : {
@@ -199,16 +205,40 @@ class Map extends React.Component{
         <Chart.Map
           name="消费者扫码量"
           data={[
-                {name: '北京',value:100},
-                {name: '天津',value: 200},
-                {name: '上海',value:100},
-                {name: '重庆',value: 200},
-                {name: '河北',value:100},
-                {name: '河南',value: 200},
-                {name: '云南',value:100},
-                {name: '辽宁',value: 200},
-                {name: '黑龙江',value:100},
+                {name: '北京',value: Math.round(Math.random()*2000)},
+                {name: '天津',value: Math.round(Math.random()*2000)},
+                {name: '上海',value: Math.round(Math.random()*2000)},
+                {name: '重庆',value: Math.round(Math.random()*2000)},
+                {name: '河北',value: 0},
+                {name: '河南',value: Math.round(Math.random()*2000)},
+                {name: '云南',value: 5},
+                {name: '辽宁',value: 305},
+                {name: '黑龙江',value: Math.round(Math.random()*2000)},
                 {name: '湖南',value: 200},
+                {name: '安徽',value: Math.round(Math.random()*2000)},
+                {name: '山东',value: Math.round(Math.random()*2000)},
+                {name: '新疆',value: Math.round(Math.random()*2000)},
+                {name: '江苏',value: Math.round(Math.random()*2000)},
+                {name: '浙江',value: Math.round(Math.random()*2000)},
+                {name: '江西',value: Math.round(Math.random()*2000)},
+                {name: '湖北',value: Math.round(Math.random()*2000)},
+                {name: '广西',value: Math.round(Math.random()*2000)},
+                {name: '甘肃',value: Math.round(Math.random()*2000)},
+                {name: '山西',value: Math.round(Math.random()*2000)},
+                {name: '内蒙古',value: Math.round(Math.random()*2000)},
+                {name: '陕西',value: Math.round(Math.random()*2000)},
+                {name: '吉林',value: Math.round(Math.random()*2000)},
+                {name: '福建',value: Math.round(Math.random()*2000)},
+                {name: '贵州',value: Math.round(Math.random()*2000)},
+                {name: '广东',value: Math.round(Math.random()*2000)},
+                {name: '青海',value: Math.round(Math.random()*2000)},
+                {name: '西藏',value: Math.round(Math.random()*2000)},
+                {name: '四川',value: Math.round(Math.random()*2000)},
+                {name: '宁夏',value: Math.round(Math.random()*2000)},
+                {name: '海南',value: Math.round(Math.random()*2000)},
+                {name: '台湾',value: Math.round(Math.random()*2000)},
+                {name: '香港',value: Math.round(Math.random()*2000)},
+                {name: '澳门',value: Math.round(Math.random()*2000)}
               ]} />
       </Chart>
     );

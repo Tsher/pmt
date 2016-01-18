@@ -20,6 +20,7 @@
     "dora-plugin-atool-build": "^0.2.1",
     "dora-plugin-hmr": "^0.1.4",
     "dora-plugin-proxy": "^0.4.0",
+    "echarts": "2.2.8",
     "eslint": "~1.10.3",
     "eslint-config-airbnb": "~2.1.0",
     "eslint-plugin-react": "~3.11.3",

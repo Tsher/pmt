@@ -8,6 +8,8 @@ import Table from 'antd/lib/table';
 import Form from 'antd/lib/form';
 import Input from 'antd/lib/input';
 import message from 'antd/lib/message';
+import {Link} from 'react-router';
+import Icon from 'antd/lib/icon';
 
 const FormItem = Form.Item;
 
@@ -23,10 +25,6 @@ const columns = [{
   title: '获得积分',
   dataIndex: 'ruleNumber',
   key: 'ruleNumber',
-  render: function(text,record) {
-  	var iName = 'ruleNumber'+record.key;
-    return <FormItem id={iName}><Input id={iName} name={iName} /></FormItem>;
-  }
 },{
   title: '计划生效时间',
   dataIndex: 'ruleTimeStar',
@@ -60,67 +58,23 @@ const data = [{
 }];
 
 
-class DateForm extends React.Component{
-	constructor() {
-		super();
-		this.state =  {
-	      startTime : undefined,
-	      endTime : undefined,
-	      total : 100
-	    };
-	    this.handleSubmit = this.handleSubmit.bind(this);
-	    this.onChange = this.onChange.bind(this);
-	    this.disabledStartDate = this.disabledStartDate.bind(this);
-	    this.disabledEndDate = this.disabledEndDate.bind(this);
-	}
-  disabledStartDate(startValue) {
-    if (!startValue || !this.state.endValue) {
-      return false;
-    }
-    return startValue.getTime() >= this.state.endValue.getTime();
-  }
-  disabledEndDate(endValue) {
-    if (!endValue || !this.state.startValue) {
-      return false;
-    }
-    return endValue.getTime() <= this.state.startValue.getTime();
-  }
-  onChange(field, value) {
-    this.setState({
-      [field]: value,
-    });
-  }
-  handleSubmit(e) {
-    // ********************************************************** ajax提交数据，获取table的data值
-    e.preventDefault();
-    
-    message.success('收到表单值~~~ ：' + JSON.stringify(this.state, function(k, v) {
-      if (typeof v === 'undefined') {
-        return '';
-      }
-      return v;
-    }));
-  }
-  render() {
-    return <div>
-        <Form inline onSubmit={this.handleSubmit}>
-		      <FormItem>
-	          <Button type="primary" htmlType="submit" >保存</Button>
-	          <Button type="primary" style={{marginLeft:10}}>重置</Button>
-	          </FormItem>
-	          <Row>
-				<Table columns={columns} dataSource={data} pagination={{showQuickJumper:true,pageSize:10,current:1,showSizeChanger:true,total:this.state.total}}  />
-			  </Row>
-	    </Form>
-    </div>;
-  }
-};
 
 class RuleNumber extends React.Component{
+  constructor() {
+    super();
+    this.state =  {
+        total : 100
+      }
+  }
 	render(){
 		return(
 			<div className="m-list">
-			     <DateForm />
+			  <Col span="3" style={{marginBottom:20}}>
+            <Link to='/rule/number/add'>
+              <Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
+                  </Link>
+        </Col>
+        <Table columns={columns} dataSource={data} pagination={{showQuickJumper:true,pageSize:10,current:1,showSizeChanger:true,total:this.state.total}}  />
 			</div>
 		)
 	}
