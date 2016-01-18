@@ -1,0 +1,424 @@
+//  用户管理   组织机构管理  新增
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+import React from 'react';
+import Col from 'antd/lib/col';
+import Row from 'antd/lib/row';
+import Button from 'antd/lib/button';
+import Icon from 'antd/lib/icon';
+import {Link} from 'react-router';
+import { createHistory } from 'history';
+import Form from 'antd/lib/form';
+import Input from 'antd/lib/input';
+import Validation from 'antd/lib/validation';
+import message from 'antd/lib/message';
+import Tree from 'antd/lib/tree';
+import Modal from 'antd/lib/modal';
+
+const FormItem = Form.Item;
+
+const TreeNode = Tree.TreeNode;
+
+const Validator = Validation.Validator;
+const confirm = Modal.confirm;
+const FieldMixin = Validation.FieldMixin;
+
+const history = createHistory();
+
+const goBack = history.goBack;
+
+function cx(classNames) {
+  if (typeof classNames === 'object') {
+    return Object.keys(classNames).filter(function(className) {
+      return classNames[className];
+    }).join(' ');
+  } else {
+    return Array.prototype.join.call(arguments, ' ');
+  }
+}
+
+
+const msg_error = function(){
+  message.error('数据验证错误,请检查后提交')
+}
+const msg_success = function(){
+  message.success('数据提交成功，等待后台处理')
+}
+
+// tree data
+var _data = [
+  {
+  	title:'中国大陆',
+  	key : 'key0',
+  	children : [
+  	      {
+		    title : '北京市',
+		    key : 'key1',
+		    active:false,
+		    children:[
+		      {
+		        title : '海淀区',
+		        key : 'key1-1'
+		      },
+		      {
+		        title : '朝阳区',
+		        key : 'key1-2'
+		      }
+		    ]
+		  },
+		  {
+		    title : '天津市',
+		    key : 'key2',
+		    active : true,
+		    children:[
+		      {
+		        title : '海淀区',
+		        key : 'key2-1'
+		      },
+		      {
+		        title : '朝阳区',
+		        key : 'key2-2'
+		      }
+		    ]
+		  },
+		  {
+		    title : '湖南省',
+		    key : 'key3',
+		    active:false,
+		    children:[
+		      {
+		        title : '长沙市',
+		        key : 'key3-1'
+		      },
+		      {
+		        title : '永州市',
+		        key : 'key3-2'
+		      },
+		      {
+		        title : '常德市',
+		        key : 'key3-3'
+		      },
+		      {
+		        title : '岳阳市',
+		        key : 'key3-4'
+		      },
+		      {
+		        title : '娄底时',
+		        key : 'key3-5'
+		      },
+		      {
+		        title : '株洲',
+		        key : 'key3-6'
+		      }
+		    ]
+		  },
+		  {
+		    title : '河南省',
+		    key : 'key4',
+		    active:false,
+		    children:[
+		      {
+		        title : '郑州市',
+		        key : 'key4-1'
+		      },
+		      {
+		        title : '洛阳市',
+		        key : 'key4-2'
+		      },
+		      {
+		        title : '驻马店市',
+		        key : 'key4-3',
+		        children : [
+		           {
+		           	   title : '峄城区',
+		           	   key : 'key4-3-1'
+		           },
+		           {
+		           	   title : '正阳县',
+		           	   key : 'key4-3-2'
+		           }
+		        ]
+		      }
+		    ]
+		  },
+		  {
+		    title : '河北省',
+		    key : 'key5',
+		    active:false,
+		    children:[
+		      {
+		        title : '石家庄',
+		        key : 'key5-1'
+		      },
+		      {
+		        title : '保定',
+		        key : 'key5-2'
+		      }
+		    ]
+		  }
+  	]
+  }
+];
+
+
+class RightBox extends React.Component{
+    constructor(){
+
+		super();
+
+	    this.state = {
+	      treedata : [],
+	      selectedKeys : [],
+	      checkedKeys:[],
+	      showEditBtn : false, // 是否可点 编辑按钮
+	      showDelBtn : false, // 是否可点 删除按钮
+	      editLink : '', // 编辑链接地址
+	      showInfo : 'block' , // none 隐藏， block 显示   右侧详细信息
+	      status: {
+	        name:{}, // 新增部门的名称
+	        no :{},
+	        desc:{},
+	        key:{},
+	      },
+	      formData: {
+	        id : undefined, // 新增 or 编辑 识别
+	        no : 'n00002', // 编辑状态 部门编号
+	        key : undefined, // 
+	        parent : undefined, // 
+	        name: '天津区', // 新增部门的名称
+	        desc : '真是个好地方', // 新增部门的描述
+	        title : '区域成员管理'
+	      },
+	      no : undefined,
+	      key : '',
+	    };
+
+	    this.handleCheck = this.handleCheck.bind(this);
+
+	    this.setField = FieldMixin.setField.bind(this);
+	    this.handleValidate = FieldMixin.handleValidate.bind(this);
+	    this.onValidate = FieldMixin.onValidate.bind(this);
+	    this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+  componentDidMount(){
+  	
+    this.setState({
+      treedata : _data
+    });
+    var _Da = _data[0].children;
+    for(var i=0;i<_Da.length;i++){
+  		if (_Da[i].active) {
+  			this.setState({
+  				key : _Da[i].key,
+  				checkedKeys:[_Da[i].key],
+  			})
+  			
+  		};
+  	}
+
+  }
+
+  // 点击树菜单
+  handleCheck(info){
+  	var str = getKeys(info.node.props).join(',');
+  	this.setState({
+      selectedKeys : [info.node.props.eventKey],
+      editLink : '/base/area/add/'+ info.node.props.eventKey,
+      showEditBtn : true,
+      showInfo : 'block',
+      checkedKeys:[info.node.props.eventKey],
+      key:str,
+    })
+
+    function getKeys(obj){
+    	var arr=[];
+	  	arr.push(obj.eventKey);
+	  	function dg(o){
+	  		for(var i in o){
+	  			arr.push(o[i].key);
+	  			if (o[i].children) {
+	  				dg(o[i].children)
+	  			};
+	  			if (o[i].props.children) {
+	  				dg(o[i].props.children)
+	  			};
+	  		}
+	  	}
+	  	dg(obj.children)
+	  	return arr;
+	}
+  }
+
+  handleReset(e) {
+    // 返回***********************************
+    goBack();
+    e.preventDefault();
+  }
+
+  handleSubmit(e) {
+    //***********************************等待ajax提交数据 ******** 区分 新增 或者 编辑
+    e.preventDefault();
+    // this.setState({
+    //   isEmailOver: true
+    // });
+    
+    this.state.formData.key = this.state.key;
+
+    const validation = this.refs.validation;
+    validation.validate((valid) => {
+      if (!valid) {
+        console.log('error in form');
+        msg_error()
+        return;
+      } else {
+        console.log('submit');
+      }
+      console.log(this.state.formData);
+      msg_success();
+    });
+  }
+
+  renderValidateStyle(item) {
+    const formData = this.state.formData;
+    const status = this.state.status;
+
+    const classes = cx({
+      'error': status[item].errors,
+      'validating': status[item].isValidating,
+      'success': formData[item] && !status[item].errors && !status[item].isValidating
+    });
+
+    return classes;
+  }
+
+  checkGroupName(rule, value, callback) {
+    if (!value) {
+      callback(new Error('请输入角色名称'));
+    } else {
+      callback();
+    }
+  }
+
+
+  
+  render(){
+  	const formData = this.state.formData;
+  	const status = this.state.status;
+	const loop = (data) => {
+      return data.map( (item) => {
+        if(item.children){
+          return (<TreeNode title={item.title} key={item.key}>{loop(item.children)}</TreeNode>);
+        }else{
+          return (<TreeNode title={item.title} key={item.key}></TreeNode>);
+        }
+      } )
+    }
+    const parseTree = (data) => loop(data);
+    let treeNodes = parseTree(this.state.treedata);
+	return(
+
+		<div className="m-form">
+	        <div className="m-form-title">{this.state.formData.title}</div>
+	        <div className="m-form-con" style={{overflow:'hidden'}}>
+	           <div className="m-list">
+	                <Col span="8" style={{ display : 'block' }} >
+						<div className="border border-raduis">
+							<div className="title"> 区域信息 </div>
+							<div className="con">
+								<Form inline >
+								 <Validation ref="validation" onValidate={this.handleValidate}>
+								    <FormItem
+						                label="区域名称："
+						                id="name"
+						                labelCol={{span: 8}}
+						                wrapperCol={{span: 14,offset:1}}
+						                validateStatus={this.renderValidateStyle('name')}
+						                help={status.name.errors ? status.name.errors.join(',') : null}
+						                required>
+						                  <Validator rules={[{required: true, message: '区域名称'}]}>
+						                    <Input  name="name" value={formData.name} />
+						                  </Validator>
+						            </FormItem>
+						            <FormItem
+						                label="区域编号: "
+						                id="no"
+						                labelCol={{span: 8}}
+						                wrapperCol={{span: 14,offset:1}}
+						                validateStatus={this.renderValidateStyle('no')}
+						                help={status.no.errors ? status.no.errors.join(',') : null}
+						                >
+						                  <Validator rules={[{required: false, message: ''}]}>
+						                    <Input  name="no" value={formData.no} />
+						                  </Validator>
+						            </FormItem>
+
+						            <FormItem
+						                label="区域描述: "
+						                id="desc"
+						                labelCol={{span: 8}}
+						                wrapperCol={{span: 14,offset:1}}
+						                validateStatus={this.renderValidateStyle('desc')}
+						                help={status.desc.errors ? status.desc.errors.join(',') : null}
+						                >
+						                  <Validator rules={[{required: false, message: ''}]}>
+						                    <Input style={{height:100}} name="desc" type="textarea"  value={formData.desc}  />
+						                    </Validator>
+						            </FormItem>
+
+								 </Validation>
+								</Form>
+							</div>
+						</div>
+					</Col>
+					<Col span="8"  style={{ display : 'block' }} >
+						<div className="border border-raduis">
+							<div className="title">区域树</div>
+							<div className="con">
+								<Tree checkable defaultExpandAll checkedKeys={this.state.checkedKeys} onCheck={this.handleCheck}>
+					          		{treeNodes}
+					        	</Tree>
+							</div>
+						</div>
+					</Col>
+	           </div>
+		    </div>
+		      <div className="m-form-btns" style={{overflow:'hidden'}}>
+		      <Row>
+		        <Col span="4" offset="2">
+		        <Button type="primary" onClick={this.handleSubmit}>确定</Button>
+		        &nbsp;&nbsp;&nbsp;&nbsp;
+		        <Button type="primary" onClick={this.handleReset}>取消</Button>
+		        </Col>
+		      </Row>
+		        
+		      </div>
+	    </div>
+		)
+	}
+}
+
+
+
+class BaseAreaAdd extends React.Component{
+	constructor(){
+		super();
+	    this.state = {}
+	}
+
+    render(){
+	return(
+			<Row>
+				<RightBox />
+			</Row>
+		)
+	}
+}
+
+
+module.exports = {
+  BaseAreaAdd : BaseAreaAdd
+}
+
+
