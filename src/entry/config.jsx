@@ -34,7 +34,7 @@ window['_G']={
 // api 配置表
 
 window['config'] = {
-	__URL : 'http://172.31.0.49:8088', // API全局url
+	__URL : 'http://http://101.200.221.152/PMTService', // API全局url
 	// 用户管理
 	user:{
 		// 企业用户
