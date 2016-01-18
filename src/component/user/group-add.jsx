@@ -169,15 +169,7 @@ class UserGroupAdd extends React.Component{
         <div className="m-form-con">
           <Form horizontal>
             <Validation ref="validation" onValidate={this.handleValidate}>
-              <FormItem
-                label="部门编号："
-                id="no"
-                labelCol={{span: 2}}
-                wrapperCol={{span: 4}}
-                style={{ display : formData.show }}
-                >
-                  <Input name="no" value={formData.no} disabled />
-              </FormItem>
+              
               <FormItem
                 label="上级部门："
                 id="parent"

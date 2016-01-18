@@ -101,8 +101,9 @@ class SelectForm extends React.Component{
   }
   // radio change
   radioChange(e){
+    console.log(e.target.value)
     this.setState({
-      state : e.target.value
+      User_Status : e.target.value
     })
   }
 
@@ -156,7 +157,7 @@ class SelectForm extends React.Component{
                   <Col span="24">
                     <label className="ant-checkbox-inline">用户状态：</label>
                     <label className="ant-checkbox-inline">
-                    <RadioGroup onChange={this.radioChange} value={this.state.User_Status}>
+                    <RadioGroup name="User_Status" onChange={this.radioChange} value={this.state.User_Status}>
                       <Radio value="2">全部</Radio>
                       <Radio value="0">在职</Radio>
                       <Radio value="1">离职</Radio>
@@ -197,19 +198,20 @@ let modalState;
 function showModal(e){
   Event.stop(e);
   var tar = Event.target(e);
-  var id = tar.getAttribute('data-id'),index = tar.getAttribute('data-index');
-  modalState(id,index)
+  var id = tar.getAttribute('data-id'),index=tar.getAttribute('data-index'),name = tar.getAttribute('data-name');
+  modalState(id,index,name)
 }
 
+// {
+//   title: '用户编号',
+//   dataIndex: 'User_Code',
+//   key: 'User_Code',
+//   render: function(text,record) {
+//     var href= '/user/user/info/'+text;
+//     return <Link to={href}>{text}</Link>;
+//   }
+// }, 
 const columns = [{
-  title: '用户编号',
-  dataIndex: 'User_Code',
-  key: 'User_Code',
-  render: function(text,record) {
-  	var href= '/user/user/info/'+text;
-    return <Link to={href}>{text}</Link>;
-  }
-}, {
   title: '姓名',
   dataIndex: 'User_Name',
   key: 'User_Name'
@@ -234,7 +236,6 @@ const columns = [{
   dataIndex: 'Register_On',
   key: 'Register_On',
   render:function(text,record){
-    console.log(text)
     var time = _G.timeFormat(text);
     return <span>{time}</span>
   }
@@ -257,7 +258,7 @@ const columns = [{
   	var edit = '/user/user/edit/'+record.User_Code,
   		set = '/user/user/role/' + record.User_Code,
   		del = '/user/user/del/' + record.User_Code
-    return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><Link to={set}>设置角色</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.User_Code} data-index={index} >删除</a></span>;
+    return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><Link to={set}>设置角色</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.User_Code} data-index={index} data-name={record.User_Name} >删除</a></span>;
   }
 }];
 
@@ -296,18 +297,16 @@ class UserUser extends React.Component{
     //opts.EntityCode = 'DEFAULT';
     var that = this;
 
-    $.ajax({
+    _G.ajax({
       url : urlUserList,
       method: "get",
       data : opts,
       success:function(res){
-        console.log(res)
         var d = [];
         for(var i=0,l=res.Data.length;i<l;i++){
           d[i]=res.Data[i];
           d[i]['key'] = res.Data[i].User_Code;
         }
-
         this.setState({
           data : d,
           total : Math.ceil(res.TotalCount/this.state.pagesize)
@@ -332,10 +331,10 @@ class UserUser extends React.Component{
   componentWillUnmount(){
     modalState = false;
   }
-  showModal(id,index){
+  showModal(id,index,name){
     this.setState({
       visible : true,
-      ModalText: '你正要删除 编号"'+ id +'"的用户，是否继续？',
+      ModalText: '你正要删除 用户："'+ name +'"，是否继续？',
       confirmLoading: false,
       delId : id,
       index : index
@@ -345,22 +344,21 @@ class UserUser extends React.Component{
     //*******************删除逻辑，删除 delId , 然后 关闭****************************
     
     // ***********************删除请求******************
-    $.ajax({
+    _G.ajax({
       url : urlUserDel,
       method : 'get',
       data : {
         User_Code : this.state.delId
       },
       success:function(res){
-        console.log(res)
         if(res.ReturnOperateStatus == 'True'){
           this.setState({
             visible : false
           })
           console.log('删除成功');
-
-          var d = [].cancat(this.state.data);
+          var d = [].concat(this.state.data);
           d.splice(d[this.state.index],1);
+          console.log(this.state.index)
           this.setState({
             data : d
           })

@@ -113,10 +113,11 @@ class UserUserAdd extends React.Component{
   }
 
   componentDidMount(){
+    console.log(this.props.params.id)
     // 编辑
     if(this.props.params.id){
       // ajax获取当前id的内容，变更state ****************************
-      $.ajax({
+      _G.ajax({
         url : urlUserInfo,
         type : 'get',
         data : {
@@ -212,7 +213,7 @@ class UserUserAdd extends React.Component{
       // 提交数据
       let u = this.props.params.id ? urlUserEdit : urlUserAdd;
       let t = this.props.params.id ? 'PUT' : 'POST';
-      $.ajax({
+      _G.ajax({
         url  : u,
         data : this.state.formData,
         method : 'post',

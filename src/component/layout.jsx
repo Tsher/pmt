@@ -17,8 +17,8 @@ class Layout extends React.Component{
 			width : 0, // 右侧内容区域宽度
 			winw : 1200, // window width
 			menuWidth:200, // left menu width
-			selectedKeys : '3-1', // 当前选中的菜单
-			openKeys : '3', //当前展开的菜单
+			selectedKeys : '', // 当前选中的菜单
+			openKeys : '', //当前展开的菜单
 			menus :[
 				{
 					key : "1", 

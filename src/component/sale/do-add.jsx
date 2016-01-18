@@ -335,7 +335,7 @@ class SaleDoAdd extends React.Component{
               </FormItem>
               </li>
               <li className="fleft date-picker">
-                <FormItem id="startTime" label="注册时段：" labelCol={{span : 5}} >
+                <FormItem id="startTime" label="活动时间：" labelCol={{span : 5}} >
                     <Row span="24" >
                     <Col span="10">
                   <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'startTime')} />

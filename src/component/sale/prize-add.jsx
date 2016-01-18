@@ -62,7 +62,6 @@ class SalePrizeAdd extends React.Component{
   	super(props);
   	this.state = {
       status : {
-        no : {},
         prizeName : {},
         prizeType : {},
         creatTime : {},
@@ -71,7 +70,6 @@ class SalePrizeAdd extends React.Component{
       formData : {
         id : '', // 奖品id
         title : '新增奖品',
-        no : undefined, // 奖品编码， 自动生成
         prizeName : undefined, // 奖品名称
         unit : undefined, // 单位
         prizeType  : undefined , // 奖品类别
@@ -185,18 +183,7 @@ class SalePrizeAdd extends React.Component{
         <Validation ref="validation" onValidate={this.handleValidate}>
           <Row>
             <Col span="8">
-                <FormItem
-                  label="奖品编码："
-                  id="no"
-                  labelCol={{span: 8}}
-                  wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('no')}
-                  help={status.no.errors ? status.no.errors.join(',') : null}
-                  required>
-                    <Validator rules={[{required: true, message: '请输入编码'}]}>
-                      <Input name="no" value={formData.no} />
-                    </Validator>
-                </FormItem>
+                
                 <FormItem
                   label="单位："
                   id="unit"

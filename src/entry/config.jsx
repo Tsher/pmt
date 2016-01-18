@@ -27,23 +27,32 @@ window['_G']={
 		return t;
 	},
 	// ajax
-	ajax:function(){}
+	ajax:function(opts){
+		opts.data.Token = opts.data.Token || '';
+		$.ajax(opts);
+	}
 }
 
 
 // api 配置表
 
 window['config'] = {
-	__URL : 'http://http://101.200.221.152/PMTService', // API全局url
+	__URL : 'http://101.200.221.152/PMTService', // API全局url
 	// 用户管理
 	user:{
 		// 企业用户
 		user:{
 			list : '/api/SUser/GetUsers',
 			add : '/api/SUser/PostUser',
-			edit : '/api/SUser/PutUser',
+			edit : '/api/SUser/PostUpUser',
 			info : '/api/SUser/GetUser',
 			del : '/api/SUser/DeleteUser',
+		}
+	},
+	// 促销设置
+	sale : {
+		'do':{
+			list : '/api/SPromotionActivity/GetMarketingActivities'
 		}
 	}
 }

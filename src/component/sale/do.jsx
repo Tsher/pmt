@@ -25,16 +25,28 @@ const history = createHistory();
 
 const FormItem = Form.Item;
 
+
+import '../../entry/config';
+
+
+// 用户列表api  http://172.31.0.49:8088/api/SUser/GetUsers?EntityCode=DEFAULT&page=0&pagesize=100
+// page ：当前请求页
+// pageSize : 每页条数
+// EntityCode : DEFAULT 
+
+const saleDoList = config.__URL + config.sale['do']['list'];
+const urlUserDel  = config.__URL + config.user.user.del;
+
+
 class SelectForm extends React.Component{
 	//mixins: [Form.ValueMixin],
 
   constructor() {
   	super();
     this.state =  {
-      name : undefined, // 活动名称
-      area: undefined, // 区域
-      startTime : undefined, // 注册开始时间
-      endTime : undefined, // 注册结束时间
+      MA_Name : undefined, // 活动名称
+      MA_StartTime : undefined, // 注册开始时间
+      MA_EndTime : undefined, // 注册结束时间
     };
     this.setValue = this.setValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -54,7 +66,15 @@ class SelectForm extends React.Component{
 
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
+
+
     e.preventDefault();
+
+
+    this.props.changeTableState(this.state);
+
+
+
     message.success('收到表单值~~~ ：' + JSON.stringify(this.state, function(k, v) {
       if (typeof v === 'undefined') {
         return '';
@@ -72,10 +92,10 @@ class SelectForm extends React.Component{
   
 
   disabledEndDate(endValue){
-    if (!endValue || !this.state.startTime) {
+    if (!endValue || !this.state.MA_StartTime) {
       return false;
     }
-    return endValue.getTime() <= this.state.startTime.getTime();
+    return endValue.getTime() <= this.state.MA_StartTime.getTime();
   }
 
  
@@ -90,28 +110,22 @@ class SelectForm extends React.Component{
             	<li className="fleft">
 	            	<FormItem
 		            label="活动名称："
-		            id="name">
-		              <Input placeholder="" id="name" name="name" onChange={this.setValue} value={this.state.name} />
+		            id="MA_Name">
+		              <Input placeholder="" id="MA_Name" name="MA_Name" onChange={this.setValue} value={this.state.MA_Name} />
 		          </FormItem>
             	</li>
-            	<li className="fleft">
-	            	<FormItem
-		            label="活动区域："
-		            id="area">
-		              <Input placeholder="" id="area" name="area" onChange={this.setValue} value={this.state.area} />
-		          </FormItem>
-            	</li>
+            	
               <li className="fleft date-picker">
-                  <FormItem id="startTime" label="注册时段：" labelCol={{span : 5}} >
+                  <FormItem id="MA_StartTime" label="活动时间：" labelCol={{span : 5}} >
                   	<Row span="24" >
                   	<Col span="10">
-			            <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'startTime')} />
+			            <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'MA_StartTime')} />
 			          </Col>
 			          <Col span="1">
 			            <p className="ant-form-split">-</p>
 			          </Col>
 			          <Col span="10">
-			            <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'endTime')} />
+			            <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'MA_EndTime')} />
 			          </Col>
 			          </Row>
                 </FormItem>
@@ -157,109 +171,59 @@ function showModalPublish(e){
   Event.stop(e);
   var tar = Event.target(e);
   var id = tar.getAttribute('data-id'),
-    state = tar.getAttribute('data-publishstate');
-  console.log(state)
+    state = tar.getAttribute('data-rstatus');
   modalStatePublish(id,state)
 }
 
 const columns = [{
   title: '活动编码',
-  dataIndex: 'No',
-  key: 'No',
+  dataIndex: 'MA_Code',
+  key: 'MA_Code',
   // render: function(text,record) {
   // 	var href= '/sale/do/info/'+text;
   //   return <Link to={href}>{text}</Link>;
   // }
 }, {
   title: '活动名称',
-  dataIndex: 'name',
-  key: 'name'
-}, {
-  title: '活动区域',
-  dataIndex: 'area',
-  key: 'area'
+  dataIndex: 'MA_Name',
+  key: 'MA_Name'
 }, {
   title: '活动状态',
-  dataIndex: 'state',
-  key: 'state'
+  dataIndex: 'MA_Status',
+  key: 'MA_Status'
 },{
   title: '发布状态',
-  dataIndex: 'publishState',
-  key: 'publishState'
+  dataIndex: 'MA_RStatus',
+  key: 'MA_RStatus'
 },{
   title: '活动开始时间',
-  dataIndex: 'startTime',
-  key: 'startTime'
+  dataIndex: 'MA_StartTime',
+  key: 'MA_StartTime'
 },{
   title: '活动结束时间',
-  dataIndex: 'endTime',
-  key: 'endTime'
+  dataIndex: 'MA_EndTime',
+  key: 'MA_EndTime'
 }, {
   title: '操作',
   key: 'operation',
   render: function(text, record) {
-  	var publish = '/sale/do/publish/'+ record.No,
-      edit = '/sale/do/edit/'+record.No,
-  		del = '/sale/do/del/' + record.No
-    return <span><a href="#" onClick={showModalPublish} data-id={record.No} data-publishstate={record.publishState}>{record.publishState}</a><span className="ant-divider"></span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.No} data-text="删除" >删除</a></span>;
+  	var publish = '/sale/do/publish/'+ record.MA_Code,
+      edit = '/sale/do/edit/'+record.MA_Code,
+  		del = '/sale/do/del/' + record.MA_Code
+    return <span><a href="#" onClick={showModalPublish} data-id={record.MA_Code} data-rstatus={record.MA_RStatus}>{record.MA_RStatus}</a><span className="ant-divider"></span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.MA_Code} data-text="删除" >删除</a></span>;
 	}
 }];
-const data = [{
-  key: '1',
-  No: '000001',
-  name: '活动名称1',
-  area : '华北',
-  state : '进行中',
-  publishState : '发布',
-  startTime : '2015-10-10 12:30',
-  endTime : '2015-12-12 12:30'
-}, {
-  key: '2',
-  No: '000002',
-  name: '活动名称2',
-  area : '华北',
-  state : '进行中',
-  publishState : '已发布',
-  startTime : '2015-10-10 12:30',
-  endTime : '2015-12-12 12:30'
-}, {
-  key: '3',
-  No: '000003',
-  name: '活动名称3',
-  area : '华北',
-  state : '进行中',
-  publishState : '已发布',
-  startTime : '2015-10-10 12:30',
-  endTime : '2015-12-12 12:30'
-}, {
-  key: '4',
-  No: '000004',
-  name: '活动名称4',
-  area : '华北',
-  state : '进行中',
-  publishState : '已发布',
-  startTime : '2015-10-10 12:30',
-  endTime : '2015-12-12 12:30'
-}, {
-  key: '5',
-  No: '000005',
-  name: '活动名称5',
-  area : '华北',
-  state : '进行中',
-  publishState : '已发布',
-  startTime : '2015-10-10 12:30',
-  endTime : '2015-12-12 12:30'
-}, {
-  key: '6',
-  No: '000006',
-  name: '活动名称6',
-  area : '华北',
-  state : '进行中',
-  publishState : '已发布',
-  startTime : '2015-10-10 12:30',
-  endTime : '2015-12-12 12:30'
-}];
-
+const data = [];
+// {
+//   key: '1',
+//   MA_Code: '000001',
+//   MA_Name: '活动名称1',
+//   area : '华北',
+//   MA_Status : '进行中',
+//   MA_RStatus : '发布',
+//   MA_StartTime : '2015-10-10 12:30',
+//   MA_EndTime : '2015-12-12 12:30'
+// }
 
 
 class SaleDo extends React.Component{
@@ -271,22 +235,56 @@ class SaleDo extends React.Component{
       ModalText : '',
       changeId : false,  // 删除id
       publishId : false, // 发布ids
-      publishState : false, // 发布状态
-      total : 100
+      MA_RStatus : false, // 发布状态
+      total : 1,
+      page : 1,
+      pagesize: 10,
     }
     this.showModal = this.showModal.bind(this);
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.showModalPublish = this.showModalPublish.bind(this);
+    this.changeTableState = this.changeTableState.bind(this);
 	}
 
   componentDidMount(){
     modalState = this.showModal;
     modalStatePublish = this.showModalPublish;
+
+
   }
   componentWillUnmount(){
     modalState = false;
     modalStatePublish = false;
+  }
+
+  // 发送ajax请求，获取table值
+  changeTableState(opts){
+    var opts = opts || {};
+    opts.page = this.state.page*1-1;
+    opts.pagesize = this.state.pagesize;
+    //opts.EntityCode = 'DEFAULT';
+    var that = this;
+
+    _G.ajax({
+      url : saleDoList,
+      method: "get",
+      data : opts,
+      success:function(res){
+        var d = [];
+        for(var i=0,l=res.Data.length;i<l;i++){
+          d[i]=res.Data[i];
+          d[i]['key'] = res.Data[i].MA_Code;
+        }
+        this.setState({
+          data : d,
+          total : Math.ceil(res.TotalCount/this.state.pagesize)
+        })
+
+      }.bind(this)
+
+    })
+
   }
 
 
@@ -296,6 +294,7 @@ class SaleDo extends React.Component{
       visible : true,
       ModalText: '你正要删除 "'+ id +'"的活动，是否继续？',
       confirmLoading: false,
+      publishId : false,
       changeId : id
     })
   }
@@ -309,7 +308,8 @@ class SaleDo extends React.Component{
       ModalText: '你正要 '+type+'"'+ id +'"的活动，是否继续？',
       confirmLoading: false,
       publishId : id,
-      publishState : state == '已发布' ? 1 : 0
+      changeId : false,
+      MA_RStatus : state == '已发布' ? 1 : 0
     })
   }
   handleOk(e){
@@ -322,7 +322,7 @@ class SaleDo extends React.Component{
         visible : false,
         changeId : false,
         publishId : false,
-        publishState : false
+        MA_RStatus : false
       })
     },2000)
   }
@@ -331,7 +331,7 @@ class SaleDo extends React.Component{
       visible : false,
       changeId : false,
       publishId : false,
-      publishState : false
+      MA_RStatus : false
     })
   }
   handleClick(e){
@@ -347,7 +347,7 @@ class SaleDo extends React.Component{
 	          			</Link>
 					</Col>
 					<Col span="21">
-						<SelectForm />
+						<SelectForm changeTableState={this.changeTableState} />
 					</Col>
 				</Row>
 				<Row>

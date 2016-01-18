@@ -591,7 +591,7 @@ class BaseProductAdd extends React.Component{
                   <Button type="primary" onClick={this.showModal} style={{'float':'right'}}>新增包装比例</Button>
                 </Col>
                 <Col span="24">
-                    <Table rowSelection={this.rowSelection()} columns={columns} dataSource={data} pagination={false} size='small'  />
+                    <Table  columns={columns} dataSource={data} pagination={false} size='small'  />
                 </Col>
               </Row>
               

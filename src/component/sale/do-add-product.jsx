@@ -264,7 +264,7 @@ const columns = [
   key: 'productId'
 },
 {
-  title: '奖品编号',
+  title: '产品名称',
   dataIndex: 'prizeId',
   key: 'prizeId'
 }, {
