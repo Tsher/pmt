@@ -19,9 +19,12 @@ import { BaseInfo } from '../component/base/info';
 import { BaseProduct } from '../component/base/product';
 import { BaseProductAdd } from '../component/base/product-add';
 import { BaseArea } from '../component/base/area';
+import { BaseAreaAdd } from '../component/base/area-add';
 
 import { RuleArea } from '../component/rules/area';
+import { RuleAreaAdd } from '../component/rules/area-add';
 import { RuleNumber } from '../component/rules/number';
+import { RuleNumberAdd } from '../component/rules/number-add';
 
 import { SaleDo } from '../component/sale/do';
 import { SaleDoAdd } from '../component/sale/do-add';
@@ -40,12 +43,18 @@ import { SaleVip } from '../component/sale/vip';
 import { SaleVipInfo } from '../component/sale/vip-info';
 
 import { SaleDataPush } from '../component/saledata/push';
+import { SaleDataPushInfo } from '../component/saledata/push-info';
 import { SaleDataPrize } from '../component/saledata/prize';
 import { SaleDataUser } from '../component/saledata/user';
 import { SaleDataSend } from '../component/saledata/send';
+import { SaleDataSendInfo } from '../component/saledata/send-info';
 import { SaleDataRound } from '../component/saledata/round';
+<<<<<<< Updated upstream
 import { Login } from '../component/login';
 import { ChangePassword } from '../component/change-password';
+=======
+import { SaleDataRoundInfo } from '../component/saledata/round-info';
+>>>>>>> Stashed changes
 
 import {Layout} from '../component/layout';
 
@@ -74,6 +83,8 @@ const Router = (
 		<Route path="/base/product" component={BaseProduct}></Route>
 		<Route path="/base/product/add" component={BaseProductAdd}></Route>
 		<Route path="/base/area" component={BaseArea}></Route>
+		<Route path="/base/area/add" component={BaseAreaAdd}></Route>
+		<Route path="/base/area/edit/:id" component={BaseAreaAdd}></Route>
 
 		<Route path="/user" component={Welcome} ></Route>
 
@@ -96,7 +107,13 @@ const Router = (
 
 		<Route path="/rule" component={Welcome} ></Route>
 		<Route path="/rule/area" component={RuleArea}></Route>
+		<Route path="/rule/area/add" component={RuleAreaAdd}></Route>
+		<Route path="/rule/area/edit/:id" component={RuleAreaAdd}></Route>
+
+
 		<Route path="/rule/number" component={RuleNumber}></Route>
+		<Route path="/rule/number/add" component={RuleNumberAdd}></Route>
+		<Route path="/rule/number/edit/:id" component={RuleNumberAdd}></Route>
 
 		<Route path="/sale" component={Welcome} ></Route>
 		<Route path="/sale/do" component={SaleDo}></Route>
@@ -118,10 +135,13 @@ const Router = (
 
 		<Route path="/saledata" component={Welcome} ></Route>
 		<Route path="/saledata/push" component={SaleDataPush}></Route>
+		<Route path="/saledata/push/info/:id" component={SaleDataPushInfo}></Route>
 		<Route path="/saledata/prize" component={SaleDataPrize}></Route>
 		<Route path="/saledata/user" component={SaleDataUser}></Route>
 		<Route path="/saledata/Send" component={SaleDataSend}></Route>
+		<Route path="/saledata/Send/info/:id" component={SaleDataSendInfo}></Route>
 		<Route path="/saledata/round" component={SaleDataRound}></Route>
+		<Route path="/saledata/round/info/:id" component={SaleDataRoundInfo}></Route>
 
 		<IndexRoute component={Welcome} />
 

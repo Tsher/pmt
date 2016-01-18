@@ -14,21 +14,9 @@ const FormItem = Form.Item;
 
 
 const columns = [{
-  title: '用户编号',
-  dataIndex: 'lotteryNo',
-  key: 'lotteryNo',
-  render: function(text,record) {
-  	var href= '/user/user/info/'+text;
-    return <Link to={href}>{text}</Link>;
-  }
-}, {
   title: '抽奖地区',
   dataIndex: 'lotteryArea',
   key: 'lotteryArea'
-}, {
-  title: '一物一码',
-  dataIndex: 'lotteryCode',
-  key: 'lotteryCode'
 }, {
   title: '兑换手机号',
   dataIndex: 'lotteryMobile',
@@ -46,184 +34,117 @@ const columns = [{
   dataIndex: 'lotteryWinning',
   key: 'lotteryWinning'
 },{
-  title: '兑换方式',
-  dataIndex: 'lotteryMode',
-  key: 'lotteryMode'
-},{
-  title: '兑换状态',
-  dataIndex: 'lotteryStatus',
-  key: 'lotteryStatus'
-},{
-  title: '兑换次数',
+  title: '中奖次数',
   dataIndex: 'lotteryNumber',
   key: 'lotteryNumber',
   render: function(text,record) {
-  	var href= '/user/user/info/'+text;
+  	var href= '/saledata/round/info/'+record.lotteryNo;
     return <Link to={href}>{text}</Link>;
   }
 },{
-  title: '兑换积分',
+  title: '积分',
   dataIndex: 'lotteryIntegral',
   key: 'lotteryIntegral'
-},{
-  title: '兑换时间',
-  dataIndex: 'lotteryTime',
-  key: 'lotteryTime'
 }];
 const data = [{
   key: '1',
-  lotteryNo: '000001',
   lotteryArea: '北京',
-  lotteryCode: '1100111000',
   lotteryMobile : 13661111111,
   lotteryWx : 'weixin123',
   lotteryPrize : 'iphone',
   lotteryWinning : '是',
-  lotteryMode : '空中充值',
-  lotteryStatus : '成功',
   lotteryNumber : 2,
-  lotteryIntegral : 30,
-  lotteryTime : '2015-01-10 10:30'
+  lotteryIntegral : 30
 }, {
   key: '2',
-  lotteryNo: '000002',
   lotteryArea: '北京',
-  lotteryCode: '1100111000',
   lotteryMobile : 13661111111,
   lotteryWx : 'weixin123',
   lotteryPrize : 'iphone',
   lotteryWinning : '是',
-  lotteryMode : '空中充值',
-  lotteryStatus : '成功',
   lotteryNumber : 2,
-  lotteryIntegral : 30,
-  lotteryTime : '2015-02-10 10:30'
+  lotteryIntegral : 30
 }, {
   key: '3',
-  lotteryNo: '000003',
   lotteryArea: '北京',
-  lotteryCode: '1100111000',
   lotteryMobile : 13661111111,
   lotteryWx : 'weixin123',
   lotteryPrize : 'iphone',
   lotteryWinning : '是',
-  lotteryMode : '空中充值',
-  lotteryStatus : '成功',
   lotteryNumber : 2,
-  lotteryIntegral : 30,
-  lotteryTime : '2015-03-10 10:30'
+  lotteryIntegral : 30
 }, {
   key: '4',
-  lotteryNo: '000004',
   lotteryArea: '北京',
-  lotteryCode: '1100111000',
   lotteryMobile : 13661111111,
   lotteryWx : 'weixin123',
   lotteryPrize : 'iphone',
   lotteryWinning : '是',
-  lotteryMode : '空中充值',
-  lotteryStatus : '成功',
   lotteryNumber : 2,
-  lotteryIntegral : 30,
-  lotteryTime : '2015-04-10 10:30'
+  lotteryIntegral : 30
 }, {
   key: '5',
-  lotteryNo: '000005',
   lotteryArea: '北京',
-  lotteryCode: '1100111000',
   lotteryMobile : 13661111111,
   lotteryWx : 'weixin123',
   lotteryPrize : 'iphone',
   lotteryWinning : '是',
-  lotteryMode : '空中充值',
-  lotteryStatus : '成功',
   lotteryNumber : 2,
-  lotteryIntegral : 30,
-  lotteryTime : '2015-05-10 10:30'
+  lotteryIntegral : 30
 }, {
   key: '6',
-  lotteryNo: '000006',
   lotteryArea: '北京',
-  lotteryCode: '1100111000',
   lotteryMobile : 13661111111,
   lotteryWx : 'weixin123',
   lotteryPrize : 'iphone',
   lotteryWinning : '是',
-  lotteryMode : '空中充值',
-  lotteryStatus : '成功',
   lotteryNumber : 2,
-  lotteryIntegral : 30,
-  lotteryTime : '2015-06-10 10:30'
+  lotteryIntegral : 30
 }, {
   key: '7',
-  lotteryNo: '000007',
   lotteryArea: '北京',
-  lotteryCode: '1100111000',
   lotteryMobile : 13661111111,
   lotteryWx : 'weixin123',
   lotteryPrize : 'iphone',
   lotteryWinning : '是',
-  lotteryMode : '空中充值',
-  lotteryStatus : '成功',
   lotteryNumber : 2,
-  lotteryIntegral : 30,
-  lotteryTime : '2015-07-10 10:30'
+  lotteryIntegral : 30
 }, {
   key: '8',
-  lotteryNo: '000008',
   lotteryArea: '北京',
-  lotteryCode: '1100111000',
   lotteryMobile : 13661111111,
   lotteryWx : 'weixin123',
   lotteryPrize : 'iphone',
   lotteryWinning : '是',
-  lotteryMode : '空中充值',
-  lotteryStatus : '成功',
   lotteryNumber : 2,
-  lotteryIntegral : 30,
-  lotteryTime : '2015-08-10 10:30'
+  lotteryIntegral : 30
 }, {
   key: '9',
-  lotteryNo: '000009',
   lotteryArea: '北京',
-  lotteryCode: '1100111000',
   lotteryMobile : 13661111111,
   lotteryWx : 'weixin123',
   lotteryPrize : 'iphone',
   lotteryWinning : '是',
-  lotteryMode : '空中充值',
-  lotteryStatus : '成功',
   lotteryNumber : 2,
-  lotteryIntegral : 30,
-  lotteryTime : '2015-09-10 10:30'
+  lotteryIntegral : 30
 }, {
   key: '10',
-  lotteryNo: '000010',
   lotteryArea: '北京',
-  lotteryCode: '1100111000',
   lotteryMobile : 13661111111,
   lotteryWx : 'weixin123',
   lotteryPrize : 'iphone',
   lotteryWinning : '是',
-  lotteryMode : '空中充值',
-  lotteryStatus : '成功',
   lotteryNumber : 2,
-  lotteryIntegral : 30,
-  lotteryTime : '2015-10-10 10:30'
+  lotteryIntegral : 30
 }, {
   key: '11',
-  lotteryNo: '000011',
   lotteryArea: '北京',
-  lotteryCode: '1100111000',
   lotteryMobile : 13661111111,
   lotteryWx : 'weixin123',
   lotteryPrize : 'iphone',
   lotteryWinning : '是',
-  lotteryMode : '空中充值',
-  lotteryStatus : '成功',
   lotteryNumber : 2,
-  lotteryIntegral : 30,
-  lotteryTime : '2015-11-10 10:30'
+  lotteryIntegral : 30
 }];
 
 class DateRange extends React.Component{
@@ -270,21 +191,33 @@ class DateRange extends React.Component{
     return <div>
       <div style={{width:945, height:60}}>
         <Form inline onSubmit={this.handleSubmit}>
+        <Col span="2">
+        <div style={{fontSize:14,lineHeight:2.4}}>抽奖日期：</div>
+        </Col>
           <Col span="3">
-	        <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'startTime')} />
-	      </Col>
-	      <Col span="1">
-	        <p className="ant-form-split">-</p>
-	      </Col>
-	       <Col span="3">
-	        <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'endTime')} />
-	      </Col>
-	      <Col span="3">
-	      <FormItem>
-          <Button type="primary" htmlType="submit" style={{marginLeft:10}}>查询</Button>
+          <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'startTime')} />
+        </Col>
+        <Col span="1">
+          <p className="ant-form-split">-</p>
+        </Col>
+         <Col span="3">
+          <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'endTime')} />
+        </Col>
+        <Col span="1">
+        <FormItem>
+          <Button type="primary" shape="circle" size="large"  htmlType="submit" style={{marginLeft:10}}>
+                <Icon type="search" />
+              </Button>
           </FormItem>
-	      </Col>
-	    </Form>
+        </Col>
+        <Col span="3">
+        <FormItem>
+          <Link to='/saledata/send/exports'>
+            <Button type="primary" size="large"  htmlType="submit" style={{marginLeft:10}}><span>导出报表</span></Button>
+          </Link>
+        </FormItem>
+        </Col>
+      </Form>
       </div>
     </div>;
   }

@@ -14,126 +14,92 @@ const FormItem = Form.Item;
 
 
 const columns = [{
-  title: '充值序号',
-  dataIndex: 'pushNo',
-  key: 'pushNo',
+  title: '账号',
+  dataIndex: 'sendPublic',
+  key: 'sendPublic'
+},{
+  title: '接收手机号',
+  dataIndex: 'sendMobile',
+  key: 'sendMobile'
+},{
+  title: '发送状态',
+  dataIndex: 'sendStatus',
+  key: 'sendStatus'
+},{
+  title: '发送次数',
+  dataIndex: 'sendNumber',
+  key: 'sendNumber',
   render: function(text,record) {
-  	var href= '/user/user/info/'+text;
+    var href= '/saledata/push/info/'+text;
     return <Link to={href}>{text}</Link>;
   }
-},{
-  title: '帐号',
-  dataIndex: 'pushPublic',
-  key: 'pushPublic'
-},{
-  title: '充值手机号',
-  dataIndex: 'pushMobile',
-  key: 'pushMobile'
-},{
-  title: '充值状态',
-  dataIndex: 'pushStatus',
-  key: 'pushStatus'
-},{
-  title: '充值次数',
-  dataIndex: 'pushNumber',
-  key: 'pushNumber',
-  render: function(text,record) {
-  	var href= '/user/user/info/'+text;
-    return <Link to={href}>{text}</Link>;
-  }
-},{
-  title: '充值时间',
-  dataIndex: 'pushTime',
-  key: 'pushTime'
 }];
 const data = [{
   key: '1',
-  pushNo: '000001',
-  pushPublic: 13888888888,
-  pushMobile : 13661111111,
-  pushStatus : '成功',
-  pushNumber : 2,
-  pushTime : '2015-01-10 10:30'
+  sendPublic: 13888888888,
+  sendMobile : 13661111111,
+  sendStatus : '成功',
+  sendNumber : 2
 }, {
   key: '2',
-  pushNo: '000002',
-  pushPublic: 13888888888,
-  pushMobile : 13661111111,
-  pushStatus : '成功',
-  pushNumber : 2,
-  pushTime : '2015-01-10 10:30'
+  sendPublic: 13888888888,
+  sendMobile : 13661111111,
+  sendStatus : '成功',
+  sendNumber : 2
 }, {
   key: '3',
-  pushNo: '000003',
-  pushPublic: 13888888888,
-  pushMobile : 13661111111,
-  pushStatus : '成功',
-  pushNumber : 2,
-  pushTime : '2015-01-10 10:30'
+  sendPublic: 13888888888,
+  sendMobile : 13661111111,
+  sendStatus : '成功',
+  sendNumber : 2
 }, {
   key: '4',
-  pushNo: '000004',
-  pushPublic: 13888888888,
-  pushMobile : 13661111111,
-  pushStatus : '成功',
-  pushNumber : 2,
-  pushTime : '2015-01-10 10:30'
+  sendPublic: 13888888888,
+  sendMobile : 13661111111,
+  sendStatus : '成功',
+  sendNumber : 2
 }, {
   key: '5',
-  pushNo: '000005',
-  pushPublic: 13888888888,
-  pushMobile : 13661111111,
-  pushStatus : '成功',
-  pushNumber : 2,
-  pushTime : '2015-01-10 10:30'
+  sendPublic: 13888888888,
+  sendMobile : 13661111111,
+  sendStatus : '成功',
+  sendNumber : 2
 }, {
   key: '6',
-  pushNo: '000006',
-  pushPublic: 13888888888,
-  pushMobile : 13661111111,
-  pushStatus : '成功',
-  pushNumber : 2,
-  pushTime : '2015-01-10 10:30'
+  sendPublic: 13888888888,
+  sendMobile : 13661111111,
+  sendStatus : '成功',
+  sendNumber : 2
 }, {
   key: '7',
-  pushNo: '000007',
-  pushPublic: 13888888888,
-  pushMobile : 13661111111,
-  pushStatus : '成功',
-  pushNumber : 2,
-  pushTime : '2015-01-10 10:30'
+  sendPublic: 13888888888,
+  sendMobile : 13661111111,
+  sendStatus : '成功',
+  sendNumber : 2
 }, {
   key: '8',
-  pushNo: '000008',
-  pushPublic: 13888888888,
-  pushMobile : 13661111111,
-  pushStatus : '成功',
-  pushNumber : 2,
-  pushTime : '2015-01-10 10:30'
+  sendPublic: 13888888888,
+  sendMobile : 13661111111,
+  sendStatus : '成功',
+  sendNumber : 2
 }, {
   key: '9',
-  pushNo: '000009',
-  pushPublic: 13888888888,
-  pushMobile : 13661111111,
-  pushStatus : '成功',
-  pushNumber : 2,
-  pushTime : '2015-01-10 10:30'
+  sendPublic: 13888888888,
+  sendMobile : 13661111111,
+  sendStatus : '成功',
+  sendNumber : 2
 }, {
   key: '10',
-  pushNo: '000010',
-  pushPublic: 13888888888,
-  pushMobile : 13661111111,
-  pushStatus : '成功',
-  pushNumber : 2,
-  pushTime : '2015-01-10 10:30'
+  sendPublic: 13888888888,
+  sendMobile : 13661111111,
+  sendStatus : '成功',
+  sendNumber : 2
 }, {
   key: '11',
-  pushNo: '000011',
-  pushPublic: 13888888888,
-  pushMobile : 13661111111,
-  pushStatus : '成功',
-  pushNumber : 2,
-  pushTime : '2015-01-10 10:30'
+  sendPublic: 13888888888,
+  sendMobile : 13661111111,
+  sendStatus : '成功',
+  sendNumber : 2
 }];
 
 class DateRange extends React.Component{
@@ -180,21 +146,33 @@ class DateRange extends React.Component{
     return <div>
       <div style={{width:945, height:60}}>
         <Form inline onSubmit={this.handleSubmit}>
+        <Col span="2">
+        <div style={{fontSize:14,lineHeight:2.4}}>充值日期：</div>
+        </Col>
           <Col span="3">
-	        <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'startTime')} />
-	      </Col>
-	      <Col span="1">
-	        <p className="ant-form-split">-</p>
-	      </Col>
-	       <Col span="3">
-	        <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'endTime')} />
-	      </Col>
-	      <Col span="3">
-	      <FormItem>
-          <Button type="primary" htmlType="submit" style={{marginLeft:10}}>查询</Button>
+          <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'startTime')} />
+        </Col>
+        <Col span="1">
+          <p className="ant-form-split">-</p>
+        </Col>
+         <Col span="3">
+          <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'endTime')} />
+        </Col>
+        <Col span="1">
+        <FormItem>
+          <Button type="primary" shape="circle" size="large"  htmlType="submit" style={{marginLeft:10}}>
+                <Icon type="search" />
+              </Button>
           </FormItem>
-	      </Col>
-	    </Form>
+        </Col>
+        <Col span="3">
+        <FormItem>
+          <Link to='/saledata/send/exports'>
+            <Button type="primary" size="large"  htmlType="submit" style={{marginLeft:10}}><span>导出报表</span></Button>
+          </Link>
+        </FormItem>
+        </Col>
+      </Form>
       </div>
     </div>;
   }
