@@ -144,13 +144,14 @@ class SelectForm extends React.Component{
       [field] : value
     })
   }
-  
 
+  // 结束时间，大于开始时间，并在活动时间范围内
   disabledEndDate(endValue){
-    if (!endValue || !this.state.prize_startTime) {
+    console.log(this.props.endTime)
+    if (!endValue || !this.state.prize_startTime || !this.props.endTime()) {
       return false;
     }
-    return endValue.getTime() <= this.state.prize_startTime.getTime();
+    return endValue.getTime() <= this.state.prize_startTime.getTime() && endValue.getTime() >= this.props.endTime().getTime();
   }
 
  

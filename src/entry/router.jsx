@@ -17,6 +17,7 @@ import { UserUserRole } from '../component/user/user-role';
 
 import { BaseInfo } from '../component/base/info';
 import { BaseProduct } from '../component/base/product';
+import { BaseProductAdd } from '../component/base/product-add';
 import { BaseArea } from '../component/base/area';
 
 import { RuleArea } from '../component/rules/area';
@@ -43,22 +44,38 @@ import { SaleDataPrize } from '../component/saledata/prize';
 import { SaleDataUser } from '../component/saledata/user';
 import { SaleDataSend } from '../component/saledata/send';
 import { SaleDataRound } from '../component/saledata/round';
-
-
-
-
+import { Login } from '../component/login';
+import { ChangePassword } from '../component/change-password';
 
 import {Layout} from '../component/layout';
 
-const Router = (
-	<Route path="/" component={Layout}>
 
-		<Route path="/base" component={Welcome}></Route>
+function validate(nextState, transition) {
+	
+	let token = Cookie.read('token');
+	
+	if(!token){
+		if(nextState.location.pathname == '/login') return;
+		transition(nextState,'/login');
+		console.log('b')
+	}
+}
+
+const Router = (
+	//<Route path="/" component={Layout} onEnter={validate}>
+	<Route path="/" component={Layout} >
+		<Route path="/login" component={Login}></Route>
+		
+		<Route path="/change-password" component={ChangePassword}></Route>
+
+
+		<Route path="/base" component={Welcome} ></Route>
 		<Route path="/base/info" component={BaseInfo}></Route>
 		<Route path="/base/product" component={BaseProduct}></Route>
+		<Route path="/base/product/add" component={BaseProductAdd}></Route>
 		<Route path="/base/area" component={BaseArea}></Route>
 
-		<Route path="/user" component={Welcome}></Route>
+		<Route path="/user" component={Welcome} ></Route>
 
 		// 用户管理  组织结构管理
 		<Route path="/user/group" component={UserGroup}></Route>
@@ -77,11 +94,11 @@ const Router = (
 		<Route path="/user/user/edit/:id" component={ UserUserAdd }></Route>
 		<Route path="/user/user/role/:id" component={ UserUserRole }></Route>
 
-		<Route path="/rule" component={Welcome}></Route>
+		<Route path="/rule" component={Welcome} ></Route>
 		<Route path="/rule/area" component={RuleArea}></Route>
 		<Route path="/rule/number" component={RuleNumber}></Route>
 
-		<Route path="/sale" component={Welcome}></Route>
+		<Route path="/sale" component={Welcome} ></Route>
 		<Route path="/sale/do" component={SaleDo}></Route>
 		<Route path="/sale/do/add" component={SaleDoAdd}></Route>
 		<Route path="/sale/do/edit/:id" component={SaleDoAdd}></Route>
@@ -99,15 +116,15 @@ const Router = (
 		<Route path="/sale/vip/info/:id" component={SaleVipInfo}></Route>
 
 
-		<Route path="/saledata" component={Welcome}></Route>
+		<Route path="/saledata" component={Welcome} ></Route>
 		<Route path="/saledata/push" component={SaleDataPush}></Route>
 		<Route path="/saledata/prize" component={SaleDataPrize}></Route>
 		<Route path="/saledata/user" component={SaleDataUser}></Route>
 		<Route path="/saledata/Send" component={SaleDataSend}></Route>
 		<Route path="/saledata/round" component={SaleDataRound}></Route>
 
-
 		<IndexRoute component={Welcome} />
+
 	</Route>
 );
 

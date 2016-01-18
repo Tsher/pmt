@@ -7,7 +7,7 @@ class Welcome extends React.Component{
 	}
 	render(){
 		return(
-			<h1>欢迎页</h1>
+			<div className="welcome"></div>
 		)
 	}
 }

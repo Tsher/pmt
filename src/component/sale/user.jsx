@@ -92,14 +92,14 @@ class SelectForm extends React.Component{
 	            	<FormItem
 		            label="姓名："
 		            id="name">
-		              <Input placeholder="" id="name" name="name" onChange={this.setValue} value={this.state.name} />
+		              <Input placeholder="" id="name" name="name" style={{width:80}} onChange={this.setValue} value={this.state.name} />
 		          </FormItem>
             	</li>
             	<li className="fleft">
 	            	<FormItem
 		            label="昵称："
 		            id="userName">
-		              <Input placeholder="" id="userName" name="userName" onChange={this.setValue} value={this.state.userName} />
+		              <Input placeholder="" id="userName" name="userName" style={{width:80}} onChange={this.setValue} value={this.state.userName} />
 		          </FormItem>
             	</li>
               <li className="fleft date-picker">
@@ -126,8 +126,15 @@ class SelectForm extends React.Component{
               <li className="fleft">
                 <FormItem>
                   <Button type="primary" shape="circle" size="large"  htmlType="submit">
-	  		        <Icon type="search" />
-	  		      </Button>
+    	  		        <Icon type="search" />
+    	  		      </Button>
+                </FormItem>
+              </li>
+              <li className="fleft">
+                <FormItem>
+                  <Button type="primary" size="large">
+                    导出excel
+                  </Button>
                 </FormItem>
               </li>
             </ul>

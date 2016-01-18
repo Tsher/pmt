@@ -10,6 +10,7 @@
     "babel-plugin-antd": "^0.1.2",
     "es3ify-loader": "^0.1.0",
     "moment": "^2.10.6",
+    "rc-echarts": "^0.1.7",
     "react": "~0.14.3",
     "react-dom": "~0.14.3"
   },

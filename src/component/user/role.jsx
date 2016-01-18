@@ -90,9 +90,14 @@ class SelectForm extends React.Component{
 	        < Option value="4">角色3</Option>
 	      </Select>
         </FormItem>
-        <Button type="primary" shape="circle" size="large"  htmlType="submit">
-		    <Icon type="search" />
-		  </Button>
+        <FormItem>
+          <Button type="primary" shape="circle" size="large"  htmlType="submit">
+    		    <Icon type="search" />
+    		  </Button>
+        </FormItem>
+        <FormItem>
+          <Button type="primary" size="large"  >导出excel</Button>
+        </FormItem>
       </Form>
       </div>
     );
