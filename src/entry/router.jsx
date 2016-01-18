@@ -49,12 +49,9 @@ import { SaleDataUser } from '../component/saledata/user';
 import { SaleDataSend } from '../component/saledata/send';
 import { SaleDataSendInfo } from '../component/saledata/send-info';
 import { SaleDataRound } from '../component/saledata/round';
-<<<<<<< Updated upstream
 import { Login } from '../component/login';
 import { ChangePassword } from '../component/change-password';
-=======
 import { SaleDataRoundInfo } from '../component/saledata/round-info';
->>>>>>> Stashed changes
 
 import {Layout} from '../component/layout';
 

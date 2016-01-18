@@ -93,7 +93,7 @@ class SaleDataPrize extends React.Component{
 		return(
 			<div className="m-list">
 			     <DateRange />
-           <div id="map" style={{width:945}}>
+           <div id="map" style={{width:945,height:600}}>
             <Map />
           </div>
 			</div>
@@ -102,8 +102,7 @@ class SaleDataPrize extends React.Component{
 }
 
 class Map extends React.Component{
-    render() {
-    const options =  {
+
   constructor(){
     super();
   }
@@ -191,74 +190,8 @@ const option = {
     animation: false
 };
 
-function _selected(param){
 
-var selected = param.selected;
-    var selectedProvince;
-    var name;
-    for (var i = 0, l = options.series[0].data.length; i < l; i++) {
-        name = options.series[0].data[i].name;
-        options.series[0].data[i].selected = selected[name];
-        if (selected[name]) {
-            selectedProvince = name;
-        }
-    }
-    if (typeof selectedProvince == 'undefined') {
-        options.series.splice(1);
-        options.legend = null;
-        options.dataRange = null;
-        myChart.setOptions(options, true);
-        return;
-    }
-    options.series[1] = {
-        name: '随机数据',
-        type: 'map',
-        mapType: selectedProvince,
-        itemStyle:{
-            normal:{label:{show:true}},
-            emphasis:{label:{show:true}}
-        },
-        mapLocation: {
-            x: '35%'
-        },
-        roam: true,
-        data:[
-            {name: '重庆市',value: Math.round(Math.random()*1000)},
-            {name: '北京市',value: Math.round(Math.random()*1000)},
-            {name: '定安县',value: Math.round(Math.random()*1000)},
-            {name: '保亭黎族苗族自治县',value: Math.round(Math.random()*1000)},
-            {name: '五指山市',value: Math.round(Math.random()*1000)}
-        ]
-    };
-    options.legend = {
-        x:'right',
-        data:['随机数据']
-    };
-    options.dataRange = {
-        orient: 'horizontal',
-        x: 'right',
-        min: 0,
-        max: 1000,
-        color:['orange','yellow'],
-        text:['高','低'],           // 文本，默认为数值文本
-        splitNumber:0
-    };
-    this.setOption(options, true);
-
-
-}
-    return (
-      <Chart {...options} onReady={this.ready} onMapSelected={_selected.bind(this)} >
-        <Chart.Map
-          name="消费者扫码量"
-          
-          data={[
-                {name: '北京',value:100},
-                {name: '天津',value: 200}
-              ]} />
-
-      </Chart>
-    );
+    
 var PrizeChart= React.createClass({
   componentDidMount: function(){
     var MyChart= Echarts.init(document.getElementById('map'))
