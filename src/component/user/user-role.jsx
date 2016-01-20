@@ -51,7 +51,9 @@ const msg_success = function(){
   message.success('数据提交成功，等待后台处理')
 }
 
+import '../../entry/config';
 
+const urlUserInfo = config.__URL + config.user.user.info;
 
 
 class UserUserRole extends React.Component{
@@ -276,16 +278,7 @@ class UserUserRole extends React.Component{
           </TabPane>
           
 
-          <TabPane tab="产品数据角色" key="2">
-              <Transfer
-                dataSource={this.state.mockData2}
-                titles={['全部角色','当前用户角色']}
-                showSearch
-                className="userSetRole"
-                targetKeys={this.state.targetKeys2}
-                onChange={this.handleChange2}
-                render={(item) => { return item.title;}} />
-          </TabPane>
+          
         </Tabs>
         
       </Form>
@@ -305,7 +298,18 @@ class UserUserRole extends React.Component{
   }
 };
 
-
+/**
+<TabPane tab="产品数据角色" key="2">
+              <Transfer
+                dataSource={this.state.mockData2}
+                titles={['全部角色','当前用户角色']}
+                showSearch
+                className="userSetRole"
+                targetKeys={this.state.targetKeys2}
+                onChange={this.handleChange2}
+                render={(item) => { return item.title;}} />
+          </TabPane>
+**/
 
 module.exports = {
   UserUserRole : UserUserRole

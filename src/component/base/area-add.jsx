@@ -341,18 +341,7 @@ class RightBox extends React.Component{
 						                    <Input  name="name" value={formData.name} />
 						                  </Validator>
 						            </FormItem>
-						            <FormItem
-						                label="区域编号: "
-						                id="no"
-						                labelCol={{span: 8}}
-						                wrapperCol={{span: 14,offset:1}}
-						                validateStatus={this.renderValidateStyle('no')}
-						                help={status.no.errors ? status.no.errors.join(',') : null}
-						                >
-						                  <Validator rules={[{required: false, message: ''}]}>
-						                    <Input  name="no" value={formData.no} />
-						                  </Validator>
-						            </FormItem>
+						            
 
 						            <FormItem
 						                label="区域描述: "

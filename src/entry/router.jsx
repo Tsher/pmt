@@ -79,6 +79,7 @@ const Router = (
 		<Route path="/base/info" component={BaseInfo}></Route>
 		<Route path="/base/product" component={BaseProduct}></Route>
 		<Route path="/base/product/add" component={BaseProductAdd}></Route>
+		<Route path="/base/product/edit/:id" component={BaseProductAdd}></Route>
 		<Route path="/base/area" component={BaseArea}></Route>
 		<Route path="/base/area/add" component={BaseAreaAdd}></Route>
 		<Route path="/base/area/edit/:id" component={BaseAreaAdd}></Route>

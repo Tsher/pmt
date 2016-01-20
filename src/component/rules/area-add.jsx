@@ -84,6 +84,23 @@ class SelectForm extends React.Component{
     this.onChange = this.onChange.bind(this);
   }
 
+  componentDidMount(){
+    var id = this.props.params.id;
+
+    
+    if(id){
+      // 编辑
+      // ajax 请求当前id的数据 ********************************
+      var state = Object.assign({},this.state);
+      state.formData.id = this.props.params.id;
+      state.formData.title = '编辑批次区域';
+      this.setState(state);
+      return
+    }
+    
+    
+  }
+
   
   // 文本框的值 同步到 state
   setValue(e){
@@ -159,7 +176,7 @@ class SelectForm extends React.Component{
                 <Validation ref="validation" onValidate={this.handleValidate}>
                 <ul className="do-add-time clearfix">
                     <li className="fleft">
-                        <label className="do-add-time-title">起始批次号：</label>
+                        <label className="do-add-time-title">批次号：</label>
                         <span className="timepicker">
                           <FormItem
                                 label=""
@@ -190,7 +207,7 @@ class SelectForm extends React.Component{
                 </ul>
                 <ul className="do-add-time clearfix">
                     <li className="fleft">
-                        <label className="do-add-time-title">起始箱号：</label>
+                        <label className="do-add-time-title">箱号：</label>
                         <span className="timepicker">
                           <FormItem
                                 label=""
@@ -280,5 +297,5 @@ class RuleAreaAdd extends React.Component{
 	}
 }
 module.exports = {
-	RuleAreaAdd : RuleAreaAdd
+	RuleAreaAdd : SelectForm
 }

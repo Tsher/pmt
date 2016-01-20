@@ -147,7 +147,7 @@ class UserUserAdd extends React.Component{
               User_IDCard : res.User_IDCard , // 身份证号
               Home_Phone : res.Home_Phone // 家庭电话
             };
-          console.log(d,res)
+            console.log(d)
           this.setState({
             formData:d
           })
@@ -213,17 +213,19 @@ class UserUserAdd extends React.Component{
       // 提交数据
       let u = this.props.params.id ? urlUserEdit : urlUserAdd;
       let t = this.props.params.id ? 'PUT' : 'POST';
+      console.log(this.state.formData)
       _G.ajax({
         url  : u,
         data : this.state.formData,
         method : 'post',
         success:function(res){
-          if(res == 'True'){
+          if(res.ReturnOperateStatus == 'True'){
             msg_success();
             // 调转到列表页
+            goBack();
             return;
           }
-          if(res == 'False' || res == 'NULL'){
+          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
             msg_error();
             return
           }

@@ -106,7 +106,7 @@ class RuleNumberAdd extends React.Component{
       // ajax 请求当前id的数据 ********************************
       var state = Object.assign({},this.state);
       state.formData.id = this.props.params.id;
-      state.formData.title = '编辑奖品信息';
+      state.formData.title = '编辑积分规则';
       this.setState(state);
       return
     }

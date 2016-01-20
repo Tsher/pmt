@@ -65,9 +65,10 @@ import '../../entry/config';
 // pageSize : 每页条数
 // EntityCode : DEFAULT 
 
-const urlUserAdd = config.__URL + config.user.user.add;
-const urlUserEdit = config.__URL + config.user.user.edit;
-const urlUserInfo = config.__URL + config.user.user.info;
+const baseProductAdd = config.__URL + config.base.product.add;
+const baseProductEdit = config.__URL + config.base.product.edit;
+const baseProductInfo = config.__URL + config.base.product.info;
+
 
 // 图片上传参数定义
 const upload_props = {
@@ -99,7 +100,23 @@ const columns = [{
   title: '包装单位',
   dataIndex: 'unit',
   key: 'unit'
+},{
+  title: '操作',
+  key: 'operation',
+  render: function(text, record,index) {
+    var  del = '/user/user/del/' + index;
+    return <span><a href="#" onClick={showModal} data-index={index} >删除</a></span>;
+  }
 },];
+
+
+let modalState;
+function showModal(e){
+  Event.stop(e);
+  var tar = Event.target(e);
+  var id = tar.getAttribute('data-id'),index=tar.getAttribute('data-index'),name = tar.getAttribute('data-name');
+  modalState(id,index,name)
+}
 
 
 const data = [{
@@ -205,6 +222,8 @@ class BaseProductAdd extends React.Component{
         desc : undefined, // 描述
         unit : undefined, // 规格
         validity : undefined, // 有效期
+        validity_year : undefined, // 有效期年份
+        validity_month : undefined, // 有效期月份
         barcode : undefined, // 商品码
         pics : [], // 图片
         packing_proportion : [], // 比例
@@ -234,12 +253,17 @@ class BaseProductAdd extends React.Component{
     this.onInputNumberChange = this.onInputNumberChange.bind(this);
     this.packingUnitChange = this.packingUnitChange.bind(this);
     this.packingSizeChange = this.packingSizeChange.bind(this);
+
+    this.modalState = this.modalState.bind(this);
   }
 
-  
+  modalState(){
+    console.log(...args)
+  }
 
   componentDidMount(){
     packingUnitChange = this.packingUnitChange;
+    modalState = this.modalState;
     // 编辑
     if(this.props.params.id){
       // ajax获取当前id的内容，变更state ****************************
@@ -565,7 +589,28 @@ class BaseProductAdd extends React.Component{
                   id="validity"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}} >
-                    <DatePicker name="validity" value={formData.validity} onChange={this.onChange.bind(this,'validity')} />
+                    <Row>
+                      <Col span="15">
+                        <InputNumber name="valudity-year" value={formData.validity_year} onChange={this.onChange.bind(this,'valudity-year')} />
+                      </Col>
+                      <Col span="9">
+                        <Select name="validity-month" style={{width:'100%'}} value={formData.validity_month} onChange={this.onChange.bind(this,'validity-month')}>
+                          <Option value="">月</Option>
+                          <Option value="1">1</Option>
+                          <Option value="2">2</Option>
+                          <Option value="3">3</Option>
+                          <Option value="4">4</Option>
+                          <Option value="5">5</Option>
+                          <Option value="6">6</Option>
+                          <Option value="7">7</Option>
+                          <Option value="8">8</Option>
+                          <Option value="9">9</Option>
+                          <Option value="10">10</Option>
+                          <Option value="11">11</Option>
+                          <Option value="12">12</Option>
+                        </Select>
+                      </Col>
+                    </Row>
                 </FormItem>
                 <FormItem
                   label="商品码："

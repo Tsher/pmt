@@ -169,7 +169,11 @@ class SalePrizeAdd extends React.Component{
     return classes;
   }
 
-  
+  renderPic(){
+    if(this.state.formData.pic){
+      return (<img src={this.state.formData.pic} style={{width:'100%'}} />)
+    }
+  }
 
   render() {
     const formData = this.state.formData;
@@ -215,6 +219,14 @@ class SalePrizeAdd extends React.Component{
                     <Validator rules={[{required: true, message: '请输入品牌'}]}>
                       <Input name="productName" value={formData.productName} />
                     </Validator>
+                </FormItem>
+                <FormItem
+                  label="规格："
+                  id="size"
+                  labelCol={{span: 8}}
+                  wrapperCol={{span: 12}}
+                  >
+                    <Input id="size" name="size" value={formData.size} onChange={this.setValue} />
                 </FormItem>
             </Col>
             <Col span="12">
@@ -262,15 +274,9 @@ class SalePrizeAdd extends React.Component{
                           <Icon type="upload" /> 点击上传
                         </Button>
                     </Upload>
+                    {this.renderPic()}
                 </FormItem>
-                <FormItem
-                  label="规格："
-                  id="size"
-                  labelCol={{span: 8}}
-                  wrapperCol={{span: 12}}
-                  >
-                    <Input id="size" name="size" value={formData.size} onChange={this.setValue} />
-                </FormItem>
+                
             </Col>
             
           </Row>

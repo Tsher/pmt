@@ -132,15 +132,20 @@ class SelectForm extends React.Component{
 	  		      </Button>
                 </FormItem>
               </li>
-              <li className="fleft">
-              <Link to='/rule/area/add'>
-							<Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
-	          			</Link>
-              </li>
             </ul>
-            
-            
           </div>
+          <Row className="clearfix" style={{marginBottom:'20px'}}>
+              <Col span="2" >
+                <Link to='/rule/area/add'>
+                  <Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
+                </Link>
+              </Col>
+              <Col span="2" >
+                <Link to='/rule/area/exports'>
+                  <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
+                </Link>
+              </Col>
+            </Row>
         </Col>
         </Row>
       </Form>

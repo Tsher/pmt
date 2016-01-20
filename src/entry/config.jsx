@@ -44,9 +44,16 @@ window['config'] = {
 		user:{
 			list : '/api/SUser/GetUsers',
 			add : '/api/SUser/PostUser',
-			edit : '/api/SUser/PostUpUser',
+			edit : '/api/SUser/PostUpUser?Token=',
 			info : '/api/SUser/GetUser',
 			del : '/api/SUser/DeleteUser',
+		}
+	},
+	// 基础管理
+	base : {
+		// 产品管理
+		product:{
+			list : '/api/'
 		}
 	},
 	// 促销设置
