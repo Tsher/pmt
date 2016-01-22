@@ -327,13 +327,14 @@ class RightBox extends React.Component{
 						<div className="border border-raduis">
 							<div className="title"> 区域信息 </div>
 							<div className="con">
-								<Form inline >
+								<Form horizontal>
 								 <Validation ref="validation" onValidate={this.handleValidate}>
+								    
 								    <FormItem
 						                label="区域名称："
 						                id="name"
 						                labelCol={{span: 8}}
-						                wrapperCol={{span: 14,offset:1}}
+						                wrapperCol={{span: 14}}
 						                validateStatus={this.renderValidateStyle('name')}
 						                help={status.name.errors ? status.name.errors.join(',') : null}
 						                required>
@@ -344,10 +345,10 @@ class RightBox extends React.Component{
 						            
 
 						            <FormItem
-						                label="区域描述: "
+						                label="区域描述："
 						                id="desc"
 						                labelCol={{span: 8}}
-						                wrapperCol={{span: 14,offset:1}}
+						                wrapperCol={{span: 14}}
 						                validateStatus={this.renderValidateStyle('desc')}
 						                help={status.desc.errors ? status.desc.errors.join(',') : null}
 						                >

@@ -35,7 +35,6 @@ import '../../entry/config';
 // EntityCode : DEFAULT 
 
 const saleDoList = config.__URL + config.sale['do']['list'];
-const urlUserDel  = config.__URL + config.user.user.del;
 
 
 class SelectForm extends React.Component{
@@ -44,9 +43,9 @@ class SelectForm extends React.Component{
   constructor() {
   	super();
     this.state =  {
-      MA_Name : undefined, // 活动名称
-      MA_StartTime : undefined, // 注册开始时间
-      MA_EndTime : undefined, // 注册结束时间
+      MA_Name : '', // 活动名称
+      MA_StartTime : '', // 注册开始时间
+      MA_EndTime : '', // 注册结束时间
     };
     this.setValue = this.setValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -70,17 +69,11 @@ class SelectForm extends React.Component{
 
     e.preventDefault();
 
-
+    var data = Object.assign({},this.state);
+    //data.MA_StartTime = 
     this.props.changeTableState(this.state);
+    console.log(this.state);
 
-
-
-    message.success('收到表单值~~~ ：' + JSON.stringify(this.state, function(k, v) {
-      if (typeof v === 'undefined') {
-        return '';
-      }
-      return v;
-    }));
   }
 
   // datepicker change
@@ -198,11 +191,19 @@ const columns = [{
 },{
   title: '活动开始时间',
   dataIndex: 'MA_StartTime',
-  key: 'MA_StartTime'
+  key: 'MA_StartTime',
+  render:function(text,record){
+    var time = _G.timeFormat(text);
+    return <span>{time}</span>
+  }
 },{
   title: '活动结束时间',
   dataIndex: 'MA_EndTime',
-  key: 'MA_EndTime'
+  key: 'MA_EndTime',
+  render:function(text,record){
+    var time = _G.timeFormat(text);
+    return <span>{time}</span>
+  }
 }, {
   title: '操作',
   key: 'operation',
@@ -239,6 +240,7 @@ class SaleDo extends React.Component{
       total : 1,
       page : 1,
       pagesize: 10,
+      data:[],
     }
     this.showModal = this.showModal.bind(this);
     this.handleOk = this.handleOk.bind(this);
@@ -351,7 +353,7 @@ class SaleDo extends React.Component{
 					</Col>
 				</Row>
 				<Row>
-					<Table columns={columns} dataSource={data} pagination={{showQuickJumper:true,pageSize:10,current:1,showSizeChanger:true,total:this.state.total}}  />
+					<Table columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:10,current:1,showSizeChanger:true,total:this.state.total}}  />
 				</Row>
         <Modal 
           visible={this.state.visible}

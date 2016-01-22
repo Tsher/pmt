@@ -271,12 +271,12 @@ class SalePrize extends React.Component{
 					<Col span="2">
 						<Link to='/sale/prize/add'>
 							<Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
-	          			</Link>
-	          		</Col>
-	          		<Col span="2">
-	          			<Link to='/sale/prize/exports'>
-							<Button type="primary" size="large"><span>导出报表</span></Button>
-	          			</Link>
+	          </Link>
+	       </Col>
+      		<Col span="2">
+      			<Link to='/sale/prize/exports'>
+              <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
+      			</Link>
 					</Col>
 					<Col span="20">
 						<SelectForm />

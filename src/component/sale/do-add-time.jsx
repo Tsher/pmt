@@ -29,15 +29,12 @@ const FormItem = Form.Item;
 
 let changeState;
 
+import '../../entry/config';
+
+const saleDoAdd = config.__URL + config.sale['do']['add'];
 
 // 奖品json
-const prizes = {
-  'prize-1' : '奖品1',
-  'prize-2' : '奖品2',
-  'prize-3' : '奖品3',
-  'prize-4' : '奖品4',
-  'prize-5' : '奖品5',
-}
+const prizes = _G.sale_prizeLevel;
 
 
 let clean;

@@ -168,7 +168,7 @@ class DateRange extends React.Component{
         <Col span="3">
         <FormItem>
           <Link to='/saledata/send/exports'>
-            <Button type="primary" size="large"  htmlType="submit" style={{marginLeft:10}}><span>导出报表</span></Button>
+            <Button type="primary" size="large"  htmlType="submit" style={{marginLeft:10}}><Icon type="download" /><span>导出报表</span></Button>
           </Link>
         </FormItem>
         </Col>

@@ -1,6 +1,7 @@
 import moment from 'moment';
 // 全局方法
 window['_G']={
+	Token : '',
 	// 用户性别
 	userSex : function(n){
 		return n==1?'男':'女'
@@ -16,6 +17,14 @@ window['_G']={
 		}
 		return status
 	},
+	// 活动 奖品级别
+	sale_prizeLevel:[],
+	// 活动 奖品名称
+	sale_prizeName:[],
+	// 活动 产品名称
+	sale_productName:[],
+	// 活动  销售区域
+	sale_area : [],
 	timeFormat : function(t,f){
 		if(!t){
 			return ''
@@ -28,14 +37,13 @@ window['_G']={
 	},
 	// ajax
 	ajax:function(opts){
-		opts.data.Token = opts.data.Token || '';
+		opts.url += /\?\&/.test(opts.url) ? ('&Token='+_G.Token) : ('?Token='+_G.Token);
 		$.ajax(opts);
 	}
 }
 
 
 // api 配置表
-
 window['config'] = {
 	__URL : 'http://101.200.221.152/PMTService', // API全局url
 	// 用户管理
@@ -44,9 +52,19 @@ window['config'] = {
 		user:{
 			list : '/api/SUser/GetUsers',
 			add : '/api/SUser/PostUser',
-			edit : '/api/SUser/PostUpUser?Token=',
+			edit : '/api/SUser/PostUpUser',
 			info : '/api/SUser/GetUser',
 			del : '/api/SUser/DeleteUser',
+			role : '/api/'
+		},
+		// 角色管理
+		role : {
+			list : '/api/SRole/GetRoles',
+			del : '/api/SRole/DeleteRole',
+		},
+		// 组织机构管理
+		group : {
+			list : '/api/SOrganization/GetOrganizations',
 		}
 	},
 	// 基础管理
@@ -59,8 +77,35 @@ window['config'] = {
 	// 促销设置
 	sale : {
 		'do':{
-			list : '/api/SPromotionActivity/GetMarketingActivities'
+			list : '/api/SPromotionActivity/GetMarketingActivities', // 获取指定页的活动
+			sale_prizeLevel : '/api/SPromotionActivity/GetAwards', // 获取奖品级别
+			sale_prizeName : '/api/SPrizeMana/GetPrizeCatalog', // 获取奖品名称
+			sale_productName : '/api/SProduct/GetProductByName', // 获取产品名称
+			sale_area : '/api/SSaleRegion/GetSaleRegionList', // 获取销售区域
+			add : '/api/SPromotionActivity/ AddMarketingActivitie', // 新增活动
 		}
 	}
 }
+
+
+
+function get_data(url,name){
+	_G.ajax({
+		url : config.__URL+url,
+		type : 'get',
+		success:function(res){
+			console.log(name,res.Data);
+			_G[name] = res.Data;
+		}
+	})
+}
+get_data(config['sale']['do']['sale_prizeLevel'],'sale_prizeLevel'); // 获取奖品级别
+get_data(config['sale']['do']['sale_prizeName'],'sale_prizeName'); // 获取奖品级别
+get_data(config['sale']['do']['sale_productName'],'sale_productName'); // 获取产品名称
+get_data(config['sale']['do']['sale_area'],'sale_area'); // 获取产品名称
+
+
+
+
+
 

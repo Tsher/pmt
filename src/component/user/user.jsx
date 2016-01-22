@@ -53,7 +53,7 @@ class SelectForm extends React.Component{
       Register_On_E : '',
       User_Status : '',
       Depart_Code : '',
-      show : 'none'
+      show : 'none',
     };
     this.setValue = this.setValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -84,13 +84,8 @@ class SelectForm extends React.Component{
     e.preventDefault();
     
     this.props.changeTableState(this.state);
-
-    message.success('收到表单值~~~ ：' + JSON.stringify(this.state, function(k, v) {
-      if (typeof v === 'undefined') {
-        return '';
-      }
-      return v;
-    }));
+    console.log(this.state)
+    
   }
 
   // datepicker change
@@ -116,6 +111,7 @@ class SelectForm extends React.Component{
 
  
   render() {
+    const content = (<ul><li>组织结构</li><li>组织结构</li><li>组织结构</li><li>组织结构</li><li>组织结构</li><li>组织结构</li></ul>)
     return (
     	<div className="fright">
       <Form inline onSubmit={this.handleSubmit}>
@@ -169,7 +165,9 @@ class SelectForm extends React.Component{
               </li>
               <li className="fleft">
                 <FormItem id="Depart_Code" label="隶属部门：">
-                  <Input placeholder="" id="Depart_Code" name="Depart_Code" onChange={this.setValue} value={this.state.Depart_Code} />
+                  <Popover overlay={content} title="" trigger="focus">
+                    <Input placeholder="" id="Depart_Code" name="Depart_Code" onChange={this.setValue} value={this.state.Depart_Code} />
+                  </Popover>
                 </FormItem>
               </li>
               <li className="fleft">
@@ -280,6 +278,7 @@ class UserUser extends React.Component{
       delId : false,
       index:false,
       data : [],
+      loading:false,
     }
     this.showModal = this.showModal.bind(this);
     this.handleOk = this.handleOk.bind(this);
@@ -344,6 +343,9 @@ class UserUser extends React.Component{
     //*******************删除逻辑，删除 delId , 然后 关闭****************************
     
     // ***********************删除请求******************
+    this.setState({
+      loading : true
+    })
     _G.ajax({
       url : urlUserDel,
       method : 'get',
@@ -360,7 +362,8 @@ class UserUser extends React.Component{
           d.splice(d[this.state.index],1);
           console.log(this.state.index)
           this.setState({
-            data : d
+            data : d,
+            loading : false
           })
           //**********************更新table数据****************
           return
@@ -401,7 +404,7 @@ class UserUser extends React.Component{
 					</Col>
 				</Row>
 				<Row>
-					<Table key={rowKey} columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.pagesize,current:this.state.page,showSizeChanger:true,total:this.state.total}}  />
+					<Table loading={this.state.loading} key={rowKey} columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.pagesize,current:this.state.page,showSizeChanger:true,total:this.state.total}}  />
 				</Row>
         <Modal title="您正在进行删除操作，请确认！"
           visible={this.state.visible}
