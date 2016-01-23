@@ -93,6 +93,12 @@ window['config'] = {
 	saledata : {
 		round : {
 			list : '/api/SReport/GetCustomerDraw_Report', // 消费者抽奖流水
+		},
+		send : {
+			list : '/api/SSendTextMsgs/SendText', // 发送短信流水
+		},
+		push : {
+			list : '/api/SRecharge/Recharge', // 话费充值流水
 		}
 	}
 }

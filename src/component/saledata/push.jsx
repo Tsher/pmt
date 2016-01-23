@@ -12,114 +12,46 @@ import message from 'antd/lib/message';
 
 const FormItem = Form.Item;
 
+import '../../entry/config';
+const saledataPushList = config.__URL + config.saledata.push.list;
+
+var changeTableState;
+
 
 const columns = [{
   title: '账号',
-  dataIndex: 'sendPublic',
-  key: 'sendPublic'
+  dataIndex: 'Recharge_Account',
+  key: 'Recharge_Account'
 },{
   title: '接收手机号',
-  dataIndex: 'sendMobile',
-  key: 'sendMobile'
+  dataIndex: 'Recharge_Phone',
+  key: 'Recharge_Phone'
 },{
   title: '发送状态',
-  dataIndex: 'sendStatus',
-  key: 'sendStatus'
+  dataIndex: 'Recharge_Status',
+  key: 'Recharge_Status'
 },{
   title: '发送次数',
-  dataIndex: 'sendNumber',
-  key: 'sendNumber',
+  dataIndex: 'RechargeNum',
+  key: 'RechargeNum',
   render: function(text,record) {
     var href= '/saledata/push/info/'+text;
     return <Link to={href}>{text}</Link>;
   }
 }];
-const data = [{
-  key: '1',
-  sendPublic: 13888888888,
-  sendMobile : 13661111111,
-  sendStatus : '成功',
-  sendNumber : 2
-}, {
-  key: '2',
-  sendPublic: 13888888888,
-  sendMobile : 13661111111,
-  sendStatus : '成功',
-  sendNumber : 2
-}, {
-  key: '3',
-  sendPublic: 13888888888,
-  sendMobile : 13661111111,
-  sendStatus : '成功',
-  sendNumber : 2
-}, {
-  key: '4',
-  sendPublic: 13888888888,
-  sendMobile : 13661111111,
-  sendStatus : '成功',
-  sendNumber : 2
-}, {
-  key: '5',
-  sendPublic: 13888888888,
-  sendMobile : 13661111111,
-  sendStatus : '成功',
-  sendNumber : 2
-}, {
-  key: '6',
-  sendPublic: 13888888888,
-  sendMobile : 13661111111,
-  sendStatus : '成功',
-  sendNumber : 2
-}, {
-  key: '7',
-  sendPublic: 13888888888,
-  sendMobile : 13661111111,
-  sendStatus : '成功',
-  sendNumber : 2
-}, {
-  key: '8',
-  sendPublic: 13888888888,
-  sendMobile : 13661111111,
-  sendStatus : '成功',
-  sendNumber : 2
-}, {
-  key: '9',
-  sendPublic: 13888888888,
-  sendMobile : 13661111111,
-  sendStatus : '成功',
-  sendNumber : 2
-}, {
-  key: '10',
-  sendPublic: 13888888888,
-  sendMobile : 13661111111,
-  sendStatus : '成功',
-  sendNumber : 2
-}, {
-  key: '11',
-  sendPublic: 13888888888,
-  sendMobile : 13661111111,
-  sendStatus : '成功',
-  sendNumber : 2
-}];
+
 
 class DateRange extends React.Component{
 	constructor() {
 		super();
 		this.state =  {
-	      startTime : undefined,
-	      endTime : undefined
+	      MA_StartTime : '',
+        MA_EndTime : ''
 	    };
 	    this.handleSubmit = this.handleSubmit.bind(this);
 	    this.onChange = this.onChange.bind(this);
-	    this.disabledStartDate = this.disabledStartDate.bind(this);
 	    this.disabledEndDate = this.disabledEndDate.bind(this);
 	}
-  disabledStartDate(startValue) {
-    if (!startValue || !this.state.endValue) {
-      return false;
-    }
-    return startValue.getTime() >= this.state.endValue.getTime();
-  }
   disabledEndDate(endValue) {
     if (!endValue || !this.state.startValue) {
       return false;
@@ -134,13 +66,8 @@ class DateRange extends React.Component{
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
-    
-    message.success('收到表单值~~~ ：' + JSON.stringify(this.state, function(k, v) {
-      if (typeof v === 'undefined') {
-        return '';
-      }
-      return v;
-    }));
+    console.log(this.state)
+    this.props.changeTableState(this.state);
   }
   render() {
     return <div>
@@ -150,13 +77,13 @@ class DateRange extends React.Component{
         <div style={{fontSize:14,lineHeight:2.4}}>充值日期：</div>
         </Col>
           <Col span="3">
-          <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'startTime')} />
+          <DatePicker placeholder="开始日期" value={this.state.MA_StartTime} onChange={this.onChange.bind(this,'MA_StartTime')} />
         </Col>
         <Col span="1">
           <p className="ant-form-split">-</p>
         </Col>
          <Col span="3">
-          <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'endTime')} />
+          <DatePicker value={this.state.MA_EndTime} disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'MA_EndTime')} />
         </Col>
         <Col span="1">
         <FormItem>
@@ -182,15 +109,102 @@ class SaleDataPush extends React.Component{
 	constructor(){
 		super();
 		this.state =  {
-	      total : 100
+	      total : 100,
+        data : [],
+        opts : {
+          page :1,
+          pageSize : 10,
+        },
 	    };
+      this.changeTableState = this.changeTableState.bind(this);
+      this.tableChange = this.tableChange.bind(this);
+      this.showSizechange = this.showSizechange.bind(this);
 	}
+
+  componentDidMount(){
+
+    changeTableState = this.changeTableState;
+    //modalState = this.showModal;
+
+    this.setState({
+      data : []
+    })
+    
+  }
+
+  // 点击分页
+  tableChange(pagination, filters, sorter){
+    var opts = Object.assign({},this.state.opts);
+    opts.page = pagination.current;
+    opts.pageSize = pagination.pageSize;
+
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+  }
+  // 每页数据条数变化
+  showSizechange(current, pageSize){
+    var opts = Object.assign({},this.state.opts);
+    opts.pageSize = pageSize;
+    opts.page = current;
+
+    console.log(opts);
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+
+  }
+
+  // 发送ajax请求，获取table值
+  changeTableState(opts){
+
+    var opts = opts || {};
+    opts.page = opts.page || this.state.opts.page;
+    opts.pageSize = opts.pageSize ||  this.state.opts.pageSize;
+
+    this.setState({
+      opts : opts
+    })
+    
+    //opts.EntityCode = 'DEFAULT';
+    var that = this;
+
+    _G.ajax({
+      url : saledataPushList,
+      method: "get",
+      data : opts,
+      success:function(res){
+        var d = [];
+        for(var i=0,l=res.Data.length;i<l;i++){
+          d[i]=res.Data[i];
+          d[i]['key'] = res.Data[i].User_Code;
+        }
+        this.setState({
+          data : d,
+          total : res.TotalCount,
+          opts : opts
+        })
+
+      }.bind(this)
+
+    })
+
+  }
+
 	render(){
 		return(
 			<div className="m-list">
-			     <DateRange />
+			     <DateRange changeTableState={this.changeTableState} />
 			     <Row>
-					<Table columns={columns} dataSource={data} pagination={{showQuickJumper:true,pageSize:10,current:1,showSizeChanger:true,total:this.state.total}}  />
+					<Table onChange={this.tableChange} columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}}  />
 				</Row>
 			</div>
 		)

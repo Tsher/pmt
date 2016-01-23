@@ -228,9 +228,7 @@ class SaleDataRound extends React.Component{
 			<div className="m-list">
 			     <DateRange changeTableState={this.changeTableState} />
 			     <Row>
-					<Table  onChange={this.tableChange} columns={columns} dataSource={this.state.data} 
-            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}}  
-          />
+					<Table onChange={this.tableChange} columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}} />
 				</Row>
 			</div>
 		)
