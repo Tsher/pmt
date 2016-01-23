@@ -210,7 +210,6 @@ class SaleDataRound extends React.Component{
       type: "get",
       data : opts,
       success:function(res){
-        console.log(res)
         var d = [];
         for(var i=0,l=res.Data.length;i<l;i++){
           d[i]=res.Data[i];

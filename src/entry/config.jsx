@@ -129,6 +129,9 @@ window['config'] = {
 		},
 		push : {
 			list : '/api/SRecharge/Recharge', // 话费充值流水
+		},
+		user : {
+			list : '/api/SReport/GetCusmorJoin_Report', // 消费者参与流水
 		}
 	}
 }
