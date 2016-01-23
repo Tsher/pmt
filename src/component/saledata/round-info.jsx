@@ -155,9 +155,11 @@ class SaleDataRoundInfo extends React.Component{
 	constructor(){
 		super();
 		this.state =  {
-	      total : 100
+	      total : 100,
+        id : '',
 	    };
 	}
+  
   handleReset(e) {
     // 返回***********************************
     goBack();

@@ -112,6 +112,7 @@ class UserUserAdd extends React.Component{
     this.handleReset = this.handleReset.bind(this);
   }
 
+  // 插入到dom之后执行
   componentDidMount(){
     console.log(this.props.params.id)
     // 编辑

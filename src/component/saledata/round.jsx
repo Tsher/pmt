@@ -13,165 +13,75 @@ import message from 'antd/lib/message';
 const FormItem = Form.Item;
 
 
+import '../../entry/config';
+const saledataRoundList = config.__URL + config.saledata.round.list;
+
+
 const columns = [{
   title: '抽奖地区',
-  dataIndex: 'lotteryArea',
-  key: 'lotteryArea'
+  dataIndex: 'ScanAddress',
+  key: 'ScanAddress'
 }, {
   title: '兑换手机号',
-  dataIndex: 'lotteryMobile',
-  key: 'lotteryMobile'
+  dataIndex: 'ScanPhone',
+  key: 'ScanPhone'
 },{
   title: '微信号',
-  dataIndex: 'lotteryWx',
-  key: 'lotteryWx'
+  dataIndex: 'ScanWeiXinNo',
+  key: 'ScanWeiXinNo'
 },{
   title: '奖品',
-  dataIndex: 'lotteryPrize',
-  key: 'lotteryPrize'
+  dataIndex: 'Prize_Name',
+  key: 'Prize_Name'
 },{
   title: '是否中奖',
-  dataIndex: 'lotteryWinning',
-  key: 'lotteryWinning'
+  dataIndex: 'IsWinnName',
+  key: 'IsWinnName'
 },{
   title: '中奖次数',
-  dataIndex: 'lotteryNumber',
-  key: 'lotteryNumber',
+  dataIndex: 'WinTimes',
+  key: 'WinTimes',
   render: function(text,record) {
-  	var href= '/saledata/round/info/'+record.lotteryNo;
+  	//var href= '/saledata/round/info/'+record.lotteryNo;
+    var href= '/saledata/round/info/';
     return <Link to={href}>{text}</Link>;
   }
 },{
   title: '积分',
-  dataIndex: 'lotteryIntegral',
-  key: 'lotteryIntegral'
+  dataIndex: 'Member_GetIntegral',
+  key: 'Member_GetIntegral'
 }];
-const data = [{
-  key: '1',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '2',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '3',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '4',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '5',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '6',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '7',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '8',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '9',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '10',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '11',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}];
+
+
+var changeTableState;
+
 
 class DateRange extends React.Component{
 	constructor() {
 		super();
 		this.state =  {
-	      startTime : undefined,
-	      endTime : undefined
-	    };
+      MA_StartTime : '',
+      MA_EndTime : ''
+    };
 	    this.handleSubmit = this.handleSubmit.bind(this);
 	    this.onChange = this.onChange.bind(this);
-	    this.disabledStartDate = this.disabledStartDate.bind(this);
+	    //this.disabledStartDate = this.disabledStartDate.bind(this);
 	    this.disabledEndDate = this.disabledEndDate.bind(this);
 	}
-  disabledStartDate(startValue) {
-    if (!startValue || !this.state.endValue) {
-      return false;
-    }
-    return startValue.getTime() >= this.state.endValue.getTime();
-  }
+  // disabledStartDate(startValue) {
+  //   if (!startValue || !this.state.endValue) {
+  //     return false;
+  //   }
+  //   return startValue.getTime() >= this.state.endValue.getTime();
+  // }
   disabledEndDate(endValue) {
-    if (!endValue || !this.state.startValue) {
+    if (!endValue || !this.state.MA_StartTime) {
       return false;
     }
-    return endValue.getTime() <= this.state.startValue.getTime();
+    return endValue.getTime() <= this.state.MA_StartTime.getTime();
   }
   onChange(field, value) {
+    console.log(field,value)
     this.setState({
       [field]: value,
     });
@@ -179,13 +89,10 @@ class DateRange extends React.Component{
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
+    console.log(this.state)
     
-    message.success('收到表单值~~~ ：' + JSON.stringify(this.state, function(k, v) {
-      if (typeof v === 'undefined') {
-        return '';
-      }
-      return v;
-    }));
+    this.props.changeTableState(this.state);
+
   }
   render() {
     return <div>
@@ -195,13 +102,13 @@ class DateRange extends React.Component{
         <div style={{fontSize:14,lineHeight:2.4}}>抽奖日期：</div>
         </Col>
           <Col span="3">
-          <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'startTime')} />
+          <DatePicker value={this.state.MA_StartTime} placeholder="开始日期" onChange={this.onChange.bind(this,'MA_StartTime')} />
         </Col>
         <Col span="1">
           <p className="ant-form-split">-</p>
         </Col>
          <Col span="3">
-          <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'endTime')} />
+          <DatePicker value={this.state.MA_EndTime} disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'MA_EndTime')} />
         </Col>
         <Col span="1">
         <FormItem>
@@ -227,15 +134,103 @@ class SaleDataRound extends React.Component{
 	constructor(){
 		super();
 		this.state =  {
-	      total : 100
+	      total : 100,
+        data : [],
+        opts : {
+          page :1,
+          pageSize : 10,
+        },
 	    };
+
+    this.changeTableState = this.changeTableState.bind(this);
+    this.tableChange = this.tableChange.bind(this);
+    this.showSizechange = this.showSizechange.bind(this);
 	}
+
+  componentDidMount(){
+
+    changeTableState = this.changeTableState;
+    //modalState = this.showModal;
+
+    this.setState({
+      data : []
+    })
+    
+  }
+  // 点击分页
+  tableChange(pagination, filters, sorter){
+    var opts = Object.assign({},this.state.opts);
+    opts.page = pagination.current;
+    opts.pageSize = pagination.pageSize;
+
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+  }
+  // 每页数据条数变化
+  showSizechange(current, pageSize){
+    var opts = Object.assign({},this.state.opts);
+    opts.pageSize = pageSize;
+    opts.page = current;
+
+    console.log(opts);
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+
+  }
+
+  // 发送ajax请求，获取table值
+  changeTableState(opts){
+
+    var opts = opts || {};
+    opts.page = opts.page || this.state.opts.page;
+    opts.pageSize = opts.pageSize ||  this.state.opts.pageSize;
+
+    this.setState({
+      opts : opts
+    })
+    
+    //opts.EntityCode = 'DEFAULT';
+    var that = this;
+
+    _G.ajax({
+      url : saledataRoundList,
+      method: "get",
+      data : opts,
+      success:function(res){
+        var d = [];
+        for(var i=0,l=res.Data.length;i<l;i++){
+          d[i]=res.Data[i];
+          d[i]['key'] = res.Data[i].User_Code;
+        }
+        this.setState({
+          data : d,
+          total : res.TotalCount,
+          opts : opts
+        })
+
+      }.bind(this)
+
+    })
+
+  }
 	render(){
 		return(
 			<div className="m-list">
-			     <DateRange />
+			     <DateRange changeTableState={this.changeTableState} />
 			     <Row>
-					<Table columns={columns} dataSource={data} pagination={{showQuickJumper:true,pageSize:10,current:1,showSizeChanger:true,total:this.state.total}}  />
+					<Table  onChange={this.tableChange} columns={columns} dataSource={this.state.data} 
+            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}}  
+          />
 				</Row>
 			</div>
 		)

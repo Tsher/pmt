@@ -41,7 +41,8 @@ window['_G']={
 	ajax:function(opts){
 		opts.url += /\?\&/.test(opts.url) ? ('&Token='+_G.Token) : ('?Token='+_G.Token);
 		$.ajax(opts);
-	}
+	},
+	get_data : get_data,
 }
 
 
@@ -86,6 +87,12 @@ window['config'] = {
 			sale_productName : '/api/SProduct/GetProductByName', // 获取产品名称
 			sale_area : '/api/SSaleRegion/GetSaleRegionList', // 获取销售区域
 			add : '/api/SPromotionActivity/ AddMarketingActivitie', // 新增活动
+		}
+	},
+	// 促销数据
+	saledata : {
+		round : {
+			list : '/api/SReport/GetCustomerDraw_Report', // 消费者抽奖流水
 		}
 	}
 }
