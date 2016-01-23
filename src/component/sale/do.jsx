@@ -404,7 +404,7 @@ class SaleDo extends React.Component{
         success : function(res){
           console.log('删除成功',res);
           var data = [].concat(this.state.data);
-          data.splice(index,1);
+          data.splice(this.state.index,1);
           this.setState({
             visible : false,
             changeId : false,

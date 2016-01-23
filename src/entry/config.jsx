@@ -40,16 +40,18 @@ window['_G']={
 	// ajax
 	ajax:function(opts){
 		opts.url += /\?\&/.test(opts.url) ? ('&Token='+_G.Token) : ('?Token='+_G.Token);
+		var opt = opts;
+		
 		$.ajax({
 			url : opts.url,
-			type : opts.type || 'post',
+			type : opts.type || opts.method || 'post',
 			data : opts.data || {},
 			success : function(res){
-				if(res.ReturnOperateStatus == null){
+				if( !res.Data && res.ReturnOperateStatus == null){
 					console.log('数据异常，请联系管理员');
 					return;
 				}
-				if(res.ReturnOperateStatus == false){
+				if(!res.Data && res.ReturnOperateStatus == false){
 					console.log('操作失败，请重新试试');
 					return;
 				}
@@ -67,7 +69,6 @@ window['_G']={
 				opts.error && opts.error();
 			}
 		})
-		$.ajax(opts);
 	},
 	get_data : get_data,
 }
