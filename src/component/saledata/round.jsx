@@ -204,13 +204,13 @@ class SaleDataRound extends React.Component{
 
     _G.ajax({
       url : saledataRoundList,
-      method: "get",
+      type: "get",
       data : opts,
       success:function(res){
         var d = [];
         for(var i=0,l=res.Data.length;i<l;i++){
           d[i]=res.Data[i];
-          d[i]['key'] = res.Data[i].User_Code;
+          d[i]['key'] = i;
         }
         this.setState({
           data : d,
