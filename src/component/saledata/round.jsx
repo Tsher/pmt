@@ -202,11 +202,15 @@ class SaleDataRound extends React.Component{
     //opts.EntityCode = 'DEFAULT';
     var that = this;
 
+    opts.MA_StartTime = ''+_G.timeFormat( new Date(opts.MA_StartTime).getTime() );
+    opts.MA_EndTime = ''+_G.timeFormat( new Date(opts.MA_EndTime).getTime() );
+
     _G.ajax({
       url : saledataRoundList,
       type: "get",
       data : opts,
       success:function(res){
+        console.log(res)
         var d = [];
         for(var i=0,l=res.Data.length;i<l;i++){
           d[i]=res.Data[i];
