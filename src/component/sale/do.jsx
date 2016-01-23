@@ -242,9 +242,11 @@ class SaleDo extends React.Component{
       MA_RStatus : false, // 发布状态,
       index : -1,
       total : 1,
-      page : 1,
-      pagesize: 10,
       data:[],
+      opts : {
+        page :1,
+        pageSize : 10,
+      },
     }
     this.showModal = this.showModal.bind(this);
     this.handleOk = this.handleOk.bind(this);
@@ -264,17 +266,54 @@ class SaleDo extends React.Component{
     modalStatePublish = false;
   }
 
+  // 点击分页
+  tableChange(pagination, filters, sorter){
+    var opts = Object.assign({},this.state.opts);
+    opts.page = pagination.current;
+    opts.pageSize = pagination.pageSize;
+
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+  }
+  // 每页数据条数变化
+  showSizechange(current, pageSize){
+    var opts = Object.assign({},this.state.opts);
+    opts.pageSize = pageSize;
+    opts.page = current;
+
+    console.log(opts);
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+
+  }
+
   // 发送ajax请求，获取table值
   changeTableState(opts){
+
     var opts = opts || {};
-    opts.page = this.state.page*1-1;
-    opts.pagesize = this.state.pagesize;
-    //opts.EntityCode = 'DEFAULT';
+    opts.page = opts.page || this.state.opts.page;
+    opts.pageSize = opts.pageSize ||  this.state.opts.pageSize;
+
+    this.setState({
+      opts : opts
+    })
+
+    
     var that = this;
 
     _G.ajax({
       url : saleDoList,
-      method: "get",
+      type: "get",
       data : opts,
       success:function(res){
         var d = [];
@@ -284,7 +323,8 @@ class SaleDo extends React.Component{
         }
         this.setState({
           data : d,
-          total : Math.ceil(res.TotalCount/this.state.pagesize)
+          total : res.TotalCount,
+          opts : opts
         })
 
       }.bind(this)
@@ -331,13 +371,14 @@ class SaleDo extends React.Component{
     if(this.state.publishId){
       _G.ajax({
         url : saleDoPublish,
+        type : 'get',
         data : {
           MA_Code : this.state.publishId
         },
         success : function(res){
           console.log('发布成功',res);
-          var data = this.state.data[this.state.index];
-          data.MA_RStatus = '已发布';
+          var data = [].concat(this.state.data);
+          data[this.state.index].MA_RStatus = '已发布';
 
           this.setState({
             visible : false,
@@ -356,6 +397,7 @@ class SaleDo extends React.Component{
     if(this.state.changeId){
       _G.ajax({
         url : saleDoDel,
+        type : 'get',
         data : {
           MA_Code : this.state.changeId
         },
@@ -400,7 +442,7 @@ class SaleDo extends React.Component{
 					</Col>
 				</Row>
 				<Row>
-					<Table columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:10,current:1,showSizeChanger:true,total:this.state.total}}  />
+					<Table onChange={this.tableChange}  columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.pageSize,current:this.state.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}}  />
 				</Row>
         <Modal 
           visible={this.state.visible}

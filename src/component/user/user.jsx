@@ -446,12 +446,12 @@ class UserUser extends React.Component{
 					</Col>
 				</Row>
 				<Row>
-					<Table onChange={this.tableChange}  
+					<Table onChange={this.tableChange}  onShowSizeChange={this.showSizechange}
             loading={this.state.loading} 
             key={rowKey} 
             columns={columns} 
             dataSource={this.state.data} 
-            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}}  />
+            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total}}  />
 				</Row>
         <Modal title="您正在进行删除操作，请确认！"
           visible={this.state.visible}

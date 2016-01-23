@@ -46,22 +46,22 @@ window['_G']={
 			data : opts.data || {},
 			success : function(res){
 				if(res.ReturnOperateStatus == null){
-					alert('数据异常，请联系管理员');
+					console.log('数据异常，请联系管理员');
 					return;
 				}
 				if(res.ReturnOperateStatus == false){
-					alert('操作失败，请重新试试');
+					console.log('操作失败，请重新试试');
 					return;
 				}
 				opts.success(res);
 			},
 			error:function(res){
 				if(res.ReturnOperateStatus == null){
-					alert('数据异常，请联系管理员');
+					console.log('数据异常，请联系管理员');
 					return;
 				}
 				if(res.ReturnOperateStatus == false){
-					alert('操作失败，请重新试试');
+					console.log('操作失败，请重新试试');
 					return;
 				}
 				opts.error && opts.error();
