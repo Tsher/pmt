@@ -25,6 +25,8 @@ window['_G']={
 	sale_productName:[],
 	// 活动  销售区域
 	sale_area : [],
+	// 所有角色信息
+	role_all : [],
 	timeFormat : function(t,f){
 		if(!t){
 			return ''
@@ -61,6 +63,7 @@ window['config'] = {
 		role : {
 			list : '/api/SRole/GetRoles',
 			del : '/api/SRole/DeleteRole',
+			all : '/api/SRole/GetAllRoles', // 获取所有角色信息
 		},
 		// 组织机构管理
 		group : {
@@ -89,9 +92,11 @@ window['config'] = {
 
 
 
-function get_data(url,name){
+function get_data(url,name,params){
+
 	_G.ajax({
 		url : config.__URL+url,
+		data : params || {},
 		type : 'get',
 		success:function(res){
 			console.log(name,res.Data);
@@ -100,7 +105,9 @@ function get_data(url,name){
 	})
 }
 get_data(config['sale']['do']['sale_prizeLevel'],'sale_prizeLevel'); // 获取奖品级别
-get_data(config['sale']['do']['sale_prizeName'],'sale_prizeName'); // 获取奖品级别
+get_data(config['sale']['do']['sale_prizeName'],'sale_prizeName',{
+
+}); // 获取奖品名称
 get_data(config['sale']['do']['sale_productName'],'sale_productName'); // 获取产品名称
 get_data(config['sale']['do']['sale_area'],'sale_area'); // 获取产品名称
 

@@ -31,7 +31,7 @@ const FormItem = Form.Item;
 import '../../entry/config';
 
 
-// 用户列表api  http://172.31.0.49:8088/api/SUser/GetUsers?EntityCode=DEFAULT&page=0&pagesize=100
+// 用户列表api  http://172.31.0.49:8088/api/SUser/GetUsers?EntityCode=DEFAULT&page=0&pageSize=100
 // page ：当前请求页
 // pageSize : 每页条数
 // EntityCode : DEFAULT 
@@ -272,27 +272,66 @@ class UserUser extends React.Component{
       visible : false,
       title : '',
       ModalText : '',
-      page : 1,
-      pagesize: 10,
       total : 0,
       delId : false,
       index:false,
       data : [],
       loading:false,
+      opts : {
+        page :1,
+        pageSize : 10,
+      },
     }
     this.showModal = this.showModal.bind(this);
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.changeTableState = this.changeTableState.bind(this);
-
+    this.tableChange = this.tableChange.bind(this);
+    this.showSizechange = this.showSizechange.bind(this);
 	}
 
+  // 点击分页
+  tableChange(pagination, filters, sorter){
+    var opts = Object.assign({},this.state.opts);
+    opts.page = pagination.current;
+    opts.pageSize = pagination.pageSize;
+
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+  }
+  // 每页数据条数变化
+  showSizechange(current, pageSize){
+    var opts = Object.assign({},this.state.opts);
+    opts.pageSize = pageSize;
+    opts.page = current;
+
+    console.log(opts);
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+
+  }
 
   // 发送ajax请求，获取table值
   changeTableState(opts){
+
     var opts = opts || {};
-    opts.page = this.state.page*1-1;
-    opts.pagesize = this.state.pagesize;
+    opts.page = opts.page || this.state.opts.page;
+    opts.pageSize = opts.pageSize ||  this.state.opts.pageSize;
+
+    this.setState({
+      opts : opts
+    })
+    
     //opts.EntityCode = 'DEFAULT';
     var that = this;
 
@@ -308,7 +347,8 @@ class UserUser extends React.Component{
         }
         this.setState({
           data : d,
-          total : Math.ceil(res.TotalCount/this.state.pagesize)
+          total : res.TotalCount,
+          opts : opts
         })
 
       }.bind(this)
@@ -404,7 +444,7 @@ class UserUser extends React.Component{
 					</Col>
 				</Row>
 				<Row>
-					<Table loading={this.state.loading} key={rowKey} columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.pagesize,current:this.state.page,showSizeChanger:true,total:this.state.total}}  />
+					<Table onChange={this.tableChange}  loading={this.state.loading} key={rowKey} columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}}  />
 				</Row>
         <Modal title="您正在进行删除操作，请确认！"
           visible={this.state.visible}
