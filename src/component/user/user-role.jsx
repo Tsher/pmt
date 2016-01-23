@@ -54,7 +54,10 @@ const msg_success = function(){
 import '../../entry/config';
 
 const urlUserInfo = config.__URL + config.user.user.info;
+const urlUserRole = config.__URL + config.user.user.role;
 
+
+let userRole=[]; // 用户角色信息
 
 class UserUserRole extends React.Component{
 
@@ -63,10 +66,11 @@ class UserUserRole extends React.Component{
   constructor(props) {
   	super(props);
   	this.state = {
-      userName : null,
-      loginName : null,
-      part : null,
-      userNo : null,
+      User_Code : undefined,
+      User_Name : null,
+      Login_Name : null,
+      Depart_Code : null,
+      Depart_Name : null,
       mockData: [],
       targetKeys: [],
       mockData2: [],
@@ -86,11 +90,59 @@ class UserUserRole extends React.Component{
 
   componentDidMount(){
     // 根据id 获取 用户信息
+    if(this.props.params.id){
+      // 用户信息
+    _G.ajax({
+        url : urlUserInfo,
+        type : 'get',
+        data : {
+          User_Code : this.props.params.id
+        },
+        success:function(res){
+
+          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
+            msg_error();
+            // 跳转回列表页
+            return;
+          }
+          console.log('用户信息',res.Data)
+          var d = {
+              User_Code : this.props.params.id,
+              Login_Name : res.Login_Name, // 登录名
+              Depart_Code : res.Depart_Code, // 隶属部门
+              User_Name : res.User_Name, // 姓名
+            };
+            console.log(d)
+          d = Object.assign({},d);
+          this.setState(d)
+
+        }.bind(this)
+      });
+
+    // 用户角色信息
+    _G.ajax({
+      url : urlUserRole,
+      type : 'get',
+      data : {
+        User_Code : this.props.params.id
+      },
+      success : function(res){
+          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
+            msg_error();
+            // 跳转回列表页
+            return;
+          }
+          console.log('用户角色信息',res.Data)
+          userRole = res.Data;
+          this.getMock()
+      }.bind(this)
+    })
     
+    }
 
     // 模拟获取数据，等待真实接口
-    this.getMock()
-    this.getMock2();
+    
+    //this.getMock2();
   }
 
   renderValidateStyle(item) {
@@ -148,29 +200,37 @@ class UserUserRole extends React.Component{
     // });
   }
 
+  // 操作角色
   getMock() {
     let targetKeys = [];
     let mockData = [];
-    for (let i = 0; i < 20; i++) {
-      const data = {
-        key: i,
-        title: '内容' + (i + 1),
-        description: '内容' + (i + 1) + '的描述',
-        chosen: Math.random() * 2 > 1
-      };
-      if (data.chosen) {
-        targetKeys.push(data.key);
+    mockData = _G.user_role_all;
+    for (let i = 0; i < _G.user_role_all.length; i++) {
+      // role_type : 0 = 操作角色
+      if(_G.user_role_all[i].Role_Type == 0){
+        const data = {
+          key: _G.user_role_all[i].Role_Code,
+          title: _G.user_role_all[i].Role_Name,
+          description: '',
+          chosen : _G.user_role_all[i].Role_Code in userRole
+        };
+        if (data.chosen) {
+          targetKeys.push(data.key);
+        }
       }
       mockData.push(data);
     }
+
     this.setState({
       mockData: mockData,
       targetKeys: targetKeys,
     });
   }
   getMock2() {
+    //产品角色数据，暂时隐藏了。
     let targetKeys = [];
     let mockData = [];
+
     for (let i = 0; i < 20; i++) {
       const data = {
         key: i,
@@ -223,37 +283,37 @@ class UserUserRole extends React.Component{
           <Col span="6">
             <FormItem
               label="登录名："
-              id="loginName"
+              id="Login_Name"
               labelCol={{span: 6}}
               wrapperCol={{span: 12}}
               >
-                <Input name="loginName" value={this.state.loginName} disabled />
+                <Input name="Login_Name" value={this.state.Login_Name} disabled />
             </FormItem>
           </Col>
           <Col span="6">
             <FormItem
                   label="姓名："
-                  id="userName"
+                  id="User_Name"
                   labelCol={{span: 6}}
                   wrapperCol={{span: 12}}
                   >
-                    <Input name="userName" value={this.state.userName} disabled />
+                    <Input name="User_Name" value={this.state.User_Name} disabled />
                 </FormItem>
           </Col>
           <Col span="6">
             <FormItem
                   label="编号："
-                  id="userNo"
+                  id="User_Code"
                   labelCol={{span: 6}}
                   wrapperCol={{span: 12}}
                   >
-                    <Input name="userNo" value={this.state.userNo} disabled />
+                    <Input name="User_Code" value={this.state.User_Code} disabled />
                 </FormItem>
           </Col>
           <Col span="6">
             <FormItem
                   label="隶属部门："
-                  id="userNo"
+                  id="Depart_Code"
                   labelCol={{span: 6}}
                   wrapperCol={{span: 12}}
                   >

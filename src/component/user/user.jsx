@@ -82,9 +82,11 @@ class SelectForm extends React.Component{
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
-    
-    this.props.changeTableState(this.state);
-    console.log(this.state)
+    var data = Object.assign({},this.state);
+    data.Register_On_S = ''+_G.timeFormat( new Date(data.Register_On_S).getTime() );
+    data.Register_On_E = ''+_G.timeFormat( new Date(data.Register_On_S).getTime() );
+    this.props.changeTableState(data);
+    console.log(data)
     
   }
 
@@ -444,7 +446,12 @@ class UserUser extends React.Component{
 					</Col>
 				</Row>
 				<Row>
-					<Table onChange={this.tableChange}  loading={this.state.loading} key={rowKey} columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}}  />
+					<Table onChange={this.tableChange}  
+            loading={this.state.loading} 
+            key={rowKey} 
+            columns={columns} 
+            dataSource={this.state.data} 
+            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}}  />
 				</Row>
         <Modal title="您正在进行删除操作，请确认！"
           visible={this.state.visible}

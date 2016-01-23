@@ -34,7 +34,9 @@ import '../../entry/config';
 // pageSize : 每页条数
 // EntityCode : DEFAULT 
 
-const saleDoList = config.__URL + config.sale['do']['list'];
+const saleDoList = config.__URL + config.sale['do']['list']; // 获取活动列表
+const saleDoPublish = config.__URL + config.sale['do']['publish']; // 发布活动
+const saleDoDel = config.__URL + config.sale['do']['del']; // 删除活动
 
 
 class SelectForm extends React.Component{
@@ -156,16 +158,17 @@ let modalState,modalStatePublish;
 function showModal(e){
   Event.stop(e);
   var tar = Event.target(e);
-  var id = tar.getAttribute('data-id');
-  modalState(id)
+  var id = tar.getAttribute('data-id'),index = tar.getAttribute('data-index'),name=tar.getAttribute('data-name');
+  modalState(id,index,name)
 }
 // 发布
 function showModalPublish(e){
   Event.stop(e);
   var tar = Event.target(e);
   var id = tar.getAttribute('data-id'),
-    state = tar.getAttribute('data-rstatus');
-  modalStatePublish(id,state)
+    state = tar.getAttribute('data-rstatus'),
+    index = tar.getAttribute('data-index');
+  modalStatePublish(id,state,index)
 }
 
 const columns = [{
@@ -207,11 +210,11 @@ const columns = [{
 }, {
   title: '操作',
   key: 'operation',
-  render: function(text, record) {
+  render: function(text, record,index) {
   	var publish = '/sale/do/publish/'+ record.MA_Code,
       edit = '/sale/do/edit/'+record.MA_Code,
   		del = '/sale/do/del/' + record.MA_Code
-    return <span><a href="#" onClick={showModalPublish} data-id={record.MA_Code} data-rstatus={record.MA_RStatus}>{record.MA_RStatus}</a><span className="ant-divider"></span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.MA_Code} data-text="删除" >删除</a></span>;
+    return <span><a href="#" onClick={showModalPublish} data-id={record.MA_Code} data-index={index} data-rstatus={record.MA_RStatus}>{record.MA_RStatus}</a><span className="ant-divider"></span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-name={record.MA_Name} data-index={index} data-id={record.MA_Code} data-text="删除" >删除</a></span>;
 	}
 }];
 const data = [];
@@ -236,7 +239,8 @@ class SaleDo extends React.Component{
       ModalText : '',
       changeId : false,  // 删除id
       publishId : false, // 发布ids
-      MA_RStatus : false, // 发布状态
+      MA_RStatus : false, // 发布状态,
+      index : -1,
       total : 1,
       page : 1,
       pagesize: 10,
@@ -291,18 +295,20 @@ class SaleDo extends React.Component{
 
 
   // 删除
-  showModal(id){
+  showModal(id,index,name){
     this.setState({
       visible : true,
-      ModalText: '你正要删除 "'+ id +'"的活动，是否继续？',
+      ModalText: '你正要删除 "'+ name +'"的活动，是否继续？',
       confirmLoading: false,
       publishId : false,
-      changeId : id
+      changeId : id,
+      index : index
     })
   }
 
   // 发布 选项，
-  showModalPublish(id,state){
+  showModalPublish(id,state,index){
+    if(state == '已发布') return;
     var type = state == '已发布' ? '停止发布' : '发布';
 
     this.setState({
@@ -311,22 +317,63 @@ class SaleDo extends React.Component{
       confirmLoading: false,
       publishId : id,
       changeId : false,
-      MA_RStatus : state == '已发布' ? 1 : 0
+      index : index,
     })
   }
   handleOk(e){
-    //******************* 冻结，解冻 逻辑 changeId , publishId , 然后 关闭****************************
+    //******************* 逻辑 changeId , publishId , 然后 关闭****************************
+
     this.setState({
       confirmLoading:true
     })
-    setTimeout(()=>{
-      this.setState({
-        visible : false,
-        changeId : false,
-        publishId : false,
-        MA_RStatus : false
+    console.log(this.state)
+    // 发布活动
+    if(this.state.publishId){
+      _G.ajax({
+        url : saleDoPublish,
+        data : {
+          MA_Code : this.state.publishId
+        },
+        success : function(res){
+          console.log('发布成功',res);
+          var data = this.state.data[this.state.index];
+          data.MA_RStatus = '已发布';
+
+          this.setState({
+            visible : false,
+            publishId : false,
+            MA_RStatus : false,
+            index : false,
+            data : data
+          })
+
+
+        }.bind(this)
       })
-    },2000)
+    }
+
+    // 删除活动
+    if(this.state.changeId){
+      _G.ajax({
+        url : saleDoDel,
+        data : {
+          MA_Code : this.state.changeId
+        },
+        success : function(res){
+          console.log('删除成功',res);
+          var data = [].concat(this.state.data);
+          data.splice(index,1);
+          this.setState({
+            visible : false,
+            changeId : false,
+            index : false,
+            data : data
+          })
+        }.bind(this)
+      })
+    }
+
+    
   }
   handleCancel(e){
     this.setState({
