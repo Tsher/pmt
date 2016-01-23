@@ -132,6 +132,9 @@ window['config'] = {
 		},
 		user : {
 			list : '/api/SReport/GetCusmorJoin_Report', // 消费者参与流水
+		},
+		prize : {
+			list : '/api/SReport/GetAwardExchange_Report', // 奖品兑换流水
 		}
 	}
 }
