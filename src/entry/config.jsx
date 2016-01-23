@@ -26,13 +26,13 @@ window['_G']={
 	// 活动  销售区域
 	sale_area : [],
 	// 所有角色信息
-	role_all : [],
+	user_role_all : [],
 	timeFormat : function(t,f){
 		if(!t){
 			return ''
 		}
 		var f = f || 'YYYY-MM-DD hh:mm:ss';
-		var t = t.replace(/\D/g,'')*1;
+		var t = typeof t == 'number'? t : t.replace(/\D/g,'')*1;
 		t = new Date(t).getTime();
 		t = moment(t).format('YYYY-MM-DD HH:MM:SS');
 		return t;
@@ -40,6 +40,33 @@ window['_G']={
 	// ajax
 	ajax:function(opts){
 		opts.url += /\?\&/.test(opts.url) ? ('&Token='+_G.Token) : ('?Token='+_G.Token);
+		$.ajax({
+			url : opts.url,
+			type : opts.type || 'post',
+			data : opts.data || {},
+			success : function(res){
+				if(res.ReturnOperateStatus == null){
+					alert('数据异常，请联系管理员');
+					return;
+				}
+				if(res.ReturnOperateStatus == false){
+					alert('操作失败，请重新试试');
+					return;
+				}
+				opts.success(res);
+			},
+			error:function(res){
+				if(res.ReturnOperateStatus == null){
+					alert('数据异常，请联系管理员');
+					return;
+				}
+				if(res.ReturnOperateStatus == false){
+					alert('操作失败，请重新试试');
+					return;
+				}
+				opts.error && opts.error();
+			}
+		})
 		$.ajax(opts);
 	},
 	get_data : get_data,
@@ -58,7 +85,7 @@ window['config'] = {
 			edit : '/api/SUser/PostUpUser',
 			info : '/api/SUser/GetUser',
 			del : '/api/SUser/DeleteUser',
-			role : '/api/'
+			role : '/api/SUser/GetUserRole', //获取用户角色信息
 		},
 		// 角色管理
 		role : {
@@ -86,7 +113,9 @@ window['config'] = {
 			sale_prizeName : '/api/SPrizeMana/GetPrizeCatalog', // 获取奖品名称
 			sale_productName : '/api/SProduct/GetProductByName', // 获取产品名称
 			sale_area : '/api/SSaleRegion/GetSaleRegionList', // 获取销售区域
-			add : '/api/SPromotionActivity/ AddMarketingActivitie', // 新增活动
+			add : '/api/SPromotionActivity/AddMarketingActivitie', // 新增活动
+			del : '/api/SPromotionActivity/DeleteMarketingActivitie', // 删除活动
+			publish : '/api/SPromotionActivity/PublishMarketingActivitie', // 发布活动
 		}
 	},
 	// 促销数据
@@ -106,14 +135,16 @@ window['config'] = {
 
 
 function get_data(url,name,params){
-
 	_G.ajax({
 		url : config.__URL+url,
 		data : params || {},
 		type : 'get',
 		success:function(res){
-			console.log(name,res.Data);
+			console.log(name,res.Data)
 			_G[name] = res.Data;
+			if(params && params.callback){
+				params.callback(res)
+			}
 		}
 	})
 }
@@ -123,6 +154,9 @@ get_data(config['sale']['do']['sale_prizeName'],'sale_prizeName',{
 }); // 获取奖品名称
 get_data(config['sale']['do']['sale_productName'],'sale_productName'); // 获取产品名称
 get_data(config['sale']['do']['sale_area'],'sale_area'); // 获取产品名称
+
+// 获取所有角色信息
+get_data(config['user']['role']['all'],'user_role_all');
 
 
 
