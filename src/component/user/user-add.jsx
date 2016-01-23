@@ -131,6 +131,7 @@ class UserUserAdd extends React.Component{
             // 跳转回列表页
             return;
           }
+          res = res.Data;
           var d = {
               User_Code : this.props.params.id,
               title : '编辑用户',
