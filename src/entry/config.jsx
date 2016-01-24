@@ -141,7 +141,19 @@ window['config'] = {
 		},
 		push : {
 			list : '/api/SRecharge/Recharge', // 话费充值流水
+		},
+		user : {
+			list : '/api/SReport/GetCusmorJoin_Report', // 消费者参与流水
+		},
+		prize : {
+			list : '/api/SReport/GetAwardExchange_Report', // 奖品兑换流水
 		}
+	},
+	// 营销规则
+	rule : {
+		number : {
+			list : '/api/SIntegralRule/GetIntegralRules', // 积分规则
+		},
 	}
 }
 

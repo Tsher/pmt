@@ -45,18 +45,18 @@ class DateRange extends React.Component{
 	constructor() {
 		super();
 		this.state =  {
-	      MA_StartTime : '',
-        MA_EndTime : ''
+	      Recharge_Time_S : '',
+        Recharge_Time_E : ''
 	    };
 	    this.handleSubmit = this.handleSubmit.bind(this);
 	    this.onChange = this.onChange.bind(this);
 	    this.disabledEndDate = this.disabledEndDate.bind(this);
 	}
   disabledEndDate(endValue) {
-    if (!endValue || !this.state.startValue) {
+    if (!endValue || !this.state.Recharge_Time_S) {
       return false;
     }
-    return endValue.getTime() <= this.state.startValue.getTime();
+    return endValue.getTime() <= this.state.Recharge_Time_S.getTime();
   }
   onChange(field, value) {
     this.setState({
@@ -77,13 +77,13 @@ class DateRange extends React.Component{
         <div style={{fontSize:14,lineHeight:2.4}}>充值日期：</div>
         </Col>
           <Col span="3">
-          <DatePicker placeholder="开始日期" value={this.state.MA_StartTime} onChange={this.onChange.bind(this,'MA_StartTime')} />
+          <DatePicker placeholder="开始日期" value={this.state.Recharge_Time_S} onChange={this.onChange.bind(this,'Recharge_Time_S')} />
         </Col>
         <Col span="1">
           <p className="ant-form-split">-</p>
         </Col>
          <Col span="3">
-          <DatePicker value={this.state.MA_EndTime} disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'MA_EndTime')} />
+          <DatePicker value={this.state.Recharge_Time_E} disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'Recharge_Time_E')} />
         </Col>
         <Col span="1">
         <FormItem>
@@ -177,6 +177,9 @@ class SaleDataPush extends React.Component{
     //opts.EntityCode = 'DEFAULT';
     var that = this;
 
+    opts.Recharge_Time_S = ''+_G.timeFormat( new Date(opts.Recharge_Time_S).getTime() );
+    opts.Recharge_Time_E = ''+_G.timeFormat( new Date(opts.Recharge_Time_E).getTime() );
+
     _G.ajax({
       url : saledataPushList,
       method: "get",
@@ -185,7 +188,7 @@ class SaleDataPush extends React.Component{
         var d = [];
         for(var i=0,l=res.Data.length;i<l;i++){
           d[i]=res.Data[i];
-          d[i]['key'] = res.Data[i].User_Code;
+          d[i]['key'] = i;
         }
         this.setState({
           data : d,
