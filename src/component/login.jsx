@@ -23,21 +23,44 @@ const confirm = Modal.confirm;
 
 const history = createHistory();
 
+import '../entry/config';
 
+const urlLogin = config.__URL + config.login;
+const ValCode  = config.__URL + config.valCode;
+const CheckCode = config.__URL + config.checkValCode;
 
-class Login extends React.Component{
+class Login extends React.Component{ 
 	constructor(){
 		super();
-	    this.state = {
-	      userName : undefined,
-        password : undefined,
-        code : '../common/login-code.png',
-	    };
-	    
+    this.state = {
+      Login_Name : '', // 用户名
+      User_PW : '', // 密码
+      ValidateCode : '', // 验证码
+      ValidateCodePic : '', // 验证码图片
+    };
+	   _G.ajax({
+      url : ValCode,
+      type : 'get',
+      success:function(res) {
+        console.log(res)
+        this.setState({
+          ValidateCodePic : res.Data
+        })
+      }.bind(this)
+    })
 	}
 
   componentDidMount(){
-    
+    _G.ajax({
+      url : ValCode,
+      type : 'get',
+      success:function(res) {
+        console.log(res)
+        this.setState({
+          ValidateCodePic : res.Data
+        })
+      }
+    })
   }
 
   componentWillUnmount(){
@@ -67,29 +90,29 @@ class Login extends React.Component{
             <div className="login-form">
               <Form horizontal style={{width:'100%'}}>
                   <FormItem
-                    id="userName"
+                    id="Login_Name"
                     label="用户名："
                     labelCol={{span:6}}
                     wrapperCol={{span:12}}
                     required>
-                    <Input name="userName" id="userName" />
+                    <Input name="Login_Name" id="Login_Name" />
                   </FormItem>
                   <FormItem
-                    id="password"
+                    id="User_PW"
                     label="密码："
                     labelCol={{span:6}}
                     wrapperCol={{span:12}}
                     required>
-                    <Input type="password" id="password" />
+                    <Input type="password" id="User_PW" />
                   </FormItem>
                   <FormItem
-                    id="code"
+                    id="ValidateCode"
                     label="验证码："
                     labelCol={{span:6}}
                     wrapperCol={{span:12}}
                     required>
-                    <Input name="code" id="code" />
-                    <img src={this.state.code} className="login-code"/>
+                    <Input name="ValidateCode" id="ValidateCode" />
+                    <img src={this.state.ValidateCodePic} className="login-code"/>
                   </FormItem>
                   <Row>
                     <Col span="12" offset="6">

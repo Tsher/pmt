@@ -10,7 +10,7 @@ const msg_success = function(){
 
 // 全局方法
 window['_G']={
-	Token : '',
+	Token : 'b5rQOd51TiM=',
 	// 用户性别
 	userSex : function(n){
 		return n==1?'男':'女'
@@ -175,7 +175,11 @@ window['config'] = {
 		number : {
 			list : '/api/SIntegralRule/GetIntegralRules', // 积分规则
 		},
-	}
+	},
+	// 登录，修改密码
+	login : '/api/SLogin/LoginIn', // 登录
+	valCode : '/api/SLogin/GetValidateCode', // 验证码
+	checkValCode : '/api/SLogin/CheckVailidateCode', // 校验验证码
 }
 
 
