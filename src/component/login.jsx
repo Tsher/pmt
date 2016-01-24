@@ -11,7 +11,7 @@ import Form from 'antd/lib/form';
 import Input from 'antd/lib/input';
 import Table from 'antd/lib/table';
 import Popover from 'antd/lib/popover';
-
+import message from 'antd/lib/message';
 const FormItem = Form.Item;
 import Tree from 'antd/lib/tree';
 const TreeNode = Tree.TreeNode;
@@ -22,6 +22,17 @@ import Modal from 'antd/lib/modal';
 const confirm = Modal.confirm;
 
 const history = createHistory();
+
+
+const msg_error = function(text){
+  message.error(text||'数据错误,请检查后重新提交')
+}
+const msg_success = function(text){
+  message.success(text||'数据提交成功，等待后台处理')
+}
+
+
+
 
 import '../entry/config';
 
@@ -38,28 +49,29 @@ class Login extends React.Component{
       ValidateCode : '', // 验证码
       ValidateCodePic : '', // 验证码图片
     };
-	   _G.ajax({
-      url : ValCode,
-      type : 'get',
-      success:function(res) {
-        console.log(res)
-        this.setState({
-          ValidateCodePic : res.Data
-        })
-      }.bind(this)
-    })
+	  this.handleSubmit = this.handleSubmit.bind(this);
+    this.setValue = this.setValue.bind(this);
+
+
+    
+
+
 	}
 
   componentDidMount(){
+    var Token = Cookie.read('Token');
+    if(Token){
+      location.href = 'http://'+ location.hostname + ':'+ location.port;
+      return;
+    }
     _G.ajax({
       url : ValCode,
       type : 'get',
       success:function(res) {
-        console.log(res)
         this.setState({
-          ValidateCodePic : res.Data
+          ValidateCodePic : 'data:'+ res.Data
         })
-      }
+      }.bind(this)
     })
   }
 
@@ -67,7 +79,48 @@ class Login extends React.Component{
     
   }
 
-  
+  handleSubmit(e){
+    e.preventDefault();
+    
+    var data = {};
+    data.Login_Name = this.state.Login_Name;
+    data.User_PW = this.state.User_PW;
+    data.ValidateCode = this.state.ValidateCode;
+    if(!data.ValidateCode.length){
+      msg_error('请填写验证码');
+      return;
+    }
+    // 登录
+    _G.ajax({
+      url : urlLogin,
+      data : data,
+      type : 'get',
+      success : function(res){
+        Cookie.write({
+          name : 'Token',
+          value : 'a' // ************************临时Token
+        })
+        location.href = 'http://'+ location.hostname + ':'+ location.port;
+      }.bind(this)
+    })
+    
+  }
+
+  // 文本框的值 同步到 state
+  setValue(e){
+
+    var name = e.target.id || e.target.name;
+    var value = e.target.value;
+
+    var data = Object.assign( {}, this.state );
+
+    data[name] = value;
+
+
+    this.setState(data);
+  }
+
+
   handleOk(e){
     
   }
@@ -81,21 +134,21 @@ class Login extends React.Component{
 			<div className="fixedLogin">
         <Row className="m-header">
           <Col span="6" className="logo">
-            <div>O2O营销平台</div>
+            <div>PMT平台</div>
           </Col>
         </Row>
         <div className="m-content clearfix">
           <div className="login">
             <h2>登录</h2>
             <div className="login-form">
-              <Form horizontal style={{width:'100%'}}>
+              <Form horizontal style={{width:'100%'}} onSubmit={this.handleSubmit}>
                   <FormItem
                     id="Login_Name"
                     label="用户名："
                     labelCol={{span:6}}
                     wrapperCol={{span:12}}
                     required>
-                    <Input name="Login_Name" id="Login_Name" />
+                    <Input name="Login_Name" id="Login_Name" value={this.state.Login_Name} onChange={this.setValue} />
                   </FormItem>
                   <FormItem
                     id="User_PW"
@@ -103,7 +156,7 @@ class Login extends React.Component{
                     labelCol={{span:6}}
                     wrapperCol={{span:12}}
                     required>
-                    <Input type="password" id="User_PW" />
+                    <Input type="password" id="User_PW" value={this.state.User_PW} onChange={this.setValue} />
                   </FormItem>
                   <FormItem
                     id="ValidateCode"
@@ -111,7 +164,7 @@ class Login extends React.Component{
                     labelCol={{span:6}}
                     wrapperCol={{span:12}}
                     required>
-                    <Input name="ValidateCode" id="ValidateCode" />
+                    <Input name="ValidateCode" id="ValidateCode" value={this.state.ValidateCode} onChange={this.setValue} />
                     <img src={this.state.ValidateCodePic} className="login-code"/>
                   </FormItem>
                   <Row>

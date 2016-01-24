@@ -58,8 +58,9 @@ import {Layout} from '../component/layout';
 
 function validate(nextState, transition) {
 	
-	let token = Cookie.read('token');
-	
+	let token = Cookie.read('Token');
+	_G.Token = token;
+	// 验证token是否有效
 	if(!token){
 		if(nextState.location.pathname == '/login') return;
 		transition(nextState,'/login');
@@ -68,8 +69,7 @@ function validate(nextState, transition) {
 }
 
 const Router = (
-	//<Route path="/" component={Layout} onEnter={validate}>
-	<Route path="/" component={Layout} >
+	<Route path="/" component={Layout} onEnter={validate}>
 		<Route path="/login" component={Login}></Route>
 		
 		<Route path="/change-password" component={ChangePassword}></Route>

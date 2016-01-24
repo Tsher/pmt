@@ -202,7 +202,7 @@ class Layout extends React.Component{
 			<div>
 				<Row className="m-header">
 					<Col span="6" className="logo">
-						<div>O2O营销平台</div>
+						<div>PMT平台</div>
 					</Col>
 					<Col span="18" className="userinfo">
 						{this.userInfo()}

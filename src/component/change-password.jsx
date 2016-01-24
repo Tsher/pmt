@@ -12,6 +12,7 @@ import Input from 'antd/lib/input';
 import Table from 'antd/lib/table';
 import Popover from 'antd/lib/popover';
 import Validation from 'antd/lib/validation';
+import message from 'antd/lib/message';
 const Validator = Validation.Validator;
 const FormItem = Form.Item;
 import Tree from 'antd/lib/tree';
@@ -25,6 +26,13 @@ const confirm = Modal.confirm;
 const History = createHistory();
 
 const goBack = History.goBack;
+
+const msg_error = function(text){
+  message.error(text||'数据错误,请检查后重新提交')
+}
+const msg_success = function(text){
+  message.success(text||'数据提交成功，等待后台处理')
+}
 
 const noop = function(){
   return false
@@ -40,20 +48,24 @@ function cx(classNames) {
   }
 }
 
+import '../entry/config';
+
+const updatePWD = config.__URL + config.updatePWD;
+
 
 class ChangePassword extends React.Component{
 	constructor(){
 		super();
 	    this.state = {
         status:{
-          old_password:{},
-          new_password:{},
-          re_password:{}
+          originalPwd:{},
+          newPwd:{},
+          PwdAgain:{}
         },
         formData:{
-  	      old_password : undefined,
-          new_password : undefined,
-          re_password : undefined,
+  	      originalPwd : undefined,
+          newPwd : undefined,
+          PwdAgain : undefined,
         }
 	    };
       this.checkPass = this.checkPass.bind(this);
@@ -95,16 +107,16 @@ class ChangePassword extends React.Component{
   }
 
   checkPass(rule, value, callback) {
-    if (this.state.formData.old_password) {
-      this.refs.validation.forceValidate(['re_password']);
+    if (this.state.formData.originalPwd) {
+      this.refs.validation.forceValidate(['PwdAgain']);
     }
 
     callback();
   }
 
   checkPass2(rule, value, callback) {
-    console.log(rule,value,this.state.formData.new_password,callback)
-    if (value && value !== this.state.formData.new_password) {
+    console.log(rule,value,this.state.formData.newPwd,callback)
+    if (value && value !== this.state.formData.newPwd) {
       callback('两次输入密码不一致！');
     } else {
       callback();
@@ -112,8 +124,24 @@ class ChangePassword extends React.Component{
   }
 
   
-  handleSubmit(){
-    
+  handleSubmit(e){
+    e.preventDefault();
+    var data = Object.assign({},this.state.formData);
+    // 修改密码
+    _G.ajax({
+      url : updatePWD,
+      data : data,
+      type : 'get',
+      success : function(res){
+        msg_success('密码修改成功,请重新登录');
+        _G.Token = '';
+        location.href = location.hostname + ':'+ location.port;
+      }.bind(this),
+      errors:function(){
+        msg_error('密码修改失败,请重试');
+      }
+    })
+
   }
   handleReset(){
    goBack();
@@ -126,46 +154,46 @@ class ChangePassword extends React.Component{
 			<div className="m-form">
         <div className="m-form-title">修改密码</div>
         <div className="m-form-con">
-      <Form horizontal>
+      <Form horizontal onSubmit={this.handleSubmit}>
         <Validation ref="validation" onValidate={this.handleValidate}>
           <Row>
             <Col span="8">
                 <FormItem
                   label="旧密码："
-                  id="old_password"
+                  id="originalPwd"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('old_password')}
-                  help={status.old_password.errors ? status.old_password.errors.join(',') : null}
+                  validateStatus={this.renderValidateStyle('originalPwd')}
+                  help={status.originalPwd.errors ? status.originalPwd.errors.join(',') : null}
                   required>
                     <Validator rules={[{required: true, message: '请输入旧密码',type:"string"}]}>
-                      <Input type="password" name="old_password" value={formData.old_password} onContextMenu={noop} onPaste={noop} onCopy={noop} onCut={noop} autoComplete="off" onChange={this.onChange} />
+                      <Input type="password" name="originalPwd" value={formData.originalPwd} onContextMenu={noop} onPaste={noop} onCopy={noop} onCut={noop} autoComplete="off" onChange={this.onChange} />
                     </Validator>
                 </FormItem>
                 <FormItem
                   label="新密码："
-                  id="new_password"
+                  id="newPwd"
                   hasFeedback
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('new_password')}
-                  help={status.new_password.errors ? status.new_password.errors.join(',') : null}
+                  validateStatus={this.renderValidateStyle('newPwd')}
+                  help={status.newPwd.errors ? status.newPwd.errors.join(',') : null}
                   required>
                     <Validator rules={[{required: true, whitespace: true,message: '请输入新密码',type:"string"}, {validator: this.checkPass}]}>
-                      <Input type="password" name="new_password" value={formData.new_password} onContextMenu={noop} onPaste={noop} onCopy={noop} onCut={noop} autoComplete="off" onChange={this.onChange} />
+                      <Input type="password" name="newPwd" value={formData.newPwd} onContextMenu={noop} onPaste={noop} onCopy={noop} onCut={noop} autoComplete="off" onChange={this.onChange} />
                     </Validator>
                 </FormItem>
                 <FormItem
                   label="确认新密码："
-                  id="re_password"
+                  id="PwdAgain"
                   hasFeedback
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('re_password')}
-                  help={status.re_password.errors ? status.re_password.errors.join(',') : null}
+                  validateStatus={this.renderValidateStyle('PwdAgain')}
+                  help={status.PwdAgain.errors ? status.PwdAgain.errors.join(',') : null}
                   required>
                     <Validator rules={[{required: true, whitespace: true,message: '请再次输入密码',type:"string"}, {validator: this.checkPass2}]}>
-                      <Input type="password" name="re_password" value={formData.re_password} onContextMenu={noop} onPaste={noop} onCopy={noop} onCut={noop} autoComplete="off" onChange={this.onChange} />
+                      <Input type="password" name="PwdAgain" value={formData.PwdAgain} onContextMenu={noop} onPaste={noop} onCopy={noop} onCut={noop} autoComplete="off" onChange={this.onChange} />
                     </Validator>
                 </FormItem>
                 

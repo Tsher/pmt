@@ -10,7 +10,7 @@ const msg_success = function(){
 
 // 全局方法
 window['_G']={
-	Token : 'b5rQOd51TiM=',
+	Token : '',
 	// 用户性别
 	userSex : function(n){
 		return n==1?'男':'女'
@@ -70,7 +70,9 @@ window['_G']={
 	},
 	// ajax
 	ajax:function(opts){
-		opts.url += /\?/.test(opts.url) ? ('&Token='+_G.Token) : ('?Token='+_G.Token);
+		if( opts.url.indexOf('/SLogin/') < 0 ){
+			opts.url += /\?/.test(opts.url) ? ('&Token='+_G.Token) : ('?Token='+_G.Token);
+		}
 		var opt = opts;
 
 		$.ajax({
@@ -180,11 +182,13 @@ window['config'] = {
 	login : '/api/SLogin/LoginIn', // 登录
 	valCode : '/api/SLogin/GetValidateCode', // 验证码
 	checkValCode : '/api/SLogin/CheckVailidateCode', // 校验验证码
+	updatePWD : '/api/SLogin/UpdateUserPwd', // 修改密码
 }
 
 
 
 function get_data(url,name,params,cb){
+	if(!_G.Token) return;
 	_G.ajax({
 		url : config.__URL+url,
 		data : params || {},
