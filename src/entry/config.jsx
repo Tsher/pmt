@@ -176,6 +176,9 @@ window['config'] = {
 	rule : {
 		number : {
 			list : '/api/SIntegralRule/GetIntegralRules', // 积分规则
+			add : '/api/SIntegralRule/AddRule',  // 增加积分规则
+			edit : '/api/SIntegralRule/UpdateRule',   // 编辑积分规则
+			editList : '/api/SIntegralRule/GetRule',   // 获取指定积分规则
 		},
 	},
 	// 登录，修改密码

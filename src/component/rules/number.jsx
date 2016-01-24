@@ -17,6 +17,7 @@ const FormItem = Form.Item;
 
 import '../../entry/config';
 const ruleNumberList = config.__URL + config.rule.number.list;
+const ruleNumberDel  = config.__URL + config.rule.number.del;
 
 var changeTableState;
 
@@ -44,9 +45,9 @@ const columns = [{
   title: '操作',
   key: 'operation',
   render: function(text, record,index) {
-    var edit = '/rule/number/edit/'+record.key,
-      del = '/rule/number/del/' + record.key
-    return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.key} data-index={index} data-name={record.ruleName} >删除</a></span>;
+    var edit = '/rule/number/edit/'+record.IntegralRule_Code,
+      del = '/rule/number/del/' + record.IntegralRule_Code
+    return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.IntegralRule_Code} data-index={index} data-name={record.IntegralRule_Name} >删除</a></span>;
   }
 }];
 
@@ -165,7 +166,7 @@ class RuleNumber extends React.Component{
   showModal(id,index,name){
     this.setState({
       visible : true,
-      ModalText: '你正要删除 规则："'+ name +'"，是否继续？',
+      ModalText: '你正要删除 规则："'+ id +'"，是否继续？',
       confirmLoading: false,
       delId : id,
       index : index
@@ -179,11 +180,33 @@ class RuleNumber extends React.Component{
     this.setState({
       confirmLoading:true
     })
-    setTimeout(function(){
-      this.setState({
-        visible : false
-      })
-    }.bind(this),2000)
+    _G.ajax({
+      url : ruleNumberDel,
+      method : 'get',
+      data : {
+        IntegralRule_Code : this.state.delId
+      },
+      success:function(res){
+        if(res.ReturnOperateStatus == 'True'){
+          this.setState({
+            visible : false
+          })
+          console.log('删除成功');
+          var d = [].concat(this.state.data);
+          d.splice(d[this.state.index],1);
+          console.log(this.state.index)
+          this.setState({
+            data : d,
+            loading : false
+          })
+          //**********************更新table数据****************
+          return
+        }
+        if(res.ReturnOperateStatus == 'False'){
+          console.log('删除失败')
+        }
+      }.bind(this)
+    })
   }
   handleCancel(e){
     this.setState({
