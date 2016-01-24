@@ -80,7 +80,7 @@ class RuleNumber extends React.Component{
     this.tableChange = this.tableChange.bind(this);
     this.showSizechange = this.showSizechange.bind(this);
 
-    
+    this.changeTableState(this.state.opts);
   }
 
 
@@ -125,10 +125,10 @@ class RuleNumber extends React.Component{
     var opts = opts || {};
     opts.page = opts.page || this.state.opts.page;
     opts.pageSize = opts.pageSize ||  this.state.opts.pageSize;
-
-    this.setState({
-      opts : opts
-    })
+    
+    // this.setState({
+    //   opts : opts
+    // })
     
     //opts.EntityCode = 'DEFAULT';
     var that = this;
