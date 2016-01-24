@@ -27,43 +27,55 @@ window['_G']={
 	sale_area : [],
 	// 所有角色信息
 	user_role_all : [],
+	// 
 	timeFormat : function(t,f){
 		if(!t){
 			return ''
 		}
-		var f = f || 'YYYY-MM-DD hh:mm:ss';
-		var t = typeof t == 'number'? t : t.replace(/\D/g,'')*1;
-		t = new Date(t).getTime();
-		t = moment(t).format('YYYY-MM-DD HH:MM:SS');
-		return t;
+		var f = f || 'YYYY-MM-DD HH:mm:ss';
+		//var t = typeof t == 'number'? t : t.replace(/\D/g,'')*1;
+		t = new Date(t);
+		//t = moment(t).format(f);
+		var y = t.getFullYear(),
+			m = t.getMonth()*1+1,
+			d = t.getDate(),
+			h = t.getHours(),
+			mm = t.getMinutes(),
+			s = t.getSeconds();
+		m = m < 10 ? '0'+m : m;
+		d = d < 10 ? '0'+d : d;
+		h = h < 10 ? '0'+h : h;
+		mm = mm < 10 ? '0'+mm : mm;
+		s = s < 10 ? '0'+s : s;
+		return y + '-' + m + '-' + d + ' ' + h + ':' + mm + ':' + s;
 	},
 	// ajax
 	ajax:function(opts){
 		opts.url += /\?\&/.test(opts.url) ? ('&Token='+_G.Token) : ('?Token='+_G.Token);
 		var opt = opts;
-		
+
 		$.ajax({
 			url : opts.url,
 			type : opts.type || opts.method || 'post',
 			data : opts.data || {},
 			success : function(res){
 				if( !res.Data && res.ReturnOperateStatus == null){
-					console.log('数据异常，请联系管理员');
+					console.log('数据异常，请联系管理员',opts.url,opts.data);
 					return;
 				}
 				if(!res.Data && res.ReturnOperateStatus == false){
-					console.log('操作失败，请重新试试');
+					console.log('操作失败，请重新试试',opts.url,opts.data);
 					return;
 				}
 				opts.success(res);
 			},
 			error:function(res){
 				if(res.ReturnOperateStatus == null){
-					console.log('数据异常，请联系管理员');
+					console.log('数据异常，请联系管理员',opts.url);
 					return;
 				}
 				if(res.ReturnOperateStatus == false){
-					console.log('操作失败，请重新试试');
+					console.log('操作失败，请重新试试',opts.url);
 					return;
 				}
 				opts.error && opts.error();
@@ -135,7 +147,7 @@ window['config'] = {
 
 
 
-function get_data(url,name,params){
+function get_data(url,name,params,cb){
 	_G.ajax({
 		url : config.__URL+url,
 		data : params || {},
@@ -143,18 +155,27 @@ function get_data(url,name,params){
 		success:function(res){
 			console.log(name,res.Data)
 			_G[name] = res.Data;
-			if(params && params.callback){
-				params.callback(res)
-			}
+			cb&&cb(res);
 		}
 	})
 }
-get_data(config['sale']['do']['sale_prizeLevel'],'sale_prizeLevel'); // 获取奖品级别
-get_data(config['sale']['do']['sale_prizeName'],'sale_prizeName',{
+// 获取奖品级别
+get_data(config['sale']['do']['sale_prizeLevel'],'sale_prizeLevel'); 
 
-}); // 获取奖品名称
-get_data(config['sale']['do']['sale_productName'],'sale_productName'); // 获取产品名称
-get_data(config['sale']['do']['sale_area'],'sale_area'); // 获取产品名称
+// 获取奖品名称
+get_data(config['sale']['do']['sale_prizeName'],'sale_prizeName',{
+	Prize_Name : ''
+}); 
+
+// 获取产品名称
+get_data(config['sale']['do']['sale_productName'],'sale_productName',{
+	Product_Name : ''
+}); 
+
+// 获取销售区域
+get_data(config['sale']['do']['sale_area'],'sale_area',{
+	SalesRegion_Name : ''
+}); 
 
 // 获取所有角色信息
 get_data(config['user']['role']['all'],'user_role_all');

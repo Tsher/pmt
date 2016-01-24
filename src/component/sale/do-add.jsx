@@ -14,6 +14,7 @@ import Row from 'antd/lib/row';
 import DatePicker from 'antd/lib/date-picker';
 import InputNumber from 'antd/lib/input-number';
 import Tabs from 'antd/lib/tabs';
+import moment from 'moment';
 
 import Select from 'antd/lib/select';
 import Radio from 'antd/lib/radio';
@@ -55,6 +56,10 @@ const msg_success = function(){
 }
 
 
+import '../../entry/config';
+const saleDoAdd = config.__URL + config.sale['do']['add']; // 获取活动列表
+
+
 class SaleDoAdd extends React.Component{
 
   //mixins: [Validation.FieldMixin],
@@ -64,27 +69,26 @@ class SaleDoAdd extends React.Component{
     this.state = {
       status : {
         
-        name : {}, // 活动名称
-        
-        url : {}, // 活动url
-        times : {},
-        startTime : {}, // 活动开始时间
-        endTime : {}, // 活动结束时间
+        MA_Name : {}, // 活动名称
+        MA_BrochureURL : {}, // 活动url
+        MA_InitialDraw : {},
+        MA_StartTime : {}, // 活动开始时间
+        MA_EndTime : {}, // 活动结束时间
         
       },
       formData: {
         id : undefined,
         title : '新增促销活动',
-        name : undefined, // 活动名称
-        url : undefined, // 活动url
-        times : undefined, // 初始首次抽奖次数
-        startTime : undefined, // 活动开始时间
-        endTime : undefined, // 活动结束时间
-        rules : {
+        MA_Name : undefined, // 活动名称
+        MA_BrochureURL : undefined, // 活动url
+        MA_InitialDraw : undefined, // 初始首次抽奖次数
+        MA_StartTime : undefined, // 活动开始时间
+        MA_EndTime : undefined, // 活动结束时间
+        PromotionDetail : {
           time : [],
-          area:[],
+          area : [],
           product : []
-        }
+        }, // 所有活动中奖率
       }
     };
     this.setField = FieldMixin.setField.bind(this);
@@ -100,6 +104,7 @@ class SaleDoAdd extends React.Component{
 
     this.addPrizeTime = this.addPrizeTime.bind(this);
     this.sendEndTime = this.sendEndTime.bind(this);
+    this.delPrizeTime = this.delPrizeTime.bind(this);
   }
 
   componentDidMount(){
@@ -110,56 +115,17 @@ class SaleDoAdd extends React.Component{
       // 模拟数据
       var state = {
         formData:{
-
-
-        id : this.props.params.id,
-        title : '编辑促销活动',
-        url : 'http://www.baidu.com',
-        times : 3,
-        startTime : '2015-12-12 10:30:00',
-        endTime : '2016-01-03 10:30:00',
-        rules : {
-          time : [
-            {
-            key: 0,
-            prizeId: '000001',
-            prizeName: '矿泉水1',
-            prizeLevel : '1级',
-            probability_first : '1.2',
-            probability : '0.3',
-            prize_startTime : '2015-12-12 23:32:23',
-            prize_endTime: '2015-12-23 23:23:23',
-            prize_type : 1
-          }],
-          area : [{
-            key: 0,
-            areaId : 'a01',
-            prizeId: '000001',
-            prizeName: '矿泉水1',
-            prizeLevel : '1级',
-            probability_first : '1.2',
-            probability : '0.3',
-            prize_startTime : '2015-12-12 23:32:23',
-            prize_endTime: '2015-12-23 23:23:23',
-            prize_type : 1
-          }],
-          product : [
-            {
-            key: 0,
-            productId : 'a01',
-            prizeId: '000001',
-            prizeName: '矿泉水1',
-            prizeLevel : '1级',
-            probability_first : '1.2',
-            probability : '0.3',
-            prize_startTime : '2015-12-12 23:32:23',
-            prize_endTime: '2015-12-23 23:23:23',
-            prize_type : 1
+          id : this.props.params.id,
+          title : '编辑促销活动',
+          url : 'http://www.baidu.com',
+          MA_InitialDraw : 3,
+          MA_StartTime : '2015-12-12 10:30:00',
+          MA_EndTime : '2016-01-03 10:30:00',
+          PromotionDetail : {
+            time : [], product : [], area : []
           }
-          ]
         }
       }
-        }
       this.setState(state);
     }else{
       // 新增 *************
@@ -194,8 +160,8 @@ class SaleDoAdd extends React.Component{
 
   // 预览
   handleUrl(){
-    if(this.state.url){
-      window.open(this.state.url)
+    if(this.state.formData.MA_BrochureURL){
+      window.open(this.state.formData.MA_BrochureURL)
     }else{
       msg_error('请填写链接地址')
     }
@@ -203,16 +169,114 @@ class SaleDoAdd extends React.Component{
 
   // 更新 中奖率
   addPrizeTime(type,data){
+    // type 类型
+    // data 子节点传进来的数据，this.state
+    function t(s){
+      return new Date(s).getTime();
+    }
 
-    var states = Object.assign({},this.state);
+    // 新增，需要判断时间重叠
+    if(!data.index && data.index != 0){
+      // 时间排重
+      var startTime = t(data.SActivityTime),
+          endTime = t(data.EActivityTime);
+      if( startTime > t(this.state.formData.MA_EndTime) || endTime < t(this.state.formData.MA_StartTime)  || endTime < startTime){
+        msg_error('时间不在活动范围内，请重新填写');
+        return;
+      }
+      var s = true;
+      var d = [];
+      if(data.prize_type == 1){
+        d= d.concat(this.state.formData.PromotionDetail.area);
+        d= d.concat(this.state.formData.PromotionDetail.product);
+      }
+      if(data.prize_type == 2){
+        d= d.concat(this.state.formData.PromotionDetail.time);
+        d= d.concat(this.state.formData.PromotionDetail.product);
+      }
+      if(data.prize_type == 3){
+        d= d.concat(this.state.formData.PromotionDetail.area);
+        d= d.concat(this.state.formData.PromotionDetail.product);
+      }
 
-    states.formData.rules[type] = data;
-    this.setState(states);
-    var that = this;
-    setTimeout(function(){
-      console.log('更新 中奖率');
-      console.log(that.state)
-    },1000)
+      for(var i =0,l=d.length; i<l; i++){
+        if( startTime >= t(d[i].SActivityTime) && startTime <= t(d[i].EActivityTime) || endTime <= t(d[i].EActivityTime) && endTime >= t(d[i].SActivityTime) ){
+          s = false;
+        }
+        if(startTime == t(d[i].SActivityTime) || endTime == t(d[i].EActivityTime) ){
+          s = false;
+        }
+      }
+      
+      if(!s){
+        msg_error('时间重叠，请重新填写');
+        return;
+      }
+    }
+
+    var all = Object.assign({},this.state.formData);
+    // 修改
+    if(data.index || data.index == 0 ){
+      all.PromotionDetail[type][data.index] = {
+        key : data.index,
+        Prize_Code : data.Prize_Code, // 奖品编码,
+        Prize_Name : data.Prize_Name, // 奖品名称
+        Prize_Level : data.Prize_Level, // 奖品级别名称
+        Product_Code : data.Product_Code, // 产品编码
+        Product_Name : data.Product_Name, // 产品名称
+        Prize_Level_Name : data.Prize_Level_Name, // 奖品级别
+        FirstWinningRate : data.FirstWinningRate, // 首次中奖率
+        SalesRegion_Code : data.SalesRegion_Code, // 销售区域编码
+        SalesRegion_Name : data.SalesRegion_Name, // 销售区域名称
+        WinningPlaces : data.WinningPlaces, // 次数
+        NFirstWinningRate :  data.NFirstWinningRate, // 非首次中奖率
+        SActivityTime : _G.timeFormat(data.SActivityTime), // 中奖时间
+        EActivityTime : _G.timeFormat(data.EActivityTime), // 中奖时间
+      }
+    }else{
+      // 新增
+      all.PromotionDetail[type][all.PromotionDetail[type].length] = {
+        key : all.PromotionDetail[type].length,
+        Prize_Code : data.Prize_Code, // 奖品编码,
+        Prize_Name : data.Prize_Name, // 奖品名称
+        Prize_Level : data.Prize_Level, // 奖品级别名称
+        Product_Code : data.Product_Code, // 产品编码
+        Product_Name : data.Product_Name, // 产品名称
+        SalesRegion_Code : data.SalesRegion_Code, // 销售区域编码
+        SalesRegion_Name : data.SalesRegion_Name, // 销售区域名称
+        WinningPlaces : data.WinningPlaces, // 次数
+        Prize_Level_Name : data.Prize_Level_Name, // 奖品级别
+        FirstWinningRate : data.FirstWinningRate, // 首次中奖率
+        NFirstWinningRate :  data.NFirstWinningRate, // 非首次中奖率
+        SActivityTime : _G.timeFormat(data.SActivityTime), // 中奖时间
+        EActivityTime : _G.timeFormat(data.EActivityTime), // 中奖时间
+      }
+    }
+
+    this.setState({
+      formData : all
+    });
+    console.log('更新 中奖率');
+    console.log(this.state);
+
+  }
+
+  // 删除
+  delPrizeTime(type,index){
+    console.log(type,index)
+    var all = Object.assign({},this.state.formData);
+    
+    all.PromotionDetail[type].splice(index,1); // 删除data中index = changeId 的值, 
+    console.log(all)
+    // 重置key
+    all.PromotionDetail[type].map(function(item,i){
+      all.PromotionDetail[type][i].key = i;
+    })
+
+    this.setState({
+      formData : all
+    })
+
   }
 
 
@@ -231,7 +295,7 @@ class SaleDoAdd extends React.Component{
   }
 
   sendEndTime(){
-    return this.state.formData.endTime
+    return this.state.formData.MA_EndTime
   }
 
   handleReset(e) {
@@ -257,28 +321,32 @@ class SaleDoAdd extends React.Component{
   handleSubmit(e) {
     //***********************************等待ajax提交数据 ******** 区分 新增 或者 编辑
     e.preventDefault();
-    // this.setState({
-    //   isEmailOver: true
-    // });
-    const validation = this.refs.validation;
-    validation.validate((valid) => {
-      if (!valid) {
-        console.log('error in form');
-        msg_error()
-        return;
-      } else {
-        console.log('submit');
+    var data = Object.assign({},this.state.formData);
+    var d = [];
+    d = d.concat(data.PromotionDetail.time);
+    d = d.concat(data.PromotionDetail.area);
+    d = d.concat(data.PromotionDetail.product);
+    data.PromotionDetail = d;
+    _G.ajax({
+      url : saleDoAdd,
+      type : 'post',
+      data : {
+        JsonValue : JSON.stringify(data)
+      },
+      success : function(...arg){
+        console.log('add ')
+        console.log(...arg);
       }
-      console.log(this.state.formData);
-      msg_success();
-    });
+    })
+    console.log(this.state.formData);
+    
   }
 
   disabledEndDate(endValue){
-    if (!endValue || !this.state.startTime) {
+    if (!endValue || !this.state.MA_StartTime) {
       return false;
     }
-    return endValue.getTime() <= this.state.startTime.getTime();
+    return endValue.getTime() <= this.state.MA_StartTime.getTime();
   }
 
   // checkUserState(rule, value, callback) {
@@ -314,37 +382,37 @@ class SaleDoAdd extends React.Component{
               <li className="fleft">
                 <FormItem
                 label="活动名称："
-                id="name">
-                  <Input placeholder="" id="name" name="name" onChange={this.setValue} value={this.state.formData.name} />
+                id="MA_Name">
+                  <Input placeholder="" id="MA_Name" name="MA_Name" onChange={this.setValue} value={this.state.formData.MA_Name} />
               </FormItem>
               </li>
               <li className="fleft">
                 <FormItem
                 label="活动彩页："
-                id="url">
-                  <Input placeholder="" id="url" name="url" onChange={this.setValue} value={this.state.formData.url} />
-                  <Button type="primary" onClick={this.handleUrl} data-url={formData.url}>浏览</Button>
+                id="MA_BrochureURL">
+                  <Input placeholder="" id="MA_BrochureURL" name="MA_BrochureURL" onChange={this.setValue} value={this.state.formData.MA_BrochureURL} />
+                  <Button type="primary" onClick={this.handleUrl} data-url={formData.MA_BrochureURL}>浏览</Button>
               </FormItem>
               </li>
               <li className="fleft">
                 <FormItem
                 label="初始首次参与抽奖次数："
-                id="times">
-                  <Input placeholder="" id="times" name="times" onChange={this.setValue} value={this.state.formData.times} />
+                id="MA_InitialDraw">
+                  <Input placeholder="" id="MA_InitialDraw" name="MA_InitialDraw" onChange={this.setValue} value={this.state.formData.MA_InitialDraw} />
                   
               </FormItem>
               </li>
               <li className="fleft date-picker">
-                <FormItem id="startTime" label="活动时间：" labelCol={{span : 5}} >
+                <FormItem id="MA_StartTime" label="活动时间：" labelCol={{span : 5}} >
                     <Row span="24" >
                     <Col span="10">
-                  <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'startTime')} />
+                  <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'MA_StartTime')} />
                 </Col>
                 <Col span="1">
                   <p className="ant-form-split">-</p>
                 </Col>
                 <Col span="10">
-                  <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'endTime')} />
+                  <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'MA_EndTime')} />
                 </Col>
                 </Row>
                 </FormItem>
@@ -361,13 +429,13 @@ class SaleDoAdd extends React.Component{
         <div className="m-form-title">抽奖设置</div>
         <Tabs defaultActiveKey="1" >
           <TabPane tab="时间区间中奖率" key="1">
-            <SaleADDTime addPrizeTime={this.addPrizeTime} data={this.state.formData.rules.time} endTime={this.sendEndTime} />
+            <SaleADDTime addPrizeTime={this.addPrizeTime} delPrizeTime={this.delPrizeTime} data={this.state.formData.PromotionDetail.time} endTime={this.sendEndTime} />
           </TabPane>
           <TabPane tab="区域中奖率" key="2">
-            <SaleADDArea addPrizeTime={this.addPrizeTime} data={this.state.formData.rules.area} />
+            <SaleADDArea addPrizeTime={this.addPrizeTime} delPrizeTime={this.delPrizeTime} data={this.state.formData.PromotionDetail.area} />
           </TabPane>
           <TabPane tab="产品种类中奖率" key="3">
-            <SaleADDProduct addPrizeTime={this.addPrizeTime} data={this.state.formData.rules.product} />
+            <SaleADDProduct addPrizeTime={this.addPrizeTime} delPrizeTime={this.delPrizeTime} data={this.state.formData.PromotionDetail.product} />
           </TabPane>
         </Tabs>
 

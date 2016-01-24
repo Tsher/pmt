@@ -30,13 +30,11 @@ const FormItem = Form.Item;
 let changeState;
 
 
-// 奖品json
-const prizes = {
-  'prize-1' : '奖品1',
-  'prize-2' : '奖品2',
-  'prize-3' : '奖品3',
-  'prize-4' : '奖品4',
-  'prize-5' : '奖品5',
+const msg_error = function(text){
+  message.error(text||'数据验证错误,请检查后提交')
+}
+const msg_success = function(){
+  message.success('数据提交成功，等待后台处理')
 }
 
 
@@ -49,15 +47,24 @@ class SelectForm extends React.Component{
   	super();
     this.state =  {
       index : undefined, // 本次规则在table数据中得index
-      prizeId : undefined, // 奖品编码,
-      productId : undefined, // 产品id
-      prizeName : undefined, // 奖品名称
-      prizeLevel : undefined, // 奖品级别
-      probability_first : undefined, // 首次中奖率
-      probability : undefined, // 非首次中奖率
-      prize_startTime : undefined, // 中奖时间
-      prize_endTime : undefined, // 中奖时间
-      prize_type : 1, // 抽奖模式  1 = 时间区间  2=区域  3 = 产品
+      Prize_Code : undefined, // 奖品编码,
+      Prize_Name : undefined, // 奖品名称
+      Prize_Level : undefined, // 奖品级别
+      Product_Code : undefined, // 产品编码
+      Product_Name : undefined, // 产品名称
+      SalesRegion_Code : undefined, // 销售区域编码
+      SalesRegion_Name : undefined, // 销售区域名称
+      Prize_Level_Name : undefined, // 奖品级别名称
+      FirstWinningRate : undefined, // 首次中奖率
+      NFirstWinningRate : undefined, // 非首次中奖率
+      SActivityTime : undefined, // 中奖开始时间
+      EActivityTime : undefined, // 中奖结束时间
+      WinningPlaces : undefined, // 中奖名额
+      prize_type : 3, // 抽奖模式  1 = 时间区间  2=区域  3 = 产品
+      sale_all_prizeName : <Option value="1">1</Option>, // 所有奖品
+      sale_all_prizeLevel : <Option value="1">1</Option>, // 所有奖品级别
+      sale_all_areaName : <Option value="1">1</Option>, // 所有区域级别
+      sale_all_productName : <Option value="1">1</Option>, // 所有区域级别
     };
 
     this.setValue = this.setValue.bind(this);
@@ -72,6 +79,40 @@ class SelectForm extends React.Component{
     changeState = this.changeState;
     clean = this.clean;
 
+    var that = this;
+    // 获取奖品级别
+    _G.get_data(config['sale']['do']['sale_prizeLevel'],'sale_prizeLevel',{},function(res){
+      const doms = res.Data.map( (item,index)=>{
+        return <Option key={index} value={item['REAL_Code']}>{item['CODE_NM']}</Option>
+      } )
+      that.setState({
+        sale_all_prizeLevel : doms
+      })
+    }); 
+
+    // 获取奖品名称
+    _G.get_data(config['sale']['do']['sale_prizeName'],'sale_prizeName',{
+      Prize_Name : ''
+    },function(res){
+      const doms = res.Data.map( (item,index)=>{
+        return <Option key={index} value={item['Prize_Code']}>{item['Prize_Name']}</Option>
+      } )
+      that.setState({
+        sale_all_prizeName : doms
+      })
+    }); 
+
+    // 获取产品区域
+    _G.get_data(config['sale']['do']['sale_productName'],'sale_productName',{
+      Product_Name : ''
+    },function(res){
+      const doms = res.Data.map( (item,index)=>{
+        return <Option key={index} value={item['Product_Code']}>{item['Product_Name']}</Option>
+      } )
+      that.setState({
+        sale_all_productName : doms
+      })
+    }); 
     
 
   }
@@ -90,8 +131,10 @@ class SelectForm extends React.Component{
   	})
   }
 
-  changeState(data){
-    this.setState(data);
+  changeState(index){
+    var d = this.props.data[index];
+    d.index = index;
+    this.setState(d);
   }
 
   clean(){
@@ -101,12 +144,14 @@ class SelectForm extends React.Component{
       productId : undefined, // 区域id
       prizeName : undefined, // 奖品名称
       prizeLevel : undefined, // 奖品级别
-      probability_first:undefined, // 首次中奖率
-      probability : undefined, // 非首次中奖率
-      prize_startTime : undefined, // 中奖时间
-      prizeQuota:undefined, // 中奖名额
-      prize_endTime : undefined, // 中奖时间
-      prize_type : 1, // 抽奖模式  1 = 时间区间  2=区域  3 = 产品
+      Product_Code : undefined, // 产品编码
+      Product_Name : undefined, // 产品名称
+      FirstWinningRate:undefined, // 首次中奖率
+      NFirstWinningRate : undefined, // 非首次中奖率
+      SActivityTime : undefined, // 中奖时间
+      WinningPlaces:undefined, // 中奖名额
+      EActivityTime : undefined, // 中奖时间
+      prize_type : 3, // 抽奖模式  1 = 时间区间  2=区域  3 = 产品
     })
   }
   
@@ -114,20 +159,14 @@ class SelectForm extends React.Component{
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
-    message.success('收到表单值~~~ ：' + JSON.stringify(this.state, function(k, v) {
-      if (typeof v === 'undefined') {
-        return '';
-      }
-      return v;
-    }));
-
+    console.log('提交')
+    console.log(this.state)
 
     // 修改已有数据
     if(this.state.index){
-      updateTableData(this.state.index,this.state); // 调用父节点的更新方法
+      updateTableData(this.state); // 调用父节点的更新方法
     }else{
-      
-      updateTableData(data.length,this.state);
+      updateTableData(this.state);
     }
 
 
@@ -139,12 +178,40 @@ class SelectForm extends React.Component{
   // datepicker change
   onChange(field,value){
     // 选择奖品时，同时写入奖品名称
-    if(field == 'prizeId'){
+    if(field == 'Prize_Level'){
+      let d;
+      this.state.sale_all_prizeLevel.map( (item)=>{
+        if(item.props.value == value){
+          d = item.props.children
+        }
+      } );
       this.setState({
-        'prizeName' : prizes[value]
+        'Prize_Level_Name' : d
       })
-    }
-    
+   }
+   if(field == 'Prize_Code'){
+    var d;
+    this.state.sale_all_prizeName.map( (item)=>{
+        if(item.props.value == value){
+          d = item.props.children
+        }
+      } );
+    this.setState({
+      'Prize_Name' : d
+    })
+   }
+   if(field == 'Product_Code'){
+    var d;
+    this.state.sale_all_productName.map( (item)=>{
+        if(item.props.value == value){
+          d = item.props.children
+        }
+      } );
+    this.setState({
+      'Product_Name' : d
+    })
+   }
+   
     this.setState({
       [field] : value
     })
@@ -152,10 +219,11 @@ class SelectForm extends React.Component{
   
 
   disabledEndDate(endValue){
-    if (!endValue || !this.state.prize_startTime) {
+    console.log(this.props.endTime)
+    if (!endValue || !this.state.SActivityTime ) {
       return false;
     }
-    return endValue.getTime() <= this.state.prize_startTime.getTime();
+    return endValue.getTime() <= this.state.SActivityTime.getTime() ;
   }
 
  
@@ -166,62 +234,50 @@ class SelectForm extends React.Component{
       <ul className="clearfix do-add-time">
         <li span="8" className="fleft" style={{width:'30%'}}>
           <label className="do-add-time-title">选择产品：</label>
-          <Select size="large" placeholder="请选择区域" style={{width: 140}} name="productId"  value={this.state.productId} onChange={this.onChange.bind(this,'productId')}>
-                    <Option value="product-1">区域1</Option>
-                    <Option value="product-2">区域2</Option>
-                    <Option value="product-3">区域3</Option>
-                    <Option value="product-4">区域4</Option>
-                    <Option value="product-5">区域5</Option>
-                  </Select>
+          <Select size="large" placeholder="请选择区域" style={{width: 140}} name="Product_Code"  value={this.state.Product_Code} onChange={this.onChange.bind(this,'Product_Code')}>
+            {this.state.sale_all_productName}
+          </Select>
         </li>
         <li span="8" className="fleft" style={{width:'30%'}}>
           <label className="do-add-time-title">奖品名称：</label>
-          <Select size="large" placeholder="请选择奖品" style={{width: 140}} name="prizeId"  value={this.state.prizeId} onChange={this.onChange.bind(this,'prizeId')}>
-                    <Option value="prize-1">奖品1</Option>
-                    <Option value="prize-2">奖品2</Option>
-                    <Option value="prize-3">奖品3</Option>
-                    <Option value="prize-4">奖品4</Option>
-                    <Option value="prize-5">奖品5</Option>
-                  </Select>
+          <Select size="large" placeholder="请选择奖品" style={{width: 140}} name="Prize_Code"  value={this.state.Prize_Code} onChange={this.onChange.bind(this,'Prize_Code')}>
+            {this.state.sale_all_prizeName}
+          </Select>
         </li>
         <li span="8" className="fleft" style={{width:'30%'}}>
         <label className="do-add-time-title">奖品级别：</label>
-          <Select name="prizeLevel"  style={{width: 140}} value={this.state.prizeLevel} onChange={this.onChange.bind(this,'prizeLevel')}>
-                    <Option value="prizelevel-1">奖品级别1</Option>
-                    <Option value="prizelevel-2">奖品级别2</Option>
-                    <Option value="prizelevel-3">奖品级别3</Option>
-                    <Option value="prizelevel-4">奖品级别4</Option>
-                    <Option value="prizelevel-5">奖品级别5</Option>
-                  </Select>
+          <Select name="Prize_Level"  style={{width: 140}} value={this.state.Prize_Level} onChange={this.onChange.bind(this,'Prize_Level')}>
+            {this.state.sale_all_prizeLevel}
+          </Select>
         </li>
       </ul>
       <ul className="clearfix do-add-time">
         <li className="fleft" style={{width:'30%'}} span="8">
           <label className="do-add-time-title">首次中奖率：</label>
-          <Input placeholder="" id="probability_first" name="probability_first" style={{width:140}}  value={this.state.probability_first} onChange={this.setValue}  />
+          <Input placeholder="" id="FirstWinningRate" name="FirstWinningRate" style={{width:140}}  value={this.state.FirstWinningRate} onChange={this.setValue}  />
          
           <span className="ant-form-text"> %</span>
         </li>
         <li className="fleft" style={{width:'30%'}}  span="8">
         <label className="do-add-time-title">非首次中奖率：</label>
-        <Input placeholder="" id="probability" name="probability" style={{width:140}}   value={this.state.probability}  onChange={this.setValue} />
+        <Input placeholder="" id="NFirstWinningRate" name="NFirstWinningRate" style={{width:140}}   value={this.state.NFirstWinningRate}  onChange={this.setValue} />
                     <span className="ant-form-text"> %</span>
          
         </li>
         <li className="fleft" style={{width:'30%'}}  span="8">
         <label className="do-add-time-title">中奖名额：</label>
-        <Input placeholder="" id="prizeQuota" name="prizeQuota" style={{width:100}}   value={this.state.prizeQuota}  onChange={this.setValue} />
+        <Input placeholder="" id="WinningPlaces" name="WinningPlaces" style={{width:100}}   value={this.state.WinningPlaces}  onChange={this.setValue} />
         </li>
       </ul>
       <ul className="do-add-time clearfix">
         <li className="fleft" style={{width:'70%'}}  span="20">
           <label className="do-add-time-title">活动时间：</label>
           <span className="timepicker">
-            <DatePicker format="yyyy-MM-dd HH:mm:ss" name="prize_startTime" style={{width:150}} showTime placeholder="开始日期" value={this.state.prize_startTime} onChange={this.onChange.bind(this,'prize_startTime')}  />
+            <DatePicker format="yyyy-MM-dd HH:mm:ss" name="SActivityTime" style={{width:150}} showTime placeholder="开始日期" value={this.state.SActivityTime} onChange={this.onChange.bind(this,'SActivityTime')}  />
           </span>
           <span className="timepicker-space"> -- </span>
           <span className="timepicker">
-            <DatePicker format="yyyy-MM-dd HH:mm:ss" name="prize_endTime" style={{width:150}}   showTime disabledDate={this.disabledEndDate} value={this.state.prize_endTime} placeholder="结束日期" onChange={this.onChange.bind(this,'prize_endTime')} />
+            <DatePicker format="yyyy-MM-dd HH:mm:ss" name="EActivityTime" style={{width:150}}   showTime disabledDate={this.disabledEndDate} value={this.state.EActivityTime} placeholder="结束日期" onChange={this.onChange.bind(this,'EActivityTime')} />
           </span>
         </li>
         <li className="fright" span="4">
@@ -239,8 +295,8 @@ let modalState;
 function showModal(e){
   Event.stop(e);
   var tar = Event.target(e);
-  var id = tar.getAttribute('data-id'),name = tar.getAttribute('data-prizename');
-  modalState(id,name)
+  var id = tar.getAttribute('data-id'),index=tar.getAttribute('data-index'),name = tar.getAttribute('data-prizename');
+  modalState(id,name,index)
 }
 
 
@@ -248,11 +304,9 @@ function showModal(e){
 function EditPrize(e){
   Event.stop(e);
   var tar = Event.target(e);
-  var id = tar.getAttribute('data-id');
-  // 根据id 取值
-  var d = data[id]; //根据id获取到本规则的值,传递给selectForm
-  d.index = id;
-  changeState(d);
+  var id = tar.getAttribute('data-id'),
+      index=tar.getAttribute('data-index');
+  changeState(index);
 }
 
 let updateTableData;
@@ -260,91 +314,56 @@ let updateTableData;
 const columns = [
 {
   title: '产品编码',
-  dataIndex: 'productId',
-  key: 'productId'
+  dataIndex: 'Product_Code',
+  key: 'Product_Code'
 },
 {
   title: '产品名称',
-  dataIndex: 'prizeId',
-  key: 'prizeId'
+  dataIndex: 'Product_Name',
+  key: 'Product_Name'
 }, {
   title: '奖品名称',
-  dataIndex: 'prizeName',
-  key: 'prizeName'
+  dataIndex: 'Prize_Name',
+  key: 'Prize_Name'
 }, {
   title: '奖品级别',
-  dataIndex: 'prizeLevel',
-  key: 'prizeLevel'
+  dataIndex: 'Prize_Level',
+  key: 'Prize_Level'
 }, {
   title: '首次中奖率',
-  dataIndex: 'probability_first',
-  key: 'probability_first'
+  dataIndex: 'FirstWinningRate',
+  key: 'FirstWinningRate'
 },{
   title: '非首次中奖率',
-  dataIndex: 'probability',
-  key: 'probability'
+  dataIndex: 'NFirstWinningRate',
+  key: 'NFirstWinningRate'
 },{
   title: '起始时间',
-  dataIndex: 'prize_startTime',
-  key: 'prize_startTime'
+  dataIndex: 'SActivityTime',
+  key: 'SActivityTime'
 },{
   title: '截止时间',
-  dataIndex: 'prize_endTime',
-  key: 'prize_endTime'
+  dataIndex: 'EActivityTime',
+  key: 'EActivityTime'
 },{
   title: '抽奖模式',
   dataIndex: 'prize_type',
-  key: 'prize_type'
+  key: 'prize_type',
+  render:function(){
+    return <span>区域抽奖</span>
+  }
 }, {
   title: '操作',
   key: 'operation',
   render: function(text, record,index) {
-  	var edit = '/sale/do/edit/'+record.prizeId,
-  		del = '/sale/user/del/' + record.prizeId
-    return <span><a href="#" onClick={EditPrize} data-id={record.key} data-text="编辑" >编辑</a><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.key} data-prizename={record.prizeName} data-text="删除" >删除</a></span>;
-	}
-}];
-
-let data = [{
-  key: 0,
-  productId : 'a01',
-  prizeId: '000001',
-  prizeName: '矿泉水1',
-  prizeLevel : '1级',
-  probability_first : '1.2',
-  probability : '0.3',
-  prize_startTime : '2015-12-12 23:32:23',
-  prize_endTime: '2015-12-23 23:23:23',
-  prize_type : 1
-}, {
-  key: 1,
-  productId : 'a02',
-  prizeId: '000002',
-  prizeName: '矿泉水2',
-  prizeLevel : '1级',
-  probability_first : '1.2',
-  probability : '0.3',
-  prize_startTime : '2015-12-12 23:32:23',
-  prize_endTime: '2015-12-23 23:23:23',
-  prize_type : 1
-}, {
-  key: 2,
-  productId : 'a03',
-  prizeId: '000003',
-  prizeName: '矿泉水3',
-  prizeLevel : '1级',
-  probability_first : '1.2',
-  probability : '0.3',
-  prize_startTime : '2015-12-12 23:32:23',
-  prize_endTime: '2015-12-23 23:23:23',
-  prize_type : 1
+    var edit = '/sale/do/edit/'+record.Prize_Code,
+      del = '/sale/user/del/' + record.Prize_Code
+    return <span><a href="#" onClick={EditPrize} data-id={record.key} data-index={index} data-text="编辑" >编辑</a><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.key} data-index={index} data-name={record.Prize_Name} data-text="删除" >删除</a></span>;
+  }
 }];
 
 
-
-
-
-
+var allData=[];
 
 class SaleADDProduct extends React.Component{
 	constructor(){
@@ -354,7 +373,7 @@ class SaleADDProduct extends React.Component{
       ModalText: '',
       confirmLoading: false,
       changeId : undefined, // 删除数据，在table数据中得index
-      data : data, 
+      index:undefined,
     }
     this.showModal = this.showModal.bind(this);
     this.handleOk = this.handleOk.bind(this);
@@ -366,10 +385,6 @@ class SaleADDProduct extends React.Component{
     modalState = this.showModal;
     updateTableData = this.updateTableData;
 
-    data = this.props.data;
-    this.setState({
-      data : this.props.data
-    })
     
   }
   componentWillUnmount(){
@@ -377,73 +392,53 @@ class SaleADDProduct extends React.Component{
     updateTableData = false;
   }
 
-  showModal(id,name){
-    console.log(id,name)
+  showModal(id,name,index){
+    console.log(id,name,index)
     this.setState({
       visible : true,
       ModalText: '你正要删除 "'+ name +'"的促销中奖规则，是否继续？',
       confirmLoading: false,
+      index : index,
       changeId : id
     })
   }
 
   // update table data
-  updateTableData(index,opts){
+  updateTableData(opts){
     
-    // 更新 本地data
-    data[index] = Object.assign({},(data[index]||{}),{
-      key : index,
-      productId : opts.productId, // 产品id
-      prizeId : opts.prizeId, // 奖品编码,
-      prizeName : opts.prizeName, // 奖品名称
-      prizeLevel : opts.prizeLevel, // 奖品级别
-      probability_first : opts.probability_first, // 首次中奖率
-      probability :  opts.probability, // 非首次中奖率
-      prize_startTime : moment(opts.prize_startTime).format('YYYY-MM-DD HH:MM:SS'), // 中奖时间
-      prize_endTime : moment(opts.prize_endTime).format('YYYY-MM-DD HH:MM:SS'), // 中奖时间
-      prize_type : 1, // 抽奖模式  1 = 时间区间  2=区域  
-    })
-
+    console.log(opts);
     
-    this.setState({
-      data : data
-    })
+    if(!opts.Product_Code || !opts.Prize_Code || !opts.Prize_Level  || !opts.SActivityTime || !opts.EActivityTime ){
+      msg_error('请填写内容');
+      return;
+    }
+    if(!opts.FirstWinningRate){
+      opts.FirstWinningRate = 0;
+    }
+    if(!opts.NFirstWinningRate){
+      opts.NFirstWinningRate = 0;
+    }
+    if(!opts.WinningPlaces){
+      opts.WinningPlaces = 0;
+    }
 
-    this.props.addPrizeTime('product',data); // 同步到父页面
+
+    this.props.addPrizeTime('product',opts); // 同步到父页面
   }
 
   
   // 删除 数据
   handleOk(e){
     //******************* data 中得 index 值 = changeId , 然后 关闭****************************
-    var d = [].concat(this.state.data); // 删除data中index = changeId 的值, 并同步到 全局data
-
-    d.splice(this.state.changeId,1); // 删除data中index = changeId 的值, 
-    data.splice(this.state.changeId,1); //  并同步到 本页面的全局data
-    this.props.addPrizeTime('product',data); // 同步到父页面
-    console.log(d,this.state.changeId)
-
-    // 重置key
-    d.map(function(item,index){
-      d[index].key = index;
-      data[index].key = index;
-    })
-
+    
+    this.props.delPrizeTime('product',this.state.index); // 同步到父页面
+   
     // 清除form里面的内容；
     clean();
-
-
     this.setState({
-      data : d,
-      confirmLoading:true
+      visible : false
     })
-
-    // 临时关闭
-    setTimeout(()=>{
-      this.setState({
-        visible : false
-      })
-    },2000)
+    
   }
 
   handleCancel(e){
@@ -453,16 +448,16 @@ class SaleADDProduct extends React.Component{
   }
 
 	render(){
-		return(
-			<div className="m-list">
-				<Row>
-					<Col span="24">
-						<SelectForm addPrizeTime={this.props.addPrizeTime}  />
-					</Col>
-				</Row>
-				<Row>
-					<Table columns={columns} dataSource={this.props.data} pagination={{showQuickJumper:true,pageSize:10,current:1,showSizeChanger:true,total:this.state.total}}  />
-				</Row>
+    return(
+      <div className="m-list">
+        <Row>
+          <Col span="24">
+            <SelectForm addPrizeTime={this.props.addPrizeTime} data={this.props.data}  />
+          </Col>
+        </Row>
+        <Row>
+          <Table columns={columns} dataSource={this.props.data} pagination={{showQuickJumper:true,pageSize:10,current:1,showSizeChanger:true,total:this.state.total}}  />
+        </Row>
         <Modal 
           visible={this.state.visible}
           onOk={this.handleOk}
@@ -470,9 +465,9 @@ class SaleADDProduct extends React.Component{
           onCancel={this.handleCancel}>
           <p>{this.state.ModalText}</p>
         </Modal>
-			</div>
-		)
-	}
+      </div>
+    )
+  }
 }
 module.exports = {
 	SaleADDProduct : SaleADDProduct
