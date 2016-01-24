@@ -1,7 +1,16 @@
 import moment from 'moment';
+
+import message from 'antd/lib/message';
+const msg_error = function(text){
+  message.error(text||'数据验证错误,请检查后提交')
+}
+const msg_success = function(){
+  message.success('数据提交成功，等待后台处理')
+}
+
 // 全局方法
 window['_G']={
-	Token : '',
+	Token : 'b5rQOd51TiM=',
 	// 用户性别
 	userSex : function(n){
 		return n==1?'男':'女'
@@ -27,6 +36,16 @@ window['_G']={
 	sale_area : [],
 	// 所有角色信息
 	user_role_all : [],
+	timeFormat2:function(t,f){
+		if(!t){
+			return ''
+		}
+		var f = f || 'YYYY-MM-DD HH:mm:ss';
+		var t = typeof t == 'number'? t : t.replace(/\D/g,'')*1;
+		t = new Date(t);
+		t = moment(t).format(f);
+		return t;
+	},
 	// 
 	timeFormat : function(t,f){
 		if(!t){
@@ -51,7 +70,7 @@ window['_G']={
 	},
 	// ajax
 	ajax:function(opts){
-		opts.url += /\?\&/.test(opts.url) ? ('&Token='+_G.Token) : ('?Token='+_G.Token);
+		opts.url += /\?/.test(opts.url) ? ('&Token='+_G.Token) : ('?Token='+_G.Token);
 		var opt = opts;
 
 		$.ajax({
@@ -60,22 +79,22 @@ window['_G']={
 			data : opts.data || {},
 			success : function(res){
 				if( !res.Data && res.ReturnOperateStatus == null){
-					console.log('数据异常，请联系管理员',opts.url,opts.data);
+					msg_error('数据异常，请联系管理员',opts.url,opts.data);
 					return;
 				}
 				if(!res.Data && res.ReturnOperateStatus == false){
-					console.log('操作失败，请重新试试',opts.url,opts.data);
+					msg_error('操作失败，请重新试试',opts.url,opts.data);
 					return;
 				}
 				opts.success(res);
 			},
 			error:function(res){
 				if(res.ReturnOperateStatus == null){
-					console.log('数据异常，请联系管理员',opts.url);
+					msg_error('数据异常，请联系管理员',opts.url);
 					return;
 				}
 				if(res.ReturnOperateStatus == false){
-					console.log('操作失败，请重新试试',opts.url);
+					msg_error('操作失败，请重新试试',opts.url);
 					return;
 				}
 				opts.error && opts.error();
@@ -127,6 +146,8 @@ window['config'] = {
 			sale_productName : '/api/SProduct/GetProductByName', // 获取产品名称
 			sale_area : '/api/SSaleRegion/GetSaleRegionList', // 获取销售区域
 			add : '/api/SPromotionActivity/AddMarketingActivitie', // 新增活动
+			edit : '/api/SPromotionActivity/UpdateMarketingActivitie', // 修改活动
+			one : '/api/SPromotionActivity/GetMarketingActivitie', // 获取指定活动信息
 			del : '/api/SPromotionActivity/DeleteMarketingActivitie', // 删除活动
 			publish : '/api/SPromotionActivity/PublishMarketingActivitie', // 发布活动
 		}
@@ -157,7 +178,11 @@ window['config'] = {
 			edit : '/api/SIntegralRule/UpdateRule',   // 编辑积分规则
 			editList : '/api/SIntegralRule/GetRule',   // 获取指定积分规则
 		},
-	}
+	},
+	// 登录，修改密码
+	login : '/api/SLogin/LoginIn', // 登录
+	valCode : '/api/SLogin/GetValidateCode', // 验证码
+	checkValCode : '/api/SLogin/CheckVailidateCode', // 校验验证码
 }
 
 
