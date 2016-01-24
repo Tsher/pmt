@@ -64,7 +64,6 @@ function validate(nextState, transition) {
 	if(!token){
 		if(nextState.location.pathname == '/login') return;
 		transition(nextState,'/login');
-		console.log('b')
 	}
 }
 
