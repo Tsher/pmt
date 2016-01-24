@@ -33,6 +33,12 @@ const History = createHistory();
 
 const goBack = History.goBack;
 
+import '../../entry/config';
+
+const ruleNumberAdd = config.__URL + config.rule.number.add;
+const ruleNumberEdit = config.__URL + config.rule.number.edit;
+const ruleNumberEditList = config.__URL + config.rule.number.editList;
+
 function cx(classNames) {
   if (typeof classNames === 'object') {
     return Object.keys(classNames).filter(function(className) {
@@ -71,11 +77,11 @@ class RuleNumberAdd extends React.Component{
       },
       formData : {
       	title : '新增积分规则',
-        userName : undefined,
-        remark : undefined,
-        userNumber : undefined,
-        startTime : undefined,
-        endTime : undefined
+        userName : '',
+        remark : '',
+        userNumber : '',
+        startTime : '',
+        endTime : ''
       }
       
     };
@@ -84,7 +90,6 @@ class RuleNumberAdd extends React.Component{
     this.onValidate = FieldMixin.onValidate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.renderValidateStyle = this.renderValidateStyle.bind(this);
-    this.uploadCallback = this.uploadCallback.bind(this);
     this.setValue = this.setValue.bind(this);
     this.onChange = this.onChange.bind(this);
     
@@ -104,11 +109,38 @@ class RuleNumberAdd extends React.Component{
     if(id){
       // 编辑
       // ajax 请求当前id的数据 ********************************
-      var state = Object.assign({},this.state);
-      state.formData.id = this.props.params.id;
-      state.formData.title = '编辑积分规则';
-      this.setState(state);
-      return
+      _G.ajax({
+        url : ruleNumberEditList,
+        type : 'get',
+        data : {
+          IntegralRule_Code : this.props.params.id
+        },
+        success:function(res){
+
+          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
+            msg_error();
+            // 跳转回列表页
+            return;
+          }
+          res = res.Data;
+          var d = {
+              IntegralRule_Code : this.props.params.id,
+              userName : res.IntegralRule_Name,
+              remark : res.Description,
+              userNumber : res.Bas_Integral,
+              startTime : res.Effective_Time,
+              endTime : res.Failure_Time,
+            };
+            console.log(d)
+          this.setState({
+            formData:d
+          })
+
+        }.bind(this)
+      })
+
+    }else{
+      console.log('add')
     }
     
     
@@ -137,6 +169,30 @@ class RuleNumberAdd extends React.Component{
       console.log(this.state.formData);
       msg_success();
     });
+
+    // 提交数据
+      let u = this.props.params.id ? ruleNumberEdit : ruleNumberAdd;
+      console.log(this.state.formData)
+      _G.ajax({
+        url  : u,
+        data : this.state.formData,
+        method : 'post',
+        success:function(res){
+          if(res.ReturnOperateStatus == 'True'){
+            msg_success();
+            // 调转到列表页
+            goBack();
+            return;
+          }
+          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
+            msg_error();
+            return
+          }
+        },
+        fail:function(res){
+          msg_error();
+        }
+      })
     
     
   }
@@ -149,11 +205,6 @@ class RuleNumberAdd extends React.Component{
     this.setState(data);
   }
 
-
-  // 图片上传回调
-  uploadCallback(info){
-    console.log(info)
-  }
 
 
   renderValidateStyle(item) {
