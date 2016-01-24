@@ -15,26 +15,31 @@ const confirm = Modal.confirm;
 
 const FormItem = Form.Item;
 
+import '../../entry/config';
+const ruleNumberList = config.__URL + config.rule.number.list;
+
+var changeTableState;
+
 const columns = [{
   title: '规则名称',
-  dataIndex: 'ruleName',
-  key: 'ruleName'
+  dataIndex: 'IntegralRule_Name',
+  key: 'IntegralRule_Name'
 },{
   title: '描述',
-  dataIndex: 'ruleText',
-  key: 'ruleText'
+  dataIndex: 'Description',
+  key: 'Description'
 },{
   title: '获得积分',
-  dataIndex: 'ruleNumber',
-  key: 'ruleNumber',
+  dataIndex: 'Bas_Integral',
+  key: 'Bas_Integral',
 },{
   title: '计划生效时间',
-  dataIndex: 'ruleTimeStar',
-  key: 'ruleTimeStar'
+  dataIndex: 'Effective_Time',
+  key: 'Effective_Time'
 },{
   title: '计划失效时间',
-  dataIndex: 'ruleTimeEnd',
-  key: 'ruleTimeEnd'
+  dataIndex: 'Failure_Time',
+  key: 'Failure_Time'
 }, {
   title: '操作',
   key: 'operation',
@@ -43,28 +48,6 @@ const columns = [{
       del = '/rule/number/del/' + record.key
     return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.key} data-index={index} data-name={record.ruleName} >删除</a></span>;
   }
-}];
-const data = [{
-  key: '1',
-  ruleName: '绑定邮箱',
-  ruleText: '会员通过了电子邮箱验证（包括用邮箱注册），每个会员只能按此规则获取1次积分。',
-  ruleNumber : 30,
-  ruleTimeStar : '2016-01-10 10:30',
-  ruleTimeEnd : '2016-9-10 10:30'
-}, {
-  key: '2',
-  ruleName: '绑定手机',
-  ruleText: '会员通过了手机短信验证（包括用手机注册），每个会员只能按此规则获取1次积分。',
-  ruleNumber : 100,
-  ruleTimeStar : '2016-01-10 10:30',
-  ruleTimeEnd : '2016-9-10 10:30'
-}, {
-  key: '3',
-  ruleName: '注册会员',
-  ruleText: '成功注册会员，每个会员只能按此规则获取1次积分。',
-  ruleNumber : 100,
-  ruleTimeStar : '2016-01-10 10:30',
-  ruleTimeEnd : '2016-9-10 10:30'
 }];
 
 
@@ -82,12 +65,98 @@ class RuleNumber extends React.Component{
   constructor() {
     super();
     this.state =  {
-        total : 100
+        total : 100,
+        data : [],
+        opts : {
+          page :1,
+          pageSize : 10,
+        },
       }
     this.showModal = this.showModal.bind(this);
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
+
+    this.changeTableState = this.changeTableState.bind(this);
+    this.tableChange = this.tableChange.bind(this);
+    this.showSizechange = this.showSizechange.bind(this);
+
+    
   }
+
+
+  componentDidMount(){
+
+    console.log('hu');
+    this.changeTableState(this.state.opts);
+
+    this.setState({
+      data : []
+    })
+  }
+  // 点击分页
+  tableChange(pagination, filters, sorter){
+    var opts = Object.assign({},this.state.opts);
+    opts.page = pagination.current;
+    opts.pageSize = pagination.pageSize;
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+  }
+  // 每页数据条数变化
+  showSizechange(current, pageSize){
+    var opts = Object.assign({},this.state.opts);
+    opts.pageSize = pageSize;
+    opts.page = current;
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+
+  }
+
+  // 发送ajax请求，获取table值
+  changeTableState(opts){
+
+    var opts = opts || {};
+    opts.page = opts.page || this.state.opts.page;
+    opts.pageSize = opts.pageSize ||  this.state.opts.pageSize;
+
+    this.setState({
+      opts : opts
+    })
+    
+    //opts.EntityCode = 'DEFAULT';
+    var that = this;
+
+    _G.ajax({
+      url : ruleNumberList,
+      type: "get",
+      data : opts,
+      success:function(res){
+        var d = [];
+
+        for(var i=0,l=res.Data.length;i<l;i++){
+          d[i]=res.Data[i];
+          d[i]['key'] = i;
+        }
+        this.setState({
+          data : d,
+          total : res.TotalCount,
+          opts : opts
+        })
+
+      }.bind(this)
+
+    })
+
+  }
+
+
   componentDidMount(){
 
     modalState = this.showModal;
@@ -136,7 +205,7 @@ class RuleNumber extends React.Component{
                   </Link>
           </Col>
         </Row>
-        <Table columns={columns} dataSource={data} pagination={{showQuickJumper:true,pageSize:10,current:1,showSizeChanger:true,total:this.state.total}}  />
+        <Table onChange={this.tableChange} columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}} />
         <Modal title="您正在进行删除操作，请确认！"
           visible={this.state.visible}
           onOk={this.handleOk}

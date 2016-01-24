@@ -136,6 +136,12 @@ window['config'] = {
 		prize : {
 			list : '/api/SReport/GetAwardExchange_Report', // 奖品兑换流水
 		}
+	},
+	// 营销规则
+	rule : {
+		number : {
+			list : '/api/SIntegralRule/GetIntegralRules', // 积分规则
+		},
 	}
 }
 
