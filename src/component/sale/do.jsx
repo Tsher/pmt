@@ -320,7 +320,10 @@ class SaleDo extends React.Component{
         for(var i=0,l=res.Data.length;i<l;i++){
           d[i]=res.Data[i];
           d[i]['key'] = res.Data[i].MA_Code;
+          d[i].MA_EndTime = _G.timeFormat2(d[i].MA_EndTime);
+          d[i].MA_StartTime = _G.timeFormat2(d[i].MA_StartTime);
         }
+        console.log(d)
         this.setState({
           data : d,
           total : res.TotalCount,
