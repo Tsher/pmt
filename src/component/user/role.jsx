@@ -26,6 +26,10 @@ import '../../entry/config';
 
 const urlRoleList = config.__URL + config.user.role.list;
 const urlRoleDel = config.__URL + config.user.role.del;
+const urlRoleType = config.__URL + config.user.role.type;
+
+
+let role_all_type={};
 
 class SelectForm extends React.Component{
 	//mixins: [Form.ValueMixin],
@@ -33,38 +37,55 @@ class SelectForm extends React.Component{
   constructor() {
   	super();
     this.state =  {
-      Role_Name: '',
-      Role_Type: "2",
+      Role_Name : '',
+      Role_Type : "",
+      role_all_type : undefined,
     };
     this.setValue = this.setValue.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+
   }
 
+  componentDidMount(){
+    // 获取所有角色类型
+    var that = this;
+    _G.get_data(config['user']['role']['type'],'user_role_type',{},function(res){
+      res.Data.map(function(item){
+        role_all_type[item.REAL_Code] = item.CODE_NM;
+      })
+      const doms = res.Data.map( (item,index)=>{
+        return <Option key={index} value={item['REAL_Code']}>{item['CODE_NM']}</Option>
+      } )
+      that.setState({
+        role_all_type : doms
+      })
+    }); 
+  }
+
+  
+
   setValue(e){
-  	var Role_Type = this.state.Role_Type;
+    console.log(e.target.name,e.target.value)
   	this.setState({
-  		Role_Name : e.target.value,
-      Role_Type : Role_Type
+  		[e.target.name] : e.target.value,
   	})
   }
-  handleSelectChange(e){
-  	var Role_Name = this.state.Role_Name;
-  	console.log(e)
+  handleSelectChange(field,value){
+    console.log(field,value)
   	this.setState({
-  		Role_Name : Role_Name,
-      Role_Type : e
+  		[field]:value
   	})
-  	// this.setState({
-  	// 	formData['Role_Type'] : e.target.value
-  	// })
   }
 
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
-
-    this.props.changeTableState(this.state);
+    var data = {
+      Role_Name : this.state.Role_Name,
+      Role_Type : this.state.Role_Type
+    }
+    this.props.changeTableState(data);
     console.log(this.state);
     
   }
@@ -80,12 +101,9 @@ class SelectForm extends React.Component{
         </FormItem>
         <FormItem
           id="Role_Type">
-          <Select id="select" name="Role_Type" size="large" defaultValue={this.state.Role_Type} style={{width:200}} onChange={this.handleSelectChange}>
-	        <Option value="1">操作角色</Option>
-	        <Option value="2">角色1</Option>
-	        <Option value="3">角色2</Option>
-	        <Option value="4">角色3</Option>
-	      </Select>
+          <Select id="select" name="Role_Type" size="large" value={this.state.Role_Type} style={{width:200}} onChange={this.handleSelectChange.bind(this,'Role_Type')}>
+	         {this.state.role_all_type}
+	        </Select>
         </FormItem>
         <FormItem>
           <Button type="primary" shape="circle" size="large"  htmlType="submit">
@@ -111,10 +129,10 @@ function showModal(e){
 
 const columns = [{
   title: '角色编号',
-  dataIndex: 'roleNo',
-  key: 'roleNo',
+  dataIndex: 'Role_Code',
+  key: 'Role_Code',
   render: function(text,record) {
-  	var href= '/user/role/info/'+text;
+  	var href= '/user/role/info/'+record.Role_Code;
     return <Link to={href}>{text}</Link>;
   }
 }, {
@@ -124,7 +142,10 @@ const columns = [{
 }, {
   title: '角色类型',
   dataIndex: 'Role_Type',
-  key: 'Role_Type'
+  key: 'Role_Type',
+  render:function(text,record){
+    return (<span>{role_all_type[record.Role_Type]}</span>)
+  }
 }, {
   title: '角色描述',
   dataIndex: 'roleDesc',
@@ -149,11 +170,13 @@ class UserRole extends React.Component{
       visible : false,
       title : '',
       ModalText : '',
-      page:1,
-      pagesize:10,
       delId : false,
       total : 0, // 数据总数
-      data:[]
+      data:[],
+      opts:{
+        page:1,
+        pagesize:10
+      }
     }
     this.showModal = this.showModal.bind(this);
     this.handleOk = this.handleOk.bind(this);
@@ -168,9 +191,10 @@ class UserRole extends React.Component{
     modalState = false;
   }
   changeTableState(opts){
+    console.log(opts)
     var opts = opts || {};
-    opts.page = this.state.page*1-1;
-    opts.pagesize = this.state.pagesize;
+    opts.page = this.state.opts.page*1-1;
+    opts.pagesize = this.state.opts.pagesize;
     //opts.EntityCode = 'DEFAULT';
     var that = this;
 
@@ -186,7 +210,8 @@ class UserRole extends React.Component{
         }
         this.setState({
           data : d,
-          total : Math.ceil(res.TotalCount/this.state.pagesize)
+          total : res.TotalCount,
+          opts : opts
         })
 
       }.bind(this)
@@ -247,6 +272,37 @@ class UserRole extends React.Component{
   handleClick(e){
     console.log(e);
   }
+
+  // 点击分页
+  tableChange(pagination, filters, sorter){
+    var opts = Object.assign({},this.state.opts);
+    opts.page = pagination.current;
+    opts.pageSize = pagination.pageSize;
+
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+  }
+  // 每页数据条数变化
+  showSizechange(current, pageSize){
+    var opts = Object.assign({},this.state.opts);
+    opts.pageSize = pageSize;
+    opts.page = current;
+
+    console.log(opts);
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+
+  }
 	render(){
 		return(
 			<div className="m-list">
@@ -261,7 +317,9 @@ class UserRole extends React.Component{
 					</Col>
 				</Row>
 				<Row>
-					<Table columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.pagesize,current:1,showSizeChanger:true,total:this.state.total}}  />
+					<Table onChange={this.tableChange}  onShowSizeChange={this.showSizechange}
+            columns={columns} dataSource={this.state.data} 
+            pagination={{showQuickJumper:true,pageSize:this.state.opts.pagesize,current:1,showSizeChanger:true,total:this.state.total}}  />
 				</Row>
         <Modal title="您正在进行删除操作，请确认！"
           visible={this.state.visible}
