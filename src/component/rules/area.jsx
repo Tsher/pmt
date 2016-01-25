@@ -85,7 +85,7 @@ class SelectForm extends React.Component{
       <Form inline onSubmit={this.handleSubmit}>
       <Row>
         <Col span="24" >
-            <div className="fright">
+            <div className="">
             <ul className="clearfix">
 	            <li className="fleft">
 		            	<FormItem

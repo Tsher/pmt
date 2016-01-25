@@ -140,7 +140,7 @@ class RuleNumber extends React.Component{
       data : opts,
       success:function(res){
         var d = [];
-
+        console.log(res.Data)
         for(var i=0,l=res.Data.length;i<l;i++){
           d[i]=res.Data[i];
           d[i]['key'] = i;
