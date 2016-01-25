@@ -55,12 +55,12 @@ class UserRoleAdd extends React.Component{
   	super(props);
   	this.state = {
       status: {
-        select: {},
+        Role_Type: {},
         string:{},
         textarea:{}
       },
       formData: {
-        select: undefined,
+        Role_Type: undefined,
         string: undefined,
         textarea:undefined,
         id : undefined,
@@ -171,16 +171,12 @@ class UserRoleAdd extends React.Component{
             id="roleType"
             labelCol={{span: 2}}
             wrapperCol={{span: 4}}
-            validateStatus={this.renderValidateStyle('select')}
-            help={status.select.errors ? status.select.errors.join(',') : null}
+            validateStatus={this.renderValidateStyle('Role_Type')}
+            help={status.Role_Type.errors ? status.Role_Type.errors.join(',') : null}
             required>
               <Validator rules={[{required: true, message: '请选择角色类型'},{validator: this.checkRoleType}]}>
-                <Select size="large" placeholder="请选择角色类型" style={{width: '100%'}} name="select" value={formData.select}>
-                  <Option value="type-1">角色类型1</Option>
-                  <Option value="type-2">角色类型2</Option>
-                  <Option value="type-3">角色类型3</Option>
-                  <Option value="type-4">角色类型4</Option>
-                  <Option value="type-5">角色类型5</Option>
+                <Select size="large" placeholder="请选择角色类型" style={{width: '100%'}} name="Role_Type" value={formData.Role_Type}>
+                  
                 </Select>
               </Validator>
           </FormItem>
@@ -190,11 +186,11 @@ class UserRoleAdd extends React.Component{
             id="roleName"
             labelCol={{span: 2}}
             wrapperCol={{span: 4}}
-            validateStatus={this.renderValidateStyle('string')}
-            help={status.string.errors ? status.string.errors.join(',') : null}
+            validateStatus={this.renderValidateStyle('Role_Name')}
+            help={status.Role_Name.errors ? status.Role_Name.errors.join(',') : null}
             required>
               <Validator rules={[{required: true, message: '请输入角色名称'},{validator: this.checkRoleName}]}>
-                <Input  name="string" value={formData.string} />
+                <Input name="Role_Name" value={formData.Role_Name} />
               </Validator>
           </FormItem>
 

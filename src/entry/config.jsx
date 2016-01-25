@@ -126,6 +126,7 @@ window['config'] = {
 			list : '/api/SRole/GetRoles',
 			del : '/api/SRole/DeleteRole',
 			all : '/api/SRole/GetAllRoles', // 获取所有角色信息
+			type : '/api/SRole/GetRole_Type', // 获取 角色类型
 		},
 		// 组织机构管理
 		group : {
