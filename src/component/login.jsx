@@ -96,11 +96,11 @@ class Login extends React.Component{
       data : data,
       type : 'get',
       success : function(res){
-        _G.Token = res.Data.Token;
+        _G.Token = res.Data ? res.Data.Token : 'a'; // ************************临时Token
         console.log(res)
         Cookie.write({
           name : 'Token',
-          value : res.Data.Token || '' // ************************临时Token
+          value : _G.Token || '' 
         })
         var url = location.href;
         url = url.split('#');
