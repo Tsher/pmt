@@ -58,7 +58,7 @@ import {Layout} from '../component/layout';
 
 function validate(nextState, transition) {
 	
-	let token = Cookie.read('Token');
+	let token = Cookie.read('Token') || 'a';
 	_G.Token = token;
 	// 验证token是否有效
 	if(!token){
