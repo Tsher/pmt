@@ -69,19 +69,19 @@ class RuleNumberAdd extends React.Component{
   	super(props);
   	this.state = {
       status : {
-        userName : {},
-        remark : {},
-        userNumber : {},
-        startTime : {},
-        endTime : {}
+        IntegralRule_Name : {},
+        Description : {},
+        Bas_Integral : {},
+        Effective_Time : {},
+        Failure_Time : {}
       },
       formData : {
       	title : '新增积分规则',
-        userName : '',
-        remark : '',
-        userNumber : '',
-        startTime : '',
-        endTime : ''
+        IntegralRule_Name : '',
+        Description : '',
+        Bas_Integral : '',
+        Effective_Time : '',
+        Failure_Time : ''
       }
       
     };
@@ -125,15 +125,23 @@ class RuleNumberAdd extends React.Component{
           res = res.Data;
           var d = {
               IntegralRule_Code : this.props.params.id,
-              userName : res.IntegralRule_Name,
-              remark : res.Description,
-              userNumber : res.Bas_Integral,
-              startTime : res.Effective_Time,
-              endTime : res.Failure_Time,
-            };
-            console.log(d)
+              IntegralRule_Name : res.IntegralRule_Name,
+              Description : res.Description,
+              Bas_Integral : res.Bas_Integral,
+              Effective_Time : _G.timeFormat2(res.Effective_Time,'YYYY-MM-DD'),
+              Failure_Time : _G.timeFormat2(res.Failure_Time,'YYYY-MM-DD'),
+          };
+          var s = {
+            IntegralRule_Name :res.IntegralRule_Name,
+            Description : res.Description,
+            Bas_Integral : res.Bas_Integral,
+            Effective_Time : _G.timeFormat2(res.Effective_Time,'YYYY-MM-DD'),
+            Failure_Time : _G.timeFormat2(res.Failure_Time,'YYYY-MM-DD'),
+          }
+
+          console.log(d)
           this.setState({
-            formData:d
+            formData:d,
           })
 
         }.bind(this)
@@ -166,13 +174,14 @@ class RuleNumberAdd extends React.Component{
       } else {
         console.log('submit');
       }
-      console.log(this.state.formData);
+      
       msg_success();
     });
 
     // 提交数据
       let u = this.props.params.id ? ruleNumberEdit : ruleNumberAdd;
-      console.log(this.state.formData)
+      console.log('hu'+this.state.formData)
+      console.log('hu')
       _G.ajax({
         url  : u,
         data : this.state.formData,
@@ -221,11 +230,11 @@ class RuleNumberAdd extends React.Component{
   }
 
   checkBirthday(rule, value, callback) {
-    if (value && value.getTime() < Date.now()){
+    /*if (value && value.getTime() < Date.now()){
       callback(new Error('请选择正确时间!'));
     } else {
       callback();
-    }
+    }*/
   }
 
 
@@ -245,26 +254,26 @@ class RuleNumberAdd extends React.Component{
             <Col span="8">
                 <FormItem
                   label="规则名称："
-                  id="userName"
+                  id="IntegralRule_Name"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('userName')}
-                  help={status.userName.errors ? status.userName.errors.join(',') : null}
+                  validateStatus={this.renderValidateStyle('IntegralRule_Name')}
+                  help={status.IntegralRule_Name.errors ? status.IntegralRule_Name.errors.join(',') : null}
                   required>
                     <Validator rules={[{required: true, message: '请输入则名称'}]}>
-                      <Input name="userName" value={formData.userName} />
+                      <Input name="IntegralRule_Name" value={formData.IntegralRule_Name} />
                     </Validator>
                 </FormItem>
                 <FormItem
                   label="描述："
-                  id="remark"
+                  id="Description"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('remark')}
-                  help={status.remark.errors ? status.remark.errors.join(',') : null}
+                  validateStatus={this.renderValidateStyle('Description')}
+                  help={status.Description.errors ? status.Description.errors.join(',') : null}
                   required>
                     <Validator rules={[{required: true, message: '请描述'}]}>
-                      <Input type="textarea" style={{height:90}} name="remark" value={formData.remark} />
+                      <Input type="textarea" style={{height:90}} name="Description" value={formData.Description} />
                     </Validator>
                 </FormItem>
             </Col>
@@ -272,41 +281,41 @@ class RuleNumberAdd extends React.Component{
             <Col span="8">
                 <FormItem
                   label="获得积分："
-                  id="userNumber"
+                  id="Bas_Integral"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('userNumber')}
-                  help={status.userNumber.errors ? status.userNumber.errors.join(',') : null}
+                  validateStatus={this.renderValidateStyle('Bas_Integral')}
+                  help={status.Bas_Integral.errors ? status.Bas_Integral.errors.join(',') : null}
                   required>
                     <Validator rules={[{required: true, message: '请输入积分'}]}>
-                      <Input type="number" min="0" name="userNumber" value={formData.userNumber} />
+                      <Input type="number" min="0" name="Bas_Integral" value={formData.Bas_Integral} />
                     </Validator>
                 </FormItem>
 
                 <FormItem
                   label="计划生效时间："
-                  id="startTime"
+                  id="Effective_Time"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('startTime')}
-                  help={status.startTime.errors ? status.startTime.errors.join(',') : null}
+                  validateStatus={this.renderValidateStyle('Effective_Time')}
+                  help={status.Effective_Time.errors ? status.Effective_Time.errors.join(',') : null}
                   required>
                     <Validator rules={[{required: true,type: 'date', message: '请选择计划生效时间'}, {validator: this.checkBirthday}]}>
-                      <DatePicker placeholder="" value={formData.startTime} name="startTime"  />
+                      <DatePicker placeholder="" value={formData.Effective_Time} name="Effective_Time"  />
                     </Validator>
                       
                 </FormItem>
 
                 <FormItem
                   label="计划失效时间："
-                  id="endTime"
+                  id="Failure_Time"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('endTime')}
-                  help={status.endTime.errors ? status.endTime.errors.join(',') : null}
+                  validateStatus={this.renderValidateStyle('Failure_Time')}
+                  help={status.Failure_Time.errors ? status.Failure_Time.errors.join(',') : null}
                   required>
                     <Validator rules={[{required: true,type: 'date', message: '请选择计划生效时间'}, {validator: this.checkBirthday}]}>
-                      <DatePicker placeholder="" value={formData.endTime} id="endTime" name="endTime" onChange={this.onChange.bind(this,'endTime')} />
+                      <DatePicker placeholder="" value={formData.Failure_Time} id="Failure_Time" name="Failure_Time" onChange={this.onChange.bind(this,'Failure_Time')} />
                     </Validator>
                       
                 </FormItem>

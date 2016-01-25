@@ -144,6 +144,8 @@ class RuleNumber extends React.Component{
         for(var i=0,l=res.Data.length;i<l;i++){
           d[i]=res.Data[i];
           d[i]['key'] = i;
+          d[i]['Effective_Time'] = _G.timeFormat2(res.Data[i].Effective_Time,'YYYY-MM-DD');
+          d[i]['Failure_Time'] = _G.timeFormat2(res.Data[i].Failure_Time,'YYYY-MM-DD');
         }
         this.setState({
           data : d,
