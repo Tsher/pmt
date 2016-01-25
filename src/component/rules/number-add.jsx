@@ -50,8 +50,9 @@ function cx(classNames) {
 }
 
 
-const msg_error = function(){
-  message.error('数据验证错误,请检查后提交')
+const msg_error = function(d){
+  var str = d || '数据验证错误,请检查后提交';
+  message.error(str)
 }
 const msg_success = function(){
   message.success('数据提交成功，等待后台处理')
@@ -85,7 +86,7 @@ class RuleNumberAdd extends React.Component{
       }
       
     };
-
+    this.setField = FieldMixin.setField.bind(this);
     this.handleValidate = FieldMixin.handleValidate.bind(this);
     this.onValidate = FieldMixin.onValidate.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -131,15 +132,6 @@ class RuleNumberAdd extends React.Component{
               Effective_Time : _G.timeFormat2(res.Effective_Time,'YYYY-MM-DD'),
               Failure_Time : _G.timeFormat2(res.Failure_Time,'YYYY-MM-DD'),
           };
-          var s = {
-            IntegralRule_Name :res.IntegralRule_Name,
-            Description : res.Description,
-            Bas_Integral : res.Bas_Integral,
-            Effective_Time : _G.timeFormat2(res.Effective_Time,'YYYY-MM-DD'),
-            Failure_Time : _G.timeFormat2(res.Failure_Time,'YYYY-MM-DD'),
-          }
-
-          console.log(d)
           this.setState({
             formData:d,
           })
@@ -180,11 +172,12 @@ class RuleNumberAdd extends React.Component{
 
     // 提交数据
       let u = this.props.params.id ? ruleNumberEdit : ruleNumberAdd;
-      console.log('hu'+this.state.formData)
-      console.log('hu')
+      var fD = this.state.formData;
+      fD.Effective_Time = _G.timeFormat(fD.Effective_Time,'YYYY-MM-DD');
+      fD.Failure_Time = _G.timeFormat(fD.Failure_Time,'YYYY-MM-DD');
       _G.ajax({
         url  : u,
-        data : this.state.formData,
+        data : fD,
         method : 'post',
         success:function(res){
           if(res.ReturnOperateStatus == 'True'){
@@ -194,7 +187,7 @@ class RuleNumberAdd extends React.Component{
             return;
           }
           if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
-            msg_error();
+            msg_error(res.Msg);
             return
           }
         },
@@ -287,9 +280,11 @@ class RuleNumberAdd extends React.Component{
                   validateStatus={this.renderValidateStyle('Bas_Integral')}
                   help={status.Bas_Integral.errors ? status.Bas_Integral.errors.join(',') : null}
                   required>
-                    <Validator rules={[{required: true, message: '请输入积分'}]}>
+                  <Validator rules={[{required: true, message: '请描述'}]}>
                       <Input type="number" min="0" name="Bas_Integral" value={formData.Bas_Integral} />
                     </Validator>
+
+                  
                 </FormItem>
 
                 <FormItem
