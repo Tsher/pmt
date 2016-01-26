@@ -32,12 +32,14 @@ import { SaleDoAdd } from '../component/sale/do-add';
 
 import { SalePrize } from '../component/sale/prize';
 import { SalePrizeAdd } from '../component/sale/prize-add';
-
+import { SalePrizeInfo } from '../component/sale/prize-info';
+import { SalePrizeEdit } from '../component/sale/prize-edit';
 
 
 import { SaleUser } from '../component/sale/user';
 import { SaleUserInfo } from '../component/sale/user-info';
 import { SaleUserEdit } from '../component/sale/user-edit';
+import { SaleUserAdd } from '../component/sale/user-add';
 
 import { SaleVip } from '../component/sale/vip';
 import { SaleVipInfo } from '../component/sale/vip-info';
@@ -126,12 +128,13 @@ const Router = (
 
 		<Route path="/sale/prize" component={SalePrize}></Route>
 		<Route path="/sale/prize/add" component={SalePrizeAdd}></Route>
-		<Route path="/sale/prize/edit/:id" component={SalePrizeAdd}></Route>
+		<Route path="/sale/prize/info/:id" component={SalePrizeInfo}></Route>
+		<Route path="/sale/prize/edit/:id" component={SalePrizeEdit}></Route>
 
 		<Route path="/sale/user" component={SaleUser}></Route>
 		<Route path="/sale/user/info/:id" component={SaleUserInfo}></Route>
 		<Route path="/sale/user/edit/:id" component={SaleUserEdit}></Route>
-		<Route path="/sale/user/add" component={SaleUserEdit}></Route>
+		<Route path="/sale/user/add" component={SaleUserAdd}></Route>
 
 		<Route path="/sale/vip" component={SaleVip}></Route>
 		<Route path="/sale/vip/info/:id" component={SaleVipInfo}></Route>

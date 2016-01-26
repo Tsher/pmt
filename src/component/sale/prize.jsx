@@ -31,10 +31,10 @@ class SelectForm extends React.Component{
   constructor() {
   	super();
     this.state =  {
-      prizeName : undefined, // 奖品名称
-      prizeType : undefined, // 奖品类别
-      startTime : undefined, // 注册开始时间
-      endTime : undefined, // 注册结束时间
+      Prize_Name : '', // 奖品名称
+      Prize_Type : '', // 奖品类别
+      Register_On_S : '', // 注册开始时间
+      Register_On_E : '', // 注册结束时间
     };
     this.setValue = this.setValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -53,14 +53,12 @@ class SelectForm extends React.Component{
   
 
   handleSubmit(e) {
-    // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
-    message.success('收到表单值~~~ ：' + JSON.stringify(this.state, function(k, v) {
-      if (typeof v === 'undefined') {
-        return '';
-      }
-      return v;
-    }));
+      var data = Object.assign(this.state, {
+          Register_On_S: _G.timeFormat2(new Date(this.state.Register_On_S).getTime(), 'YYYY-MM-DD'),
+          Register_On_E: _G.timeFormat2(new Date(this.state.Register_On_E).getTime(), 'YYYY-MM-DD')
+      });
+      this.props.changeTableState(data);
   }
 
   // datepicker change
@@ -90,15 +88,15 @@ class SelectForm extends React.Component{
             	<li className="fleft">
 	            	<FormItem
 		            label="奖品名称："
-		            id="prizeName">
-		              <Input placeholder="" id="prizeName" name="prizeName" onChange={this.setValue} value={this.state.prizeName} />
+		            id="Prize_Name">
+		              <Input placeholder="" id="Prize_Name" name="Prize_Name" onChange={this.setValue} value={this.state.Prize_Name} />
 		          </FormItem>
             	</li>
             	<li className="fleft">
 	            	<FormItem
 		            label="奖品类别："
-		            id="prizeType">
-		            	<Select size="large" placeholder="请选择奖品类别" style={{width: 80}} name="prizeType"  value={this.state.prizeType} onChange={this.onChange.bind(this,'prizeType')}>
+		            id="Prize_Type">
+		            	<Select size="large" placeholder="请选择奖品类别" style={{width: 80}} name="Prize_Type"  value={this.state.Prize_Type} onChange={this.onChange.bind(this,'Prize_Type')}>
 		                    <Option value="prize-type-1">类别1</Option>
 		                    <Option value="prize-type-2">类别2</Option>
 		                    <Option value="prize-type-3">类别3</Option>
@@ -151,67 +149,45 @@ function showModal(e){
 
 const columns = [{
   title: '奖品编码',
-  dataIndex: 'No',
-  key: 'No',
+  dataIndex: 'Prize_Code',
+  key: 'Prize_Code',
   render: function(text,record) {
   	var href= '/sale/prize/info/'+text;
     return <Link to={href}>{text}</Link>;
   }
 }, {
   title: '奖品名称',
-  dataIndex: 'prizeName',
-  key: 'prizeName'
+  dataIndex: 'Prize_Name',
+  key: 'Prize_Name'
 }, {
   title: '品牌',
-  dataIndex: 'productName',
-  key: 'productName'
+  dataIndex: 'Brand',
+  key: 'Brand'
 }, {
   title: '规格',
-  dataIndex: 'size',
-  key: 'size'
+  dataIndex: 'Spec',
+  key: 'Spec'
 },{
   title: '单位',
-  dataIndex: 'unit',
-  key: 'unit'
+  dataIndex: 'Unit',
+  key: 'Unit'
 },{
   title: '奖品类别',
-  dataIndex: 'prizeType',
-  key: 'prizeType'
+  dataIndex: 'Prize_Type',
+  key: 'Prize_Type'
 }, {
   title: '入网日期',
-  dataIndex: 'createTime',
-  key: 'createTime'
+  dataIndex: 'RegisterOn',
+  key: 'RegisterOn'
 },{
   title: '操作',
   key: 'operation',
   render: function(text, record) {
-  	var edit = '/sale/prize/edit/'+record.No,
-  		del = '/sale/prize/del/' + record.No
-    return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.No} data-text="删除" >删除</a></span>;
+  	var edit = '/sale/prize/edit/'+record.Prize_Code,
+  		del = '/sale/prize/del/' + record.Prize_Code
+    return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.Prize_Code} data-text="删除" >删除</a></span>;
 	}
 }];
-const data = [{
-  key: '1',
-  No: '000001',
-  prizeName: '移动5元充值卡',
-  productName : '移动',
-  size : '250ml',
-  unit : '张',
-  prizeType : '话费',
-  createTime : '2015-10-10 10:30',
-}, {
-  key: '2',
-  No: '000002',
-  prizeName: '移动15元充值卡',
-  productName : '移动',
-  size : '',
-  unit : '张',
-  prizeType : '话费',
-  createTime : '2015-10-10 10:30',
-}];
-
-
-
 
 
 
@@ -223,11 +199,17 @@ class SalePrize extends React.Component{
       title : '',
       ModalText : '',
       changeId : false,
-      total : 100
+      total : 0,
+      data :[],
+      opts: {
+          page: 1,
+          pageSize: 10,
+      }
     }
     this.showModal = this.showModal.bind(this);
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
+    this.changeTableState = this.changeTableState.bind(this);
 	}
 
   componentDidMount(){
@@ -264,6 +246,35 @@ class SalePrize extends React.Component{
   handleClick(e){
     console.log(e);
   }
+
+  // 发送ajax请求，获取table值
+    changeTableState(opts) {
+        var opts = opts || {};
+        opts.page = opts.page || this.state.opts.page;
+        opts.pageSize = opts.pageSize || this.state.opts.pageSize;
+
+        this.setState({
+            opts: opts
+        })
+        _G.ajax({
+            url: config.__URL + config.sale.prize.list,
+            type: "get",
+            data: opts,
+            success: function(res) {
+                var d = [];
+                for (var i = 0, l = res.Data.length; i < l; i++) {
+                    d[i] = res.Data[i];
+                    d[i]['key'] = res.Data[i].User_Code;
+                    d[i]['RegisterOn'] = _G.timeFormat2(d[i].RegisterOn)
+                }
+                this.setState({
+                    data: d,
+                    total: res.TotalCount,
+                    opts: opts
+                })
+            }.bind(this)
+        })
+    }
 	render(){
 		return(
 			<div className="m-list">
@@ -279,11 +290,11 @@ class SalePrize extends React.Component{
       			</Link>
 					</Col>
 					<Col span="20">
-						<SelectForm />
+						<SelectForm changeTableState={this.changeTableState} />
 					</Col>
 				</Row>
 				<Row>
-					<Table columns={columns} dataSource={data} pagination={{showQuickJumper:true,pageSize:10,current:1,showSizeChanger:true,total:this.state.total}}  />
+					<Table columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total}} />
 				</Row>
         <Modal 
           visible={this.state.visible}

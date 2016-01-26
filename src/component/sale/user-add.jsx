@@ -56,7 +56,7 @@ const areaData = {
     '江苏': ['南京', '苏州', '镇江']
 };
 
-class SaleUserEdit extends React.Component {
+class SaleUserAdd extends React.Component {
 
     //mixins: [Validation.FieldMixin],
     constructor(props) {
@@ -69,14 +69,13 @@ class SaleUserEdit extends React.Component {
                 sfz: {}
             },
             formData: {
-                SalesPerson_Code: '', // 会员id
-                title: '促销人员信息',
+                title: '添加促销人员',
                 SalesPerson_Name: '', // 姓名
                 SalesPerson_SName: '', // 昵称
                 Card_Code: '', // 身份证
-                Sex: '', // 性别
+                SalesPerson_Sex: '', // 性别
                 Phone: '', // 手机
-                RegisterTime: '', // 注册日期
+                RegisterTime: _G.timeFormat2(new Date().getTime(), 'YYYY-MM-DD'), // 注册日期
                 Email: '', // Email
                 Region_Code: '', // 行政区域
                 SalesPerson_Address: '', // 详细信息
@@ -97,35 +96,33 @@ class SaleUserEdit extends React.Component {
     }
 
     componentDidMount() {
-        var opts = {
-          SalesPerson_Code: this.props.params.id
-        }
-        _G.ajax({
-            url: config.__URL + config.sale.user.info,
-            type: "get",
-            data: opts,
-            success: function(res) {
-              var state = Object.assign({}, this.state);
-              state.formData.title = '编辑促销人员信息';
-              // for(var key in res.Data ){
-              //   state.formData[key] = res.Data[key]?res.Data[key]:""
-              // }
-              var data = res.Data
-              state.formData.SalesPerson_Code = data.SalesPerson_Code
-              state.formData.SalesPerson_Name = data.SalesPerson_Name
-              state.formData.SalesPerson_SName = data.SalesPerson_SName
-              state.formData.SalesPerson_Sex = data.SalesPerson_Sex
-              state.formData.Card_Code = data.Card_Code
-              state.formData.RegisterTime = data.RegisterTime
-              state.formData.Phone = data.Phone
-              state.formData.Email = data.Email
-              state.formData.Province = data.Province
-              state.formData.City = data.City
-              state.formData.Area = data.Area
-              state.formData.SalesPerson_Address = data.SalesPerson_Address
-              this.setState(state)
-            }.bind(this)
-        })
+        // var opts = {
+        //   SalesPerson_Code: this.props.params.id
+        // }
+        // _G.ajax({
+        //     url: config.__URL + config.sale.user.info,
+        //     type: "get",
+        //     data: opts,
+        //     success: function(res) {
+        //       var state = Object.assign({}, this.state);
+        //       state.formData.title = '编辑促销人员信息';
+
+        //       var data = res.Data
+        //       state.formData.SalesPerson_Code = data.SalesPerson_Code
+        //       state.formData.SalesPerson_Name = data.SalesPerson_Name
+        //       state.formData.SalesPerson_SName = data.SalesPerson_SName
+        //       state.formData.SalesPerson_SalesPerson_Sex = data.SalesPerson_SalesPerson_Sex
+        //       state.formData.Card_Code = data.Card_Code
+        //       state.formData.RegisterTime = data.RegisterTime
+        //       state.formData.Phone = data.Phone
+        //       state.formData.Email = data.Email
+        //       state.formData.Province = data.Province
+        //       state.formData.City = data.City
+        //       state.formData.Area = data.Area
+        //       state.formData.SalesPerson_Address = data.SalesPerson_Address
+        //       this.setState(state)
+        //     }.bind(this)
+        // })
     }
 
     handleProvinceChange(value) {
@@ -228,8 +225,8 @@ class SaleUserEdit extends React.Component {
                                           <Input name="Card_Code" value={this.state.formData.Card_Code} />
                                       </Validator>
                                   </FormItem>
-                                  <FormItem label="性别：" id="Sex" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                      <RadioGroup name="Sex" value={this.state.Sex}>
+                                  <FormItem label="性别：" id="SalesPerson_Sex" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                      <RadioGroup name="SalesPerson_Sex" value={this.state.SalesPerson_Sex}>
                                           <Radio value="male">男</Radio>
                                           <Radio value="female">女</Radio>
                                           <Radio value="none">神秘</Radio>
@@ -243,7 +240,7 @@ class SaleUserEdit extends React.Component {
                               </Col>
                               <Col span="12">
                                   <FormItem label="注册日期：" id="RegisterTime" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                      <Input name="RegisterTime" value={this.state.formData.RegisterTime} />
+                                      <Input name="RegisterTime" value={this.state.formData.RegisterTime} disabled />
                                   </FormItem>
                                   <FormItem label="电子邮箱：" id="Email" labelCol={{span: 8}} wrapperCol={{span: 12}} validateStatus={this.renderValidateStyle( 'email')} help={status.email.errors ? status.email.errors.join( ',') : null} required>
                                       <Validator rules={[{required: true, message: '请输入电子邮箱',type: 'email'}]}>
@@ -285,5 +282,5 @@ class SaleUserEdit extends React.Component {
 };
 
 module.exports = {
-    SaleUserEdit: SaleUserEdit
+    SaleUserAdd: SaleUserAdd
 }
