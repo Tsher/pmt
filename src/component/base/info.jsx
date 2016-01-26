@@ -1,77 +1,58 @@
 // 基础信息  企业信息管理
 import React from 'react';
 
-var data = [
-    {
-    	"title" : "企业基本信息",
-    	"info" : [
-    	    {
-    	    	"tit":"企业名称","name":"河南杜康创新酒业有限公司"
-    	    },
-    	    {
-    	    	"tit":"企业类型","name":"生产企业"
-    	    },
-    	    {
-    	    	"tit":"行政区划","name":"河南省洛阳市"
-    	    },
-    	    {
-    	    	"tit":"注册地址","name":"河南杜康创新酒业有限公司"
-    	    },
-    	    {
-    	    	"tit":"邮寄地址","name":"河南杜康创新酒业有限公司"
-    	    },
-    	    {
-    	    	"tit":"邮政编码","name":"河南杜康创新酒业有限公司"
-    	    },
-    	    {
-    	    	"tit":"注册时间","name":"河南杜康创新酒业有限公司"
-    	    }
-    	]
-    },
-    {
-    	"title" : "企业联系信息",
-    	"info" : [
-    	    {
-    	    	"tit":"指定联系人","name":"河南杜康"
-    	    },
-    	    {
-    	    	"tit":"手机","name":"138888888"
-    	    },
-    	    {
-    	    	"tit":"固定电话","name":"010-8888888"
-    	    },
-    	    {
-    	    	"tit":"传真","name":"010-8888888"
-    	    },
-    	    {
-    	    	"tit":"电子邮箱","name":"888888@126.com"
-    	    }
-    	]
-    }
-]
+import '../../entry/config';
+const baseInfoList = config.__URL + config.base.info.list;
 
 var SetHtml = React.createClass({
 	index : 0,
 	iNow : 0,
+    getInitialState:function(){        
+        return {
+            Entity_Name:'',
+            Entity_Category:'',
+
+        }
+    },
+    componentDidMount:function(){
+        _G.ajax({
+          url : baseInfoList,
+          type: "get",
+          success:function(res){
+            var d;
+            d = res.Data;
+            
+            this.setState(d)
+
+          }.bind(this)
+
+        })
+    },
 	render:function(){
 		return <div>
-		    {
-		    	data.map(function (n) {
-		    		this.index++;
-			    	return <div key={this.index} className="exports">
-			    	   <h2>{n.title}</h2>
-			    	   {
-			    	   	n.info.map(function(name){
-			    	   		this.iNow++;
-			    	   	   return <p key={this.iNow}><strong>{name.tit}</strong>{name.name}</p>
-			    	    }.bind(this))
-			    	   }
-			    	</div>
-			    }.bind(this))
-		    }
+            <div className="exports">
+               <h2>企业基本信息</h2>
+               <p><strong>企业名称</strong>{this.state.Entity_Name}</p>
+               <p><strong>企业性质</strong>{this.state.Entity_Category}</p>
+               <p><strong>行政区划</strong>{this.state.Entity_Region}</p>
+               <p><strong>注册地址</strong>{this.state.Entity_Address}</p>
+               <p><strong>邮寄地址</strong>{this.state.Entity_PostAddress}</p>
+               <p><strong>邮政编码</strong>{this.state.Entity_PostCode}</p>
+               <p><strong>注册时间</strong>{_G.timeFormat2(this.state.Entity_RegisterOn,'YYYY-MM-DD')}</p>
+            </div>
+            <div className="exports">
+               <h2>企业联系信息</h2>
+               <p><strong>指定联系人</strong>{this.state.Entity_Contacts}</p>
+               <p><strong>手机</strong>{this.state.Phone}</p>
+               <p><strong>固定电话</strong>{this.state.Fixed_Telephone}</p>
+               <p><strong>传真</strong>{this.state.Fax}</p>
+               <p><strong>电子邮箱</strong>{this.state.Entity_Email}</p>
+            </div>
+		    
 		</div>
 	}
 })
+
 
 class BaseInfo extends React.Component{
 	constructor(){

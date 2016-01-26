@@ -121,7 +121,7 @@ class SaleDataUser extends React.Component{
         for(var i=0,l=res.Data.length;i<l;i++){
           var json = {}
           if (res.Data[i].Province_Name) {
-            json.name = res.Data[i].Province_Name.replace('市','');
+            json.name = res.Data[i].Province_Name.replace('市','').replace('省','');
             json.value = res.Data[i].ScanCount;
             d.push(json);
           }

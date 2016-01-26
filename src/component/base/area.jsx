@@ -18,151 +18,24 @@ const confirm = Modal.confirm;
 
 const history = createHistory();
 
+import '../../entry/config';
+const regionUrl = config.__URL + config.base.area.region;
+const salesRegionUrl = config.__URL + config.base.area.salesRegion;
+const salesRegionOneUrl = config.__URL + config.base.area.salesRegionOne;
+const baseAreaDel = config.__URL + config.base.area.del;
+
+var changeTableState;
+
 var dataIndex = '';
 
-var navData = [
-   {
-     "name":"北京区",
-     "no" : "n00001",
-     "desc" : "真是个好地方真是个好地方真是个好地方真是个好地方真是个好地方真是个好地方真是个好地方真是个好地方真是个好地方",
-     "keys" : ['key1','key1-1','key1-2']
-   },
-   {
-     "name":"天津区",
-     "no" : "n00002",
-     "desc" : "真是个好地方",
-     "keys" : ['key2','key2-1','key2-2']
-   },
-   {
-     "name":"华北区",
-     "no" : "n00003",
-     "desc" : "真是个好地方",
-     "keys" : ['key1','key1-1','key1-2','key2','key2-1','key2-2']
-   },
-   {
-     "name":"华南区",
-     "no" : "n00004",
-     "desc" : "真是个好地方",
-     "keys" : ['key3','key3-1','key3-2','key3-3','key3-4','key3-5','key3-6']
-   },
-   {
-     "name":"西北区",
-     "no" : "n00005",
-     "desc" : "真是个好地方",
-     "keys" : ['key4','key4-1','key4-2','key4-3','key4-3-1','key4-3-2']
-   }
-]
 
-
-// tree data
 var _data = [
-  {
-  	title:'中国大陆',
-  	key : 'key0',
-  	children : [
-  	      {
-		    title : '北京市',
-		    key : 'key1',
-		    children:[
-		      {
-		        title : '海淀区',
-		        key : 'key1-1'
-		      },
-		      {
-		        title : '朝阳区',
-		        key : 'key1-2'
-		      }
-		    ]
-		  },
-		  {
-		    title : '天津市',
-		    key : 'key2',
-		    children:[
-		      {
-		        title : '海淀区',
-		        key : 'key2-1'
-		      },
-		      {
-		        title : '朝阳区',
-		        key : 'key2-2'
-		      }
-		    ]
-		  },
-		  {
-		    title : '湖南省',
-		    key : 'key3',
-		    children:[
-		      {
-		        title : '长沙市',
-		        key : 'key3-1'
-		      },
-		      {
-		        title : '永州市',
-		        key : 'key3-2'
-		      },
-		      {
-		        title : '常德市',
-		        key : 'key3-3'
-		      },
-		      {
-		        title : '岳阳市',
-		        key : 'key3-4'
-		      },
-		      {
-		        title : '娄底时',
-		        key : 'key3-5'
-		      },
-		      {
-		        title : '株洲',
-		        key : 'key3-6'
-		      }
-		    ]
-		  },
-		  {
-		    title : '河南省',
-		    key : 'key4',
-		    children:[
-		      {
-		        title : '郑州市',
-		        key : 'key4-1'
-		      },
-		      {
-		        title : '洛阳市',
-		        key : 'key4-2'
-		      },
-		      {
-		        title : '驻马店市',
-		        key : 'key4-3',
-		        children : [
-		           {
-		           	   title : '峄城区',
-		           	   key : 'key4-3－1'
-		           },
-		           {
-		           	   title : '正阳县',
-		           	   key : 'key4-3－2'
-		           }
-		        ]
-		      }
-		    ]
-		  },
-		  {
-		    title : '河北省',
-		    key : 'key5',
-		    children:[
-		      {
-		        title : '石家庄',
-		        key : 'key5-1'
-		      },
-		      {
-		        title : '保定',
-		        key : 'key5-2'
-		      }
-		    ]
-		  }
-  	]
-  }
-];
+	{
+	  	Name:'中国大陆',
+	  	Code : 'key0',
+	  	Children : []
+	}
+]
 
 
 class RightBox extends React.Component{
@@ -185,9 +58,19 @@ class RightBox extends React.Component{
 	}
 
   componentDidMount(){
-    this.setState({
-      treedata : _data
-    });
+  	_G.ajax({
+	  url : regionUrl,
+	  type: "get",
+	  success:function(res){
+	    var d = res.Data;
+	    _data[0].Children = d;
+	    //setData(d)
+	    this.setState({
+	      treedata : _data
+	    });	    
+	  }.bind(this)
+
+	}) 
 
   }
   
@@ -222,10 +105,10 @@ class RightBox extends React.Component{
   	};
 	const loop = (data) => {
       return data.map( (item) => {
-        if(item.children){
-          return (<TreeNode disabled title={item.title} key={item.key}>{loop(item.children)}</TreeNode>);
+        if(item.Children){
+          return (<TreeNode disabled title={item.Name} key={item.Code}>{loop(item.Children)}</TreeNode>);
         }else{
-          return (<TreeNode disabled title={item.title} key={item.key}></TreeNode>);
+          return (<TreeNode disabled title={item.Name} key={item.Code}></TreeNode>);
         }
       } )
     }
@@ -269,43 +152,71 @@ class BaseArea extends React.Component{
 	constructor(){
 		super();
 		var json = {}
-		json.ModalText = '';
+		/*json.ModalText = '';
 		json.visible=false;
 		json.title ='';
 		json.changeId=false;
        for(var i=0;i<navData.length;i++){
           json[navData[i].no] = '';
-       }
-	    this.state = json;
+       }*/
+	    this.state = {
+	    	Data : [],
+	    };
 	    this.showModal = this.showModal.bind(this);
 	    this.handleOk = this.handleOk.bind(this);
 	    this.handleCancel = this.handleCancel.bind(this);
 	}
 
+	componentDidMount(){
+		_G.ajax({
+		  url : salesRegionUrl,
+		  type: "get",
+		  success:function(res){
+		    var d = res.Data;
+		    this.setState({
+		      Data : d
+		    });
+		    
+		  }.bind(this)
+
+		})
+	}
+  	
+
 	handleClick(e){
 		var n;
-		
-        for(var i=0;i<navData.length;i++){
+        for(var i=0;i<this.state.Data.length;i++){
+        	var s = this.state.Data[i];
             this.setState({
-              [navData[i].no] : ''
+              [s.SalesRegion_Code] : ''
             })
         }
-        for(var i=0;i<navData.length;i++){
-           if (navData[i].no == e) {
-              n = i;
-           };
-        }
-        var data = {
-			showInfo : 'block',
-			name : navData[n].name,
-	  		no : navData[n].no,
-	  		desc : navData[n].desc,
-	  		keys : navData[n].keys,
-		}
-        this.setState({
-          [e] : 'on',
-          data : data
-        })
+        
+
+        _G.ajax({
+		  url : salesRegionOneUrl,
+		  type: "get",
+		  data : {SalesRegion_Code:e},
+		  success:function(res){
+		    var d = res.Data;
+		    var data={
+		    	keys : []
+		    };
+		    data.keys = d.RegionNos.split(',');
+		    data.name = d.SalesRegion_Name;
+		    data.no = d.SalesRegion_Code;
+		    data.desc = d.Region_Description;
+
+		    this.setState({
+	          [e] : 'on',
+	          data : data
+	        })
+		    
+		  }.bind(this)
+
+		})
+
+        
 	}
 
 	handleOk(e){
@@ -313,11 +224,37 @@ class BaseArea extends React.Component{
 	    this.setState({
 	      confirmLoading:true
 	    })
-	    setTimeout(()=>{
-	      this.setState({
-	        visible : false
-	      })
-	    },2000)
+	    console.log(this.state.changeId)
+	    var code = this.state.changeId;
+
+	    _G.ajax({
+	      url : baseAreaDel,
+	      method : 'get',
+	      data : {SalesRegion_Code:code},
+	      success:function(res){
+	        if(res.ReturnOperateStatus == 'True'){
+	          this.setState({
+	            visible : false
+	          })
+	          console.log('删除成功');
+	          var d = [].concat(this.state.Data);
+	          d.splice(d[this.state.index],1);
+	          console.log(this.state.index)
+	          var ad = this.state.data;
+	          ad.showInfo = 'none';
+	          this.setState({
+	            Data : d,
+	            loading : false,
+	            data:ad,
+	          })
+	          return
+	        }
+	        if(res.ReturnOperateStatus == 'False'){
+	          console.log('删除失败')
+	        }
+	      }.bind(this)
+	    })
+	    
 	}
 	handleCancel(e){
 	    this.setState({
@@ -356,15 +293,15 @@ class BaseArea extends React.Component{
 								<div className="navList">
 				                     <ul>
 				                     {
-				                        navData.map(function(d){
-				                          var no = d.no;
-				                          var edio = '/base/area/edit/'+no;
-				                           return <li key={no} name={d.no} className={this.state[no]} onClick={this.handleClick.bind(this,no)}>
-				                                 {d.name}
+				                        this.state.Data.map(function(d){
+				                          var code = d.SalesRegion_Code;
+				                          var edio = '/base/area/edit/'+code;
+				                           return <li key={code} name={code} className={this.state[code]} onClick={this.handleClick.bind(this,code)}>
+				                                 {d.SalesRegion_Name}
 				                                 <em className="btn">
 				                                 <Link to={edio}>修改</Link>
 				                                 <i>|</i>
-				                                 <a href="javascript:;" onClick={this.showModal} data-id={no} >删除</a></em>
+				                                 <a href="javascript:;" onClick={this.showModal} data-id={code} >删除</a></em>
 				                           </li>
 				                        }.bind(this))
 				                     }
