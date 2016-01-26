@@ -196,10 +196,10 @@ window['config'] = {
 			list : '/api/SPrizeMana/GetPrizeBy',		//获取奖品列表
 			info : '/api/SPrizeMana/GetPrize',			//获取奖品信息
 			kinds : '/api/SPrizeMana/GetPrizeCatalog', 	//获取种类
-			add : '/api/SPrizeMana /PostPrize', 		//添加奖品
+			add : '/api/SPrizeMana/PostPrize', 		//添加奖品
 			upload : '/api/SPrizeMana/UpProImage', 		//上传图片
-			edit : '/api/SPrizeMana /PutPrize', 		//修改奖品
-			del : '/api/SPrizeMana /DeletePrize'		// 删除奖品
+			edit : '/api/SPrizeMana/PutPrize', 		//修改奖品
+			del : '/api/SPrizeMana/DeletePrize'		// 删除奖品
 		}
 	},
 	// 促销数据

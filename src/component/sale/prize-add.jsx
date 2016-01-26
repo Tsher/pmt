@@ -57,26 +57,34 @@ const msg_success = function(){
 class SalePrizeAdd extends React.Component{
 
   //mixins: [Validation.FieldMixin],
-
+/// <param name="Token">Token</param>
+/// <param name="Prize_Code">奖品编码 </param>
+/// <param name="Prize_Name">奖品名称 </param>
+/// <param name="Unit ">单位 </param>
+/// <param name="Prize_Type ">奖品类别 </param>
+/// <param name="RegisterOn ">入网日期 </param>
+/// <param name="Image ">奖品图片 </param>
+/// <param name="Brand ">品牌 </param>
+/// <param name="Spec ">规格 </param>
   constructor(props) {
   	super(props);
   	this.state = {
       status : {
-        prizeName : {},
-        prizeType : {},
-        creatTime : {},
-        productName : {}
+        Prize_Name : {},
+        Prize_Type : {},
+        RegisterOn : {},
+        Brand : {}
       },
       formData : {
-        id : '', // 奖品id
+        Prize_Code : '', // 奖品id
         title : '新增奖品',
-        prizeName : undefined, // 奖品名称
-        unit : undefined, // 单位
-        prizeType  : undefined , // 奖品类别
-        pic : undefined, // 奖品图片
-        productName : undefined, // 品牌
-        creatTime : undefined, // 入网日期
-        size : undefined, // 规格
+        Prize_Name : '', // 奖品名称
+        Unit : '', // 单位
+        Prize_Type  : '' , // 奖品类别
+        Image : '', // 奖品图片
+        Brand : '', // 品牌
+        RegisterOn : _G.timeFormat2(new Date().getTime(), 'YYYY-MM-DD'), // 入网日期
+        Spec : '', // 规格
       }
       
     };
@@ -124,7 +132,6 @@ class SalePrizeAdd extends React.Component{
   handleSubmit(e) {
     //***********************************等待ajax提交数据 ******** 区分 新增 或者 编辑
     e.preventDefault();
-
     const validation = this.refs.validation;
     validation.validate((valid) => {
       if (!valid) {
@@ -132,9 +139,15 @@ class SalePrizeAdd extends React.Component{
         msg_error()
         return;
       } else {
-        console.log('submit');
+        _G.ajax({
+            url: config.__URL + config.sale.prize.add,
+            type: "post",
+            data: this.state.formData,
+            success: function(res) {
+              msg_success();
+            }.bind(this)
+        })
       }
-      console.log(this.state.formData);
       msg_success();
     });
     
@@ -170,8 +183,8 @@ class SalePrizeAdd extends React.Component{
   }
 
   renderPic(){
-    if(this.state.formData.pic){
-      return (<img src={this.state.formData.pic} style={{width:'100%'}} />)
+    if(this.state.formData.Image){
+      return (<img src={this.state.formData.Image} style={{width:'100%'}} />)
     }
   }
 
@@ -190,68 +203,68 @@ class SalePrizeAdd extends React.Component{
                 
                 <FormItem
                   label="单位："
-                  id="unit"
+                  id="Unit"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
                   >
-                    <Input name="unit" id="unit" value={formData.unit} onChange={this.setValue} />
+                    <Input name="Unit" id="Unit" value={formData.Unit} onChange={this.setValue} />
                 </FormItem>
                 <FormItem
                   label="入网日期："
-                  id="creatTime"
+                  id="RegisterOn"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('creatTime')}
-                  help={status.creatTime.errors ? status.creatTime.errors.join(',') : null}
+                  validateStatus={this.renderValidateStyle('RegisterOn')}
+                  help={status.RegisterOn.errors ? status.RegisterOn.errors.join(',') : null}
                   required>
                     
-                      <DatePicker placeholder="入网日期" value={formData.creatTime} id="creatTime" name="creatTime" onChange={this.onChange.bind(this,'creatTime')} />
+                      <DatePicker placeholder="入网日期" value={formData.RegisterOn} id="RegisterOn" name="RegisterOn" onChange={this.onChange.bind(this,'RegisterOn')} />
                     
                 </FormItem>
                 <FormItem
                   label="品牌："
-                  id="productName"
+                  id="Brand"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('productName')}
-                  help={status.productName.errors ? status.productName.errors.join(',') : null}
+                  validateStatus={this.renderValidateStyle('Brand')}
+                  help={status.Brand.errors ? status.Brand.errors.join(',') : null}
                   required>
                     <Validator rules={[{required: true, message: '请输入品牌'}]}>
-                      <Input name="productName" value={formData.productName} />
+                      <Input name="Brand" value={formData.Brand} />
                     </Validator>
                 </FormItem>
                 <FormItem
                   label="规格："
-                  id="size"
+                  id="Spec"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
                   >
-                    <Input id="size" name="size" value={formData.size} onChange={this.setValue} />
+                    <Input id="Spec" name="Spec" value={formData.Spec} onChange={this.setValue} />
                 </FormItem>
             </Col>
             <Col span="12">
                 <FormItem
                   label="奖品名称："
-                  id="prizeName"
+                  id="Prize_Name"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('prizeName')}
-                  help={status.prizeName.errors ? status.prizeName.errors.join(',') : null}
+                  validateStatus={this.renderValidateStyle('Prize_Name')}
+                  help={status.Prize_Name.errors ? status.Prize_Name.errors.join(',') : null}
                   required>
                     <Validator rules={[{required: true, message: '请输入奖品名称'}]}>
-                      <Input name="prizeName" value={formData.prizeName} />
+                      <Input name="Prize_Name" value={formData.Prize_Name} />
                     </Validator>
                 </FormItem>
                 <FormItem
                   label="奖品类别："
-                  id="prizeType"
+                  id="Prize_Type"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('prizeType')}
-                  help={status.prizeType.errors ? status.prizeType.errors.join(',') : null}
+                  validateStatus={this.renderValidateStyle('Prize_Type')}
+                  help={status.Prize_Type.errors ? status.Prize_Type.errors.join(',') : null}
                   required>
                     <Validator rules={[{required: true, message: '请选择奖品类别',type:'string'}]}>
-                      <Select name="prizeType" style={{width:'100%'}} value={formData.prizeType}>
+                      <Select name="Prize_Type" style={{width:'100%'}} value={formData.Prize_Type}>
                         <Option value="话费">话费</Option>
                         <Option value="微信红包">微信红包</Option>
                         <Option value="实物">实物</Option>
@@ -264,11 +277,11 @@ class SalePrizeAdd extends React.Component{
                 
                 <FormItem
                   label="奖品图片："
-                  id="pic"
+                  id="Image"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
                   >
-                    <Input type="hidden" name="pic" value={formData.pic} />
+                    <Input type="hidden" name="Image" value={formData.Image} />
                     <Upload name="file" action="/upload.do" onChange={this.uploadCallback.bind(this)} >
                         <Button type="ghost">
                           <Icon type="upload" /> 点击上传
