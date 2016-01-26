@@ -46,6 +46,12 @@ const msg_success = function(){
   message.success('数据提交成功，等待后台处理')
 }
 
+import '../../entry/config';
+
+const urlRoleGet = config.__URL + config.user.role.get;
+const urlRoleType = config.__URL + config.user.role.type;
+const urlRoleUpdate = config.__URL + config.user.role.update;
+const urlRoleAdd = config.__URL + config.user.role.add;
 
 class UserRoleAdd extends React.Component{
 
@@ -56,16 +62,17 @@ class UserRoleAdd extends React.Component{
   	this.state = {
       status: {
         Role_Type: {},
-        string:{},
-        textarea:{}
+        Role_Name:{},
+        Role_Description:{}
       },
       formData: {
-        Role_Type: undefined,
-        string: undefined,
-        textarea:undefined,
+        Role_Type: '',
+        Role_Name:'',
+        Role_Description:'',
         id : undefined,
         title : '新增角色'
-      }
+      },
+      role_all_type:undefined,
     };
     this.setField = FieldMixin.setField.bind(this);
     this.handleValidate = FieldMixin.handleValidate.bind(this);
@@ -73,17 +80,63 @@ class UserRoleAdd extends React.Component{
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleReset = this.handleReset.bind(this);
+    this.handleSelectChange = this.handleSelectChange.bind(this);
   }
 
   componentDidMount(){
+    // 获取所有角色类型
+    var that = this;
+    _G.get_data(config['user']['role']['type'],'user_role_type',{},function(res){
+      
+      const doms = res.Data.map( (item,index)=>{
+        return <Option key={index} value={item['REAL_Code']}>{item['CODE_NM']}</Option>
+      } )
+      that.setState({
+        role_all_type : doms
+      })
+    }); 
+
     // 编辑
     if(this.props.params.id){
       // ajax获取当前id的内容，变更state ****************************
-      var state = _extends(this.state,{formData:{ id:this.props.params.id , title : '编辑角色' }});
-      this.setState(state);
+      var data = decodeURIComponent([].concat(this.props.params.id) ).split('-');
+      var formData = _extends(this.state.formData,{ id:this.props.params.id , title : '编辑角色' , Role_Name : data[0],Role_Type:data[1] });
+      _G.ajax({
+        url : urlRoleGet,
+        type : 'get',
+        data : {
+          Role_Name :  encodeURIComponent(data[0]),
+          Role_Type : data[1]
+        },
+        success:function(res){
+
+          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
+            msg_error();
+            // 跳转回列表页
+            return;
+          }
+          res = res.Data;
+          formData.Role_Type = res.Role_Type;
+          formData.Role_Name = res.Role_Name;
+          formData.Role_Description = res.Role_Description;
+          
+          this.setState({
+            formData:formData
+          })
+
+        }.bind(this)
+      })
     }else{
       // 新增 *************
     }
+  }
+
+  handleSelectChange(field,value){
+    var formData = Object.assign({},this.state.formData);
+    formData[field] = value;
+    this.setState({
+      formData : formData
+    })
   }
 
 
@@ -136,7 +189,28 @@ class UserRoleAdd extends React.Component{
         console.log('submit');
       }
       console.log(this.state.formData);
-      msg_success();
+      var url = this.props.params.id ? urlRoleUpdate : urlRoleAdd;
+      var formData = this.state.formData;
+      _G.ajax({
+        url : url,
+        type : 'post',
+        data : {
+          Role_Name : formData.Role_Name,
+          Role_Type : formData.Role_Type,
+          Role_Description : formData.Role_Description
+        },
+        success:function(res){
+
+          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
+            msg_error('数据异常，请联系管理员');
+            // 跳转回列表页
+            return;
+          }
+          goBack();
+
+        }.bind(this)
+      })
+
     });
   }
 
@@ -175,8 +249,8 @@ class UserRoleAdd extends React.Component{
             help={status.Role_Type.errors ? status.Role_Type.errors.join(',') : null}
             required>
               <Validator rules={[{required: true, message: '请选择角色类型'},{validator: this.checkRoleType}]}>
-                <Select size="large" placeholder="请选择角色类型" style={{width: '100%'}} name="Role_Type" value={formData.Role_Type}>
-                  
+                <Select onChange={this.handleSelectChange.bind(this,'Role_Type')} size="large" placeholder="请选择角色类型" style={{width: '100%'}} name="Role_Type" value={formData.Role_Type}>
+                  {this.state.role_all_type}
                 </Select>
               </Validator>
           </FormItem>
@@ -196,13 +270,13 @@ class UserRoleAdd extends React.Component{
 
           <FormItem
             label="角色描述："
-            id="roleDesc"
+            id="Role_Description"
             labelCol={{span: 2}}
             wrapperCol={{span: 4}}
-            help={status.textarea.errors ? status.textarea.errors.join(',') : null}
+            help={status.Role_Description.errors ? status.Role_Description.errors.join(',') : null}
             >
               <Validator rules={[{required: false}]}>
-                <Input type="textarea" name="textarea" value={formData.textarea} />
+                <Input type="textarea" name="Role_Description" value={formData.Role_Description} />
               </Validator>
           </FormItem>
 

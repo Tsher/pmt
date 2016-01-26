@@ -109,7 +109,14 @@ window['_G']={
 
 // api 配置表
 window['config'] = {
-	__URL : 'http://101.200.221.152/PMTService', // API全局url
+	__URL : (function(){
+		var url = location.href + '/';
+		if(location.port){
+			url = 'http://101.200.221.152/PMTService';
+		}
+		url = url.replace(/\/{1,}$/,'');
+		return url
+	})(), // API全局url
 	// 用户管理
 	user:{
 		// 企业用户
@@ -127,6 +134,9 @@ window['config'] = {
 			del : '/api/SRole/DeleteRole',
 			all : '/api/SRole/GetAllRoles', // 获取所有角色信息
 			type : '/api/SRole/GetRole_Type', // 获取 角色类型
+			get : '/api/SRole/GetRole', // 获取单个角色信息
+			update : '/api/SRole/PutRole', // 修改角色信息
+			add : '/api/SRole/PostRole', // 新增角色信息
 		},
 		// 组织机构管理
 		group : {
