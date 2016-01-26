@@ -84,13 +84,13 @@ class RightBox extends React.Component{
 	        key:{},
 	      },
 	      formData: {
-	        id : undefined, // 新增 or 编辑 识别
-	        no : 'n00002', // 编辑状态 部门编号
-	        key : undefined, // 
-	        parent : undefined, // 
-	        name: '天津区', // 新增部门的名称
-	        desc : '真是个好地方', // 新增部门的描述
-	        title : '区域成员管理'
+	        id : '', // 新增 or 编辑 识别
+	        no : '', // 编辑状态 部门编号
+	        key : '', // 
+	        parent : '', // 
+	        name: '', // 新增部门的名称
+	        desc : '', // 新增部门的描述
+	        title : ''
 	      },
 	      no : undefined,
 	      key : '',
@@ -105,6 +105,37 @@ class RightBox extends React.Component{
 	}
 
   componentDidMount(){
+  	var id = this.props.id;
+
+  	if (id) {
+  		_G.ajax({
+		  url : salesRegionOneUrl,
+		  type: "get",
+		  data : {SalesRegion_Code:id},
+		  success:function(res){
+		    var d = res.Data;
+		    var keys=[];
+		    keys = d.RegionNos.split(',');
+
+		    var json = {
+		        id : id, // 新增 or 编辑 识别
+		        no : id, // 编辑状态 部门编号
+		        name: d.SalesRegion_Name, // 新增部门的名称
+		        desc : d.Region_Description, // 新增部门的描述
+		        title : '区域成员管理'
+		    }
+
+		    this.setState({
+	          formData : json,
+	          checkedKeys : keys,
+	          key : d.RegionNos,
+	        })
+		    
+		  }.bind(this)
+
+		})
+  	};
+
   	
 
   	_G.ajax({
@@ -191,6 +222,33 @@ class RightBox extends React.Component{
       console.log(this.state.formData);
       msg_success();
     });
+
+    return
+
+    // 提交数据
+      let u = this.props.params.id ? baseAreaEdit : baseAreaAdd;
+      var fD = this.state.formData;
+      _G.ajax({
+        url  : u,
+        data : fD,
+        method : 'post',
+        success:function(res){
+          if(res.ReturnOperateStatus == 'True'){
+            msg_success();
+            // 调转到列表页
+            goBack();
+            return;
+          }
+          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
+            msg_error(res.Msg);
+            return
+          }
+        },
+        fail:function(res){
+          msg_error();
+        }
+      })
+
   }
 
   renderValidateStyle(item) {
@@ -307,13 +365,14 @@ class RightBox extends React.Component{
 class BaseAreaAdd extends React.Component{
 	constructor(){
 		super();
-	    this.state = {}
+	    this.state = {
+	    }
 	}
 
     render(){
 	return(
 			<Row>
-				<RightBox />
+				<RightBox id={this.props.params.id} />
 			</Row>
 		)
 	}
