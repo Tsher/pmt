@@ -138,6 +138,17 @@ window['config'] = {
 		// 产品管理
 		product:{
 			list : '/api/'
+		},
+		info : {
+			list : '/api/SEnterprise/GetEnterprise'
+		},
+		area : {
+			region:'/api/SSaleRegion/GetRegions',
+			salesRegion : '/api/SSaleRegion/GetSaleRegion',
+			salesRegionOne:'/api/SSaleRegion/GetSaleRegion_SalesRegion_Code',
+			add:'/api/SSaleRegion/PostSalesRegion',
+			edit : '/api/SSaleRegion/UpdateSalesRegion',
+			del:'/api/SSaleRegion/DeleteSSaleRegion'
 		}
 	},
 	// 促销设置

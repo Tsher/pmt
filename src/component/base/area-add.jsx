@@ -1,4 +1,4 @@
-//  用户管理   组织机构管理  新增
+//  基础信息   销售区域管理  新增
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -46,120 +46,22 @@ const msg_success = function(){
   message.success('数据提交成功，等待后台处理')
 }
 
+import '../../entry/config';
+const regionUrl = config.__URL + config.base.area.region;
+const salesRegionOneUrl = config.__URL + config.base.area.salesRegionOne;
+const baseAreaAdd = config.__URL + config.base.area.add;
+const baseAreaEdit = config.__URL + config.base.area.edit;
+
+var changeTableState;
+
 // tree data
 var _data = [
-  {
-  	title:'中国大陆',
-  	key : 'key0',
-  	children : [
-  	      {
-		    title : '北京市',
-		    key : 'key1',
-		    active:false,
-		    children:[
-		      {
-		        title : '海淀区',
-		        key : 'key1-1'
-		      },
-		      {
-		        title : '朝阳区',
-		        key : 'key1-2'
-		      }
-		    ]
-		  },
-		  {
-		    title : '天津市',
-		    key : 'key2',
-		    active : true,
-		    children:[
-		      {
-		        title : '海淀区',
-		        key : 'key2-1'
-		      },
-		      {
-		        title : '朝阳区',
-		        key : 'key2-2'
-		      }
-		    ]
-		  },
-		  {
-		    title : '湖南省',
-		    key : 'key3',
-		    active:false,
-		    children:[
-		      {
-		        title : '长沙市',
-		        key : 'key3-1'
-		      },
-		      {
-		        title : '永州市',
-		        key : 'key3-2'
-		      },
-		      {
-		        title : '常德市',
-		        key : 'key3-3'
-		      },
-		      {
-		        title : '岳阳市',
-		        key : 'key3-4'
-		      },
-		      {
-		        title : '娄底时',
-		        key : 'key3-5'
-		      },
-		      {
-		        title : '株洲',
-		        key : 'key3-6'
-		      }
-		    ]
-		  },
-		  {
-		    title : '河南省',
-		    key : 'key4',
-		    active:false,
-		    children:[
-		      {
-		        title : '郑州市',
-		        key : 'key4-1'
-		      },
-		      {
-		        title : '洛阳市',
-		        key : 'key4-2'
-		      },
-		      {
-		        title : '驻马店市',
-		        key : 'key4-3',
-		        children : [
-		           {
-		           	   title : '峄城区',
-		           	   key : 'key4-3-1'
-		           },
-		           {
-		           	   title : '正阳县',
-		           	   key : 'key4-3-2'
-		           }
-		        ]
-		      }
-		    ]
-		  },
-		  {
-		    title : '河北省',
-		    key : 'key5',
-		    active:false,
-		    children:[
-		      {
-		        title : '石家庄',
-		        key : 'key5-1'
-		      },
-		      {
-		        title : '保定',
-		        key : 'key5-2'
-		      }
-		    ]
-		  }
-  	]
-  }
-];
+	{
+	  	Name:'中国大陆',
+	  	Code : 'key0',
+	  	Children : []
+	}
+]
 
 
 class RightBox extends React.Component{
@@ -204,10 +106,21 @@ class RightBox extends React.Component{
 
   componentDidMount(){
   	
-    this.setState({
-      treedata : _data
-    });
-    var _Da = _data[0].children;
+
+  	_G.ajax({
+	  url : regionUrl,
+	  type: "get",
+	  success:function(res){
+	    var d = res.Data;
+	    _data[0].Children = d;
+	    this.setState({
+	      treedata : _data
+	    });	    
+	  }.bind(this)
+
+	})
+
+    /*var _Da = _data[0].children;
     for(var i=0;i<_Da.length;i++){
   		if (_Da[i].active) {
   			this.setState({
@@ -216,7 +129,7 @@ class RightBox extends React.Component{
   			})
   			
   		};
-  	}
+  	}*/
 
   }
 
@@ -308,10 +221,10 @@ class RightBox extends React.Component{
   	const status = this.state.status;
 	const loop = (data) => {
       return data.map( (item) => {
-        if(item.children){
-          return (<TreeNode title={item.title} key={item.key}>{loop(item.children)}</TreeNode>);
+        if(item.Children){
+          return (<TreeNode title={item.Name} key={item.Code}>{loop(item.Children)}</TreeNode>);
         }else{
-          return (<TreeNode title={item.title} key={item.key}></TreeNode>);
+          return (<TreeNode title={item.Name} key={item.Code}></TreeNode>);
         }
       } )
     }
