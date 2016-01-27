@@ -127,6 +127,7 @@ class ChangePassword extends React.Component{
   handleSubmit(e){
     e.preventDefault();
     var data = Object.assign({},this.state.formData);
+    data.Token = _G.Token;
     // 修改密码
     _G.ajax({
       url : updatePWD,
@@ -135,7 +136,10 @@ class ChangePassword extends React.Component{
       success : function(res){
         msg_success('密码修改成功,请重新登录');
         _G.Token = '';
-        location.href = location.hostname + ':'+ location.port;
+        Cookie.dispose('Token');
+        var url = location.href;
+        url = url.split('#');
+        location.href = url[0]+'#/login';
       }.bind(this),
       errors:function(){
         msg_error('密码修改失败,请重试');

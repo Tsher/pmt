@@ -81,7 +81,7 @@ class SaleUserInfo extends React.Component {
     }
 
     componentDidMount() {
-       var opts = {
+      var opts = {
           SalesPerson_Code: this.props.params.id
       }
       _G.ajax({

@@ -173,9 +173,9 @@ const columns = [{
     title: '操作',
     key: 'operation',
     render: function(text, record) {
-        var edit = '/sale/user/edit/' + record.No,
-            del = '/sale/user/del/' + record.No;
-        return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.No} data-text="删除" >删除</a></span>;
+        var edit = '/sale/user/edit/' + record.SalesPerson_Code,
+            del = '/sale/user/del/' + record.SalesPerson_Code;
+        return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.SalesPerson_Code} data-text="删除" >删除</a></span>;
     }
 }];
 
@@ -217,14 +217,35 @@ class SaleUser extends React.Component {
     }
     handleOk(e) {
         //******************* 冻结，解冻 逻辑 changeId , 然后 关闭****************************
-        this.setState({
-            confirmLoading: true
+        var opts = {
+            SalesPerson_Code: this.state.changeId
+        }
+        _G.ajax({
+            url: config.__URL + config.sale.user.del,
+            type: "get",
+            data: opts,
+            success: function(res) {
+                this.setState({
+                    confirmLoading: true
+                })
+                setTimeout(() => {
+                    var d = [],_tmp = this.state.data
+                    for(var i=0;i<_tmp.length;i++){
+                      if(_tmp[i].SalesPerson_Code!=opts.SalesPerson_Code){
+                        d.push(_tmp[i])
+                      }
+                    }
+                    this.setState({
+                        data: d,
+                        total: this.state.total,
+                        opts: this.state.opts
+                    })
+                    this.setState({
+                        visible: false
+                    })
+                }, 2000)
+            }.bind(this)
         })
-        setTimeout(() => {
-            this.setState({
-                visible: false
-            })
-        }, 2000)
     }
     handleCancel(e) {
         this.setState({
@@ -260,7 +281,6 @@ class SaleUser extends React.Component {
                     total: res.TotalCount,
                     opts: opts
                 })
-                console.log(d)
             }.bind(this)
         })
     }

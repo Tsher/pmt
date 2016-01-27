@@ -179,7 +179,7 @@ const columns = [{
     title: '操作',
     key: 'operation',
     render: function(text, record) {
-      return <span><a href="#" onClick={showModal} data-id={record.Member_Code} data-state={record.Member_Status} >{record.Member_Status ==1?'冻结':'解冻'}</a></span>;
+      return <span><a href="#" onClick={showModal} data-id={record.Member_Code} data-state={record.Member_Status} >{record.Member_Status =='正常'?'冻结':'解冻'}</a></span>;
     }
 }];
 
@@ -233,6 +233,17 @@ class SaleVip extends React.Component {
                     confirmLoading: true
                 })
                 setTimeout(() => {
+                    var d = [],_tmp = this.state.data
+                    for(var i=0;i<_tmp.length;i++){
+                      if(_tmp[i].Member_Code==opts.Member_Code){
+                        _tmp[i]['Member_Status'] = _tmp[i]['Member_Status'] =='正常'?'冻结':'正常'
+                      }
+                    }
+                    this.setState({
+                        data: _tmp,
+                        total: this.state.total,
+                        opts: this.state.opts
+                    })
                     this.setState({
                         visible: false
                     })
@@ -267,6 +278,7 @@ class SaleVip extends React.Component {
                 for (var i = 0, l = res.Data.length; i < l; i++) {
                     d[i] = res.Data[i];
                     d[i]['key'] = res.Data[i].User_Code;
+                    d[i]['RegisterTime'] = _G.timeFormat2(d[i].RegisterTime)
                 }
                 this.setState({
                     data: d,

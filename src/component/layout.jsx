@@ -184,6 +184,8 @@ class Layout extends React.Component{
 	}
 	logout(){
 		// 登出
+		Cookie.dispose('Token');
+		location.reload();
 	}
 	userInfo(){
 		//用户信息

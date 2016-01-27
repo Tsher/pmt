@@ -54,18 +54,10 @@ const msg_success = function(){
 
 
 
-class SalePrizeAdd extends React.Component{
+class SalePrizeInfo extends React.Component{
 
   //mixins: [Validation.FieldMixin],
-/// <param name="Token">Token</param>
-/// <param name="Prize_Code">奖品编码 </param>
-/// <param name="Prize_Name">奖品名称 </param>
-/// <param name="Unit ">单位 </param>
-/// <param name="Prize_Type ">奖品类别 </param>
-/// <param name="RegisterOn ">入网日期 </param>
-/// <param name="Image ">奖品图片 </param>
-/// <param name="Brand ">品牌 </param>
-/// <param name="Spec ">规格 </param>
+
   constructor(props) {
   	super(props);
   	this.state = {
@@ -76,14 +68,14 @@ class SalePrizeAdd extends React.Component{
         Brand : {}
       },
       formData : {
-        Prize_Code : '', // 奖品id
-        title : '新增奖品',
+        id : '', // 奖品id
+        title : '奖品信息',
         Prize_Name : '', // 奖品名称
         Unit : '', // 单位
         Prize_Type  : '' , // 奖品类别
         Image : '', // 奖品图片
         Brand : '', // 品牌
-        RegisterOn : _G.timeFormat2(new Date().getTime(), 'YYYY-MM-DD'), // 入网日期
+        RegisterOn : '', // 入网日期
         Spec : '', // 规格
       }
       
@@ -98,7 +90,7 @@ class SalePrizeAdd extends React.Component{
     this.onChange = this.onChange.bind(this);
   }
 
-  // datepicker change
+  // dateImageker change
   onChange(field,value){
     var data = Object.assign({},this.state);
     data.formData[field] = value;
@@ -106,20 +98,19 @@ class SalePrizeAdd extends React.Component{
   }
 
   componentDidMount(){
-    var id = this.props.params.id;
-
-    
-    if(id){
-      // 编辑
-      // ajax 请求当前id的数据 ********************************
-      var state = Object.assign({},this.state);
-      state.formData.id = this.props.params.id;
-      state.formData.title = '编辑奖品信息';
-      this.setState(state);
-      return
+    var opts = {
+        Prize_Code: this.props.params.id
     }
-    
-    
+    _G.ajax({
+        url: config.__URL + config.sale.prize.info,
+        type: "get",
+        data: opts,
+        success: function(res) {
+            console.log(res.Data)
+
+            //this.setState(Object.assign({}, res.Data))
+        }.bind(this)
+    })
   }
 
 
@@ -132,6 +123,7 @@ class SalePrizeAdd extends React.Component{
   handleSubmit(e) {
     //***********************************等待ajax提交数据 ******** 区分 新增 或者 编辑
     e.preventDefault();
+
     const validation = this.refs.validation;
     validation.validate((valid) => {
       if (!valid) {
@@ -139,15 +131,9 @@ class SalePrizeAdd extends React.Component{
         msg_error()
         return;
       } else {
-        _G.ajax({
-            url: config.__URL + config.sale.prize.add,
-            type: "post",
-            data: this.state.formData,
-            success: function(res) {
-              msg_success();
-            }.bind(this)
-        })
+        console.log('submit');
       }
+      console.log(this.state.formData);
       msg_success();
     });
     
@@ -207,7 +193,7 @@ class SalePrizeAdd extends React.Component{
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
                   >
-                    <Input name="Unit" id="Unit" value={formData.Unit} onChange={this.setValue} />
+                    <Input  disabled name="Unit" id="Unit" value={formData.Unit}/>
                 </FormItem>
                 <FormItem
                   label="入网日期："
@@ -217,8 +203,7 @@ class SalePrizeAdd extends React.Component{
                   validateStatus={this.renderValidateStyle('RegisterOn')}
                   help={status.RegisterOn.errors ? status.RegisterOn.errors.join(',') : null}
                   required>
-                    
-                      <DatePicker placeholder="入网日期" value={formData.RegisterOn} id="RegisterOn" name="RegisterOn" onChange={this.onChange.bind(this,'RegisterOn')} />
+                    <Input  disabled id="RegisterOn" name="RegisterOn" value={formData.RegisterOn}/>
                     
                 </FormItem>
                 <FormItem
@@ -230,7 +215,7 @@ class SalePrizeAdd extends React.Component{
                   help={status.Brand.errors ? status.Brand.errors.join(',') : null}
                   required>
                     <Validator rules={[{required: true, message: '请输入品牌'}]}>
-                      <Input name="Brand" value={formData.Brand} />
+                      <Input  disabled name="Brand" value={formData.Brand} />
                     </Validator>
                 </FormItem>
                 <FormItem
@@ -239,7 +224,7 @@ class SalePrizeAdd extends React.Component{
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
                   >
-                    <Input id="Spec" name="Spec" value={formData.Spec} onChange={this.setValue} />
+                    <Input  disabled id="Spec" name="Spec" value={formData.Spec}/>
                 </FormItem>
             </Col>
             <Col span="12">
@@ -252,7 +237,7 @@ class SalePrizeAdd extends React.Component{
                   help={status.Prize_Name.errors ? status.Prize_Name.errors.join(',') : null}
                   required>
                     <Validator rules={[{required: true, message: '请输入奖品名称'}]}>
-                      <Input name="Prize_Name" value={formData.Prize_Name} />
+                      <Input  disabled name="Prize_Name" value={formData.Prize_Name} />
                     </Validator>
                 </FormItem>
                 <FormItem
@@ -264,7 +249,7 @@ class SalePrizeAdd extends React.Component{
                   help={status.Prize_Type.errors ? status.Prize_Type.errors.join(',') : null}
                   required>
                     <Validator rules={[{required: true, message: '请选择奖品类别',type:'string'}]}>
-                      <Select name="Prize_Type" style={{width:'100%'}} value={formData.Prize_Type}>
+                      <Select name="Prize_Type" style={{width:'100%'}} value={formData.Prize_Type} disabled >
                         <Option value="话费">话费</Option>
                         <Option value="微信红包">微信红包</Option>
                         <Option value="实物">实物</Option>
@@ -281,9 +266,9 @@ class SalePrizeAdd extends React.Component{
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
                   >
-                    <Input type="hidden" name="Image" value={formData.Image} />
-                    <Upload name="file" action="/upload.do" onChange={this.uploadCallback.bind(this)} >
-                        <Button type="ghost">
+                    <Input  disabled type="hidden" name="Image" value={formData.Image} />
+                    <Upload  style={{display:"none"}} name="file" action="/upload.do" onChange={this.uploadCallback.bind(this)} >
+                        <Button type="ghost"  style={{display:"none"}} >
                           <Icon type="upload" /> 点击上传
                         </Button>
                     </Upload>
@@ -316,7 +301,7 @@ class SalePrizeAdd extends React.Component{
 
 
 module.exports = {
-  SalePrizeAdd : SalePrizeAdd
+  SalePrizeInfo : SalePrizeInfo
 }
 
 
