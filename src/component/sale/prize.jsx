@@ -222,21 +222,42 @@ class SalePrize extends React.Component{
   showModal(id){
     this.setState({
       visible : true,
-      ModalText: '你正要删除 "'+ id +'"的促销人员，是否继续？',
+      ModalText: '你正要删除 "'+ id +'"的奖品，是否继续？',
       confirmLoading: false,
       changeId : id
     })
   }
   handleOk(e){
     //******************* 冻结，解冻 逻辑 changeId , 然后 关闭****************************
-    this.setState({
-      confirmLoading:true
-    })
-    setTimeout(()=>{
-      this.setState({
-        visible : false
-      })
-    },2000)
+    var opts = {
+            Prize_Code: this.state.changeId
+        }
+        _G.ajax({
+            url: config.__URL + config.sale.prize.del,
+            type: "get",
+            data: opts,
+            success: function(res) {
+                this.setState({
+                    confirmLoading: true
+                })
+                setTimeout(() => {
+                    var d = [],_tmp = this.state.data
+                    for(var i=0;i<_tmp.length;i++){
+                      if(_tmp[i].Prize_Code!=opts.Prize_Code){
+                        d.push(_tmp[i])
+                      }
+                    }
+                    this.setState({
+                        data: d,
+                        total: this.state.total,
+                        opts: this.state.opts
+                    })
+                    this.setState({
+                        visible: false
+                    })
+                }, 2000)
+            }.bind(this)
+        })
   }
   handleCancel(e){
     this.setState({
