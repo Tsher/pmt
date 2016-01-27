@@ -64,7 +64,7 @@ class SaleUserInfo extends React.Component {
             SalesPerson_Name: '', // 姓名
             SalesPerson_SName: '', // 昵称
             Card_Code: '', // 身份证
-            Sex: '', // 性别
+            SalesPerson_Sex: '', // 性别
             Phone: '', // 手机
             RegisterTime: '', // 注册日期
             Email: '', // Email
@@ -89,8 +89,7 @@ class SaleUserInfo extends React.Component {
           type: "get",
           data: opts,
           success: function(res) {
-              console.log(res.Data)
-              this.setState(Object.assign({}, res.Data))
+              this.setState(Object.assign(res.Data,{RegisterTime:_G.timeFormat2(res.Data.RegisterTime)}))
           }.bind(this)
 
       })
@@ -161,11 +160,11 @@ class SaleUserInfo extends React.Component {
                               <FormItem label="身份证号：" id="Card_Code" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                                   <Input name="Card_Code" value={this.state.Card_Code} disabled />
                               </FormItem>
-                              <FormItem label="性别：" id="Sex" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                  <RadioGroup name="Sex" value={this.state.Sex} disabled>
-                                      <Radio value="male">男</Radio>
-                                      <Radio value="female">女</Radio>
-                                      <Radio value="none">神秘</Radio>
+                              <FormItem label="性别：" id="SalesPerson_Sex" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                  <RadioGroup name="SalesPerson_Sex" value={this.state.SalesPerson_Sex} disabled>
+                                      <Radio value="男">男</Radio>
+                                      <Radio value="女">女</Radio>
+                                      <Radio value="神秘">神秘</Radio>
                                   </RadioGroup>
                               </FormItem>
                               <FormItem label="手机：" id="Phone" labelCol={{span: 8}} wrapperCol={{span: 12}}>

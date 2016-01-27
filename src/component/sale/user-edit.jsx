@@ -74,7 +74,7 @@ class SaleUserEdit extends React.Component {
                 SalesPerson_Name: '', // 姓名
                 SalesPerson_SName: '', // 昵称
                 Card_Code: '', // 身份证
-                Sex: '', // 性别
+                SalesPerson_Sex: '', // 性别
                 Phone: '', // 手机
                 RegisterTime: '', // 注册日期
                 Email: '', // Email
@@ -116,7 +116,7 @@ class SaleUserEdit extends React.Component {
               state.formData.SalesPerson_SName = data.SalesPerson_SName
               state.formData.SalesPerson_Sex = data.SalesPerson_Sex
               state.formData.Card_Code = data.Card_Code
-              state.formData.RegisterTime = data.RegisterTime
+              state.formData.RegisterTime = _G.timeFormat2(data.RegisterTime)
               state.formData.Phone = data.Phone
               state.formData.Email = data.Email
               state.formData.Province = data.Province
@@ -228,11 +228,11 @@ class SaleUserEdit extends React.Component {
                                           <Input name="Card_Code" value={this.state.formData.Card_Code} />
                                       </Validator>
                                   </FormItem>
-                                  <FormItem label="性别：" id="Sex" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                      <RadioGroup name="Sex" value={this.state.Sex}>
-                                          <Radio value="male">男</Radio>
-                                          <Radio value="female">女</Radio>
-                                          <Radio value="none">神秘</Radio>
+                                  <FormItem label="性别：" id="SalesPerson_Sex" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                      <RadioGroup name="SalesPerson_Sex" value={this.state.formData.SalesPerson_Sex}>
+                                          <Radio value="男">男</Radio>
+                                          <Radio value="女">女</Radio>
+                                          <Radio value="神秘">神秘</Radio>
                                       </RadioGroup>
                                   </FormItem>
                                   <FormItem label="手机：" id="Phone" labelCol={{span: 8}} wrapperCol={{span: 12}} validateStatus={this.renderValidateStyle( 'mobile')} help={status.mobile.errors ? status.mobile.errors.join( ',') : null} required>
@@ -243,7 +243,7 @@ class SaleUserEdit extends React.Component {
                               </Col>
                               <Col span="12">
                                   <FormItem label="注册日期：" id="RegisterTime" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                      <Input name="RegisterTime" value={this.state.formData.RegisterTime} />
+                                      <Input name="RegisterTime" value={this.state.formData.RegisterTime} disabled />
                                   </FormItem>
                                   <FormItem label="电子邮箱：" id="Email" labelCol={{span: 8}} wrapperCol={{span: 12}} validateStatus={this.renderValidateStyle( 'email')} help={status.email.errors ? status.email.errors.join( ',') : null} required>
                                       <Validator rules={[{required: true, message: '请输入电子邮箱',type: 'email'}]}>
