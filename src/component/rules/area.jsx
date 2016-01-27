@@ -25,6 +25,14 @@ const history = createHistory();
 
 const FormItem = Form.Item;
 
+import '../../entry/config';
+const ruleAreaList = config.__URL + config.rule.area.list;
+const ruleAreaSearch  = config.__URL + config.rule.area.search;
+const ruleAreaDel  = config.__URL + config.rule.area.del;
+const ruleAreaExcel  = config.__URL + config.rule.area.excel;
+
+var changeTableState;
+
 class SelectForm extends React.Component{
 	//mixins: [Form.ValueMixin],
 
@@ -43,6 +51,15 @@ class SelectForm extends React.Component{
     this.disabledEndDate = this.disabledEndDate.bind(this);
   }
 
+  componentDidMount(){
+
+    console.log('hu');
+
+    this.setState({
+      data : []
+    })
+  }
+
   
   // 文本框的值 同步到 state
   setValue(e){
@@ -56,6 +73,7 @@ class SelectForm extends React.Component{
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
+    changeTableState = this.state;
     message.success('收到表单值~~~ ：' + JSON.stringify(this.state, function(k, v) {
       if (typeof v === 'undefined') {
         return '';
@@ -272,6 +290,7 @@ class RuleArea extends React.Component{
 	}
 
   componentDidMount(){
+    console.log(changeTableState)
     modalState = this.showModal;
     
   }

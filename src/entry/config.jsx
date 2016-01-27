@@ -218,6 +218,14 @@ window['config'] = {
 			edit : '/api/SIntegralRule/UpdateRule',   // 编辑积分规则
 			editList : '/api/SIntegralRule/GetRule',   // 获取指定积分规则
 		},
+		area : {
+			list : '/api/SBatchRegion/GetBatchRegion',//获取指定页的批次区域
+			search : '/api/SBatchRegion/GetBatchRegionList',//按条件查询批次区域
+			add:'/api/SBatchRegion/PostBatchRegion',//添加批次区域
+			edit:'/api/SBatchRegion/PutBatchRegion',//更新批次区域
+			del:'/api/SBatchRegion/PutBatchRegion',//删除批次区域
+			excel:'/api/SBatchRegion/ BatchRegionToExcel',//导出批次区域到EXCEL
+		}
 	},
 	// 登录，修改密码
 	login : '/api/SLogin/LoginIn', // 登录
