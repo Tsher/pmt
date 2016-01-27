@@ -151,17 +151,6 @@ class RightBox extends React.Component{
 
 	})
 
-    /*var _Da = _data[0].children;
-    for(var i=0;i<_Da.length;i++){
-  		if (_Da[i].active) {
-  			this.setState({
-  				key : _Da[i].key,
-  				checkedKeys:[_Da[i].key],
-  			})
-  			
-  		};
-  	}*/
-
   }
 
   // 点击树菜单
@@ -219,15 +208,29 @@ class RightBox extends React.Component{
       } else {
         console.log('submit');
       }
-      console.log(this.state.formData);
+      //console.log(this.state.formData);
       msg_success();
     });
 
-    return
+    
 
     // 提交数据
-      let u = this.props.params.id ? baseAreaEdit : baseAreaAdd;
-      var fD = this.state.formData;
+      let u = this.state.formData.id ? baseAreaEdit : baseAreaAdd;
+      var keys = this.state.key.split(',');
+      var arr = [];
+      for(var i=0;i<keys.length;i++){
+      	var json = {};
+      	json.Region_Code = keys[i];
+      	arr.push(json);
+      }
+      var fD = {
+      	SalesRegion_Name : this.state.formData.name,
+      	Region_Description : this.state.formData.desc,
+      	SalesRegion_Code : this.state.formData.id,
+      	Detail:arr,
+      }
+      //console.log(JSON.stringify(fD)+'--'+u);
+      //return
       _G.ajax({
         url  : u,
         data : fD,
