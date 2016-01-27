@@ -75,7 +75,7 @@ class SaleUserAdd extends React.Component {
                 Card_Code: '', // 身份证
                 SalesPerson_Sex: '', // 性别
                 Phone: '', // 手机
-                RegisterTime: _G.timeFormat2(new Date().getTime(), 'YYYY-MM-DD'), // 注册日期
+                RegisterTime: _G.timeFormat2(new Date().getTime()), // 注册日期
                 Email: '', // Email
                 Region_Code: '', // 行政区域
                 SalesPerson_Address: '', // 详细信息

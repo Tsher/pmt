@@ -74,7 +74,8 @@ class SaleVipInfo extends React.Component{
           type: "get",
           data: opts,
           success: function(res) {
-              this.setState(Object.assign({}, res.Data))
+              this.setState(Object.assign(res.Data,{RegisterTime:_G.timeFormat2(res.Data.RegisterTime)}))
+              RegisterTime
           }.bind(this)
 
       })
