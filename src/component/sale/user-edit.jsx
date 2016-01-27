@@ -94,6 +94,7 @@ class SaleUserEdit extends React.Component {
         this.onSecondCityChange = this.onSecondCityChange.bind(this);
         this.onSecondAreaChange = this.onSecondAreaChange.bind(this);
         this.renderValidateStyle = this.renderValidateStyle.bind(this);
+        this.onChange = this.onChange.bind(this);
     }
 
     componentDidMount() {
@@ -177,8 +178,12 @@ class SaleUserEdit extends React.Component {
                 }.bind(this)
             })
         });
+    }
 
-
+    onChange(e) {
+      var state = Object.assign({}, this.state);
+      state.formData.SalesPerson_Sex = e.target.value;
+      this.setState(state)
     }
 
     renderValidateStyle(item) {
@@ -229,7 +234,7 @@ class SaleUserEdit extends React.Component {
                                       </Validator>
                                   </FormItem>
                                   <FormItem label="性别：" id="SalesPerson_Sex" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                      <RadioGroup name="SalesPerson_Sex" value={this.state.formData.SalesPerson_Sex}>
+                                      <RadioGroup name="SalesPerson_Sex" value={this.state.formData.SalesPerson_Sex}  onChange={this.onChange} >
                                           <Radio value="男">男</Radio>
                                           <Radio value="女">女</Radio>
                                           <Radio value="神秘">神秘</Radio>
