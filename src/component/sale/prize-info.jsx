@@ -69,7 +69,7 @@ class SalePrizeInfo extends React.Component{
       },
       formData : {
         id : '', // 奖品id
-        title : '新增奖品',
+        title : '奖品信息',
         Prize_Name : '', // 奖品名称
         Unit : '', // 单位
         Prize_Type  : '' , // 奖品类别

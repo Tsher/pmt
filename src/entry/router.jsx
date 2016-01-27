@@ -61,13 +61,13 @@ import {Layout} from '../component/layout';
 function validate(nextState, transition) {
 	
 	let token = Cookie.read('Token');
-	// 临时token
-	if(!token){
-		Cookie.write({
-			name : 'Token',
-			value : 'a'
-		})
-	}
+	// // 临时token
+	// if(!token){
+	// 	Cookie.write({
+	// 		name : 'Token',
+	// 		value : 'a'
+	// 	})
+	// }
 	_G.Token = token;
 	// 验证token是否有效
 	if(!token){

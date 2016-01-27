@@ -70,6 +70,7 @@ window['_G']={
 	},
 	// ajax
 	ajax:function(opts){
+		console.log(opts.url);
 		if( opts.url.indexOf('/SLogin/') < 0 ){
 			opts.url += /\?/.test(opts.url) ? ('&Token='+_G.Token) : ('?Token='+_G.Token);
 		}
@@ -81,24 +82,25 @@ window['_G']={
 			data : opts.data || {},
 			success : function(res){
 				if( !res.Data && res.ReturnOperateStatus == null){
-					msg_error('数据异常，请联系管理员',opts.url,opts.data);
+					msg_error('数据异常，请联系管理员！',opts.url,opts.data);
 					return;
 				}
-				if(!res.Data && res.ReturnOperateStatus == false){
-					msg_error('操作失败，请重新试试',opts.url,opts.data);
+				if(res.ReturnOperateStatus == 'False'){
+					msg_error(res.Msg||'操作失败，请重新试试',opts.url,opts.data);
 					return;
 				}
 				opts.success(res);
 			},
 			error:function(res){
-				if(res.ReturnOperateStatus == null){
-					msg_error('数据异常，请联系管理员',opts.url);
-					return;
-				}
-				if(res.ReturnOperateStatus == false){
-					msg_error('操作失败，请重新试试',opts.url);
-					return;
-				}
+				msg_error('数据异常，请联系管理员',opts.url);
+				// if(res.ReturnOperateStatus == null){
+				// 	msg_error('数据异常，请联系管理员',opts.url);
+				// 	return;
+				// }
+				// if(res.ReturnOperateStatus == 'False'){
+				// 	msg_error('操作失败，请重新试试',opts.url);
+				// 	return;
+				// }
 				opts.error && opts.error();
 			}
 		})
@@ -110,13 +112,17 @@ window['_G']={
 // api 配置表
 window['config'] = {
 	__URL : (function(){
-		var url = location.href + '/';
-		if(location.port){
-			url = 'http://101.200.221.152/PMTService';
-		}
+		var url = 'http://'+ location.hostname + location.pathname;
 		url = url.replace(/\/{1,}$/,'');
+		url += '/PMTS';
+		if(location.port){
+			url = 'http://101.200.221.152/PMT/PMTS';
+		}
 		return url
 	})(), // API全局url
+
+	// 菜单
+	menu : '/api/BaseAPI/GetMenu',
 	// 用户管理
 	user:{
 		// 企业用户
@@ -137,6 +143,8 @@ window['config'] = {
 			get : '/api/SRole/GetRole', // 获取单个角色信息
 			update : '/api/SRole/PutRole', // 修改角色信息
 			add : '/api/SRole/PostRole', // 新增角色信息
+			saveRole : '/api/SRole/PostSetRole', // 保存角色权限
+			getRole : '/api/SRole/GetSetRole', // 获取角色权限
 		},
 		// 组织机构管理
 		group : {
@@ -147,7 +155,8 @@ window['config'] = {
 	base : {
 		// 产品管理
 		product:{
-			list : '/api/'
+			list : '/api/',
+			GetProductUnit : '/api/SProduct/GetProductUnit', // 获取行业
 		},
 		info : {
 			list : '/api/SEnterprise/GetEnterprise'
@@ -251,26 +260,29 @@ function get_data(url,name,params,cb){
 		}
 	})
 }
-// 获取奖品级别
-get_data(config['sale']['do']['sale_prizeLevel'],'sale_prizeLevel'); 
+if(_G.Token){
+	// 获取奖品级别
+	get_data(config['sale']['do']['sale_prizeLevel'],'sale_prizeLevel'); 
 
-// 获取奖品名称
-get_data(config['sale']['do']['sale_prizeName'],'sale_prizeName',{
-	Prize_Name : ''
-}); 
+	// 获取奖品名称
+	get_data(config['sale']['do']['sale_prizeName'],'sale_prizeName',{
+		Prize_Name : ''
+	}); 
 
-// 获取产品名称
-get_data(config['sale']['do']['sale_productName'],'sale_productName',{
-	Product_Name : ''
-}); 
+	// 获取产品名称
+	get_data(config['sale']['do']['sale_productName'],'sale_productName',{
+		Product_Name : ''
+	}); 
 
-// 获取销售区域
-get_data(config['sale']['do']['sale_area'],'sale_area',{
-	SalesRegion_Name : ''
-}); 
+	// 获取销售区域
+	get_data(config['sale']['do']['sale_area'],'sale_area',{
+		SalesRegion_Name : ''
+	}); 
 
-// 获取所有角色信息
-get_data(config['user']['role']['all'],'user_role_all');
+	// 获取所有角色信息
+	get_data(config['user']['role']['all'],'user_role_all');
+}
+
 
 
 
