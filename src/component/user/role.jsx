@@ -148,13 +148,13 @@ const columns = [{
   }
 }, {
   title: '角色描述',
-  dataIndex: 'roleDesc',
-  key: 'roleDesc'
+  dataIndex: 'Role_Description',
+  key: 'Role_Description'
 }, {
   title: '操作',
   key: 'operation',
   render: function(text, record,index) {
-  	var edit = '/user/role/edit/'+ encodeURIComponent(record.Role_Name)+'-'+encodeURIComponent(record.Role_Type),
+  	var edit = '/user/role/edit/'+ record.Role_Code,
   		set = '/user/role/set/' + record.Role_Code,
   		del = '/user/role/del/' + record.Role_Code
     return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><Link to={set}>设置权限</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-index={index} data-name={record.Role_Name} data-id={record.Role_Code} >删除</a></span>;
