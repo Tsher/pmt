@@ -44,7 +44,7 @@ class SelectForm extends React.Component{
 
   // 文本框的值 同步到 state
   setValue(e) {
-      var name = e.target.id;
+      var name = e.target.name;
       this.setState({
           [name]: e.target.value
       })
@@ -83,13 +83,13 @@ class SelectForm extends React.Component{
                       <div className="fright">
                           <ul className="clearfix">
                               <li className="fleft">
-                                  <FormItem label="姓名：" id="SalesPerson_Name">
-                                      <Input placeholder="" id="SalesPerson_Name" name="SalesPerson_Name" style={{width:80}} onChange={this.setValue} value={this.state.SalesPerson_Name} />
+                                  <FormItem label="姓名：">
+                                      <Input placeholder="" name="SalesPerson_Name" style={{width:80}} onChange={this.setValue} value={this.state.SalesPerson_Name} />
                                   </FormItem>
                               </li>
                               <li className="fleft">
-                                  <FormItem label="昵称：" id="SalesPerson_SName">
-                                      <Input placeholder="" id="SalesPerson_SName" name="SalesPerson_SName" style={{width:80}} onChange={this.setValue} value={this.state.SalesPerson_SName} />
+                                  <FormItem label="昵称：">
+                                      <Input placeholder="" name="SalesPerson_SName" style={{width:80}} onChange={this.setValue} value={this.state.SalesPerson_SName} />
                                   </FormItem>
                               </li>
                               <li className="fleft date-picker">
@@ -109,7 +109,7 @@ class SelectForm extends React.Component{
                               </li>
                               <li className="fleft">
                                   <FormItem id="Phone" label="手机号：">
-                                      <Input placeholder="" id="Phone" name="Phone" onChange={this.setValue} value={this.state.Phone} />
+                                      <Input placeholder="" name="Phone" onChange={this.setValue} value={this.state.Phone} />
                                   </FormItem>
                               </li>
                               <li className="fleft">
@@ -198,6 +198,8 @@ class SaleUser extends React.Component {
         this.handleOk = this.handleOk.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.changeTableState = this.changeTableState.bind(this);
+        this.tableChange = this.tableChange.bind(this);
+        this.showSizechange = this.showSizechange.bind(this);
     }
 
     componentDidMount() {
@@ -215,6 +217,22 @@ class SaleUser extends React.Component {
             changeId: id
         })
     }
+
+    // 点击分页
+    tableChange(pagination){
+        var opts = Object.assign({},this.state.opts);
+        opts.page = pagination.current;
+        opts.pageSize = pagination.pageSize;
+        this.changeTableState(opts);
+    }
+    // 每页数据条数变化
+    showSizechange(current, pageSize){
+        var opts = Object.assign({},this.state.opts);
+        opts.page = current;
+        opts.pageSize = pageSize;
+        this.changeTableState(opts);
+    }
+
     handleOk(e) {
         //******************* 冻结，解冻 逻辑 changeId , 然后 关闭****************************
         var opts = {
@@ -225,25 +243,16 @@ class SaleUser extends React.Component {
             type: "get",
             data: opts,
             success: function(res) {
-                this.setState({
-                    confirmLoading: true
-                })
-                setTimeout(() => {
-                    var d = [],_tmp = this.state.data
-                    for(var i=0;i<_tmp.length;i++){
-                      if(_tmp[i].SalesPerson_Code!=opts.SalesPerson_Code){
-                        d.push(_tmp[i])
-                      }
-                    }
-                    this.setState({
-                        data: d,
-                        total: this.state.total,
-                        opts: this.state.opts
-                    })
-                    this.setState({
-                        visible: false
-                    })
-                }, 2000)
+              var d = [],_tmp = this.state.data
+              for(var i=0;i<_tmp.length;i++){
+                if(_tmp[i].SalesPerson_Code!=opts.SalesPerson_Code){
+                  d.push(_tmp[i])
+                }
+              }
+              this.setState({
+                  data: d,
+                  visible: false
+              })
             }.bind(this)
         })
     }
@@ -252,16 +261,11 @@ class SaleUser extends React.Component {
             visible: false
         })
     }
-    handleClick(e) {
-        console.log(e);
-    }
-
     // 发送ajax请求，获取table值
     changeTableState(opts) {
         var opts = opts || {};
         opts.page = opts.page || this.state.opts.page;
         opts.pageSize = opts.pageSize || this.state.opts.pageSize;
-
         this.setState({
             opts: opts
         })
@@ -300,7 +304,12 @@ class SaleUser extends React.Component {
                     </Col>
                 </Row>
                 <Row>
-                    <Table columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total}} />
+                    <Table
+                      onChange={this.tableChange}
+                      onShowSizeChange={this.showSizechange}
+                      columns={columns} 
+                      dataSource={this.state.data} 
+                      pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total}} />
                 </Row>
                 <Modal visible={this.state.visible} onOk={this.handleOk} confirmLoading={this.state.confirmLoading} onCancel={this.handleCancel}>
                     <p>{this.state.ModalText}</p>
