@@ -195,7 +195,7 @@ class RuleNumber extends React.Component{
           })
           console.log('删除成功');
           var d = [].concat(this.state.data);
-          d.splice(d[this.state.index],1);
+          d.splice(this.state.index,1);
           console.log(this.state.index)
           this.setState({
             data : d,

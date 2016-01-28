@@ -30,6 +30,7 @@ const ruleAreaList = config.__URL + config.rule.area.list;
 const ruleAreaSearch  = config.__URL + config.rule.area.search;
 const ruleAreaDel  = config.__URL + config.rule.area.del;
 const ruleAreaExcel  = config.__URL + config.rule.area.excel;
+const ruleAreaSeles  = config.__URL + config.rule.area.seles;
 
 var changeTableState;
 
@@ -43,7 +44,8 @@ class SelectForm extends React.Component{
       batchNumEnd: undefined, // 结束批次号
       boxNumStart:undefined, // 起始箱号
       boxNumEnd:undefined, // 结束箱号
-      saleRegion : undefined  // 销售区域
+      saleRegion : undefined,  // 销售区域
+      selesD : [],
     };
     this.setValue = this.setValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -53,10 +55,16 @@ class SelectForm extends React.Component{
 
   componentDidMount(){
 
-    console.log('hu');
+    _G.ajax({
+      url : ruleAreaSeles,
+      type: "get",
+      success:function(res){
+        this.setState({
+          selesD : res.Data
+        })
 
-    this.setState({
-      data : []
+      }.bind(this)
+
     })
   }
 
@@ -73,13 +81,16 @@ class SelectForm extends React.Component{
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
-    changeTableState = this.state;
-    message.success('收到表单值~~~ ：' + JSON.stringify(this.state, function(k, v) {
-      if (typeof v === 'undefined') {
-        return '';
-      }
-      return v;
-    }));
+    var subD = {};
+    subD.Start_Batch_Code_S = this.state.batchNumStart;
+    subD.End_Batch_Code_E = this.state.batchNumEnd;
+    subD.Start_Box_Code_S = this.state.boxNumStart;
+    subD.End_Box_Code_E = this.state.boxNumEnd;
+    subD.SalesRegion_Code = this.state.saleRegion;
+
+    this.props.changeTableState(subD);
+    console.log(subD)
+    
   }
 
   // datepicker change
@@ -136,11 +147,13 @@ class SelectForm extends React.Component{
 		            label="销售区域："
 		            id="saleRegion">
 		            	<Select size="large" placeholder="选择销售区域" style={{width: 200}} name="saleRegion"  value={this.state.saleRegion} onChange={this.onChange.bind(this,'saleRegion')}>
-		                    <Option value="华南">华南</Option>
-					        <Option value="华北">华北</Option>
-					        <Option value="西南">西南</Option>
-					        < Option value="西北">西北</Option>
-		                  </Select>
+
+                    {
+                       this.state.selesD.map(function(d){
+                          return <Option key={d.SalesRegion_Code} value={d.SalesRegion_Code} >{d.SalesRegion_Name}</Option>
+                       })
+                    }
+                  </Select>
 		          </FormItem>
               </li>
               <li className="fleft">
@@ -173,105 +186,50 @@ class SelectForm extends React.Component{
 
 let modalState;
 function showModal(e){
-  Event.stop(e);
+    Event.stop(e);
   var tar = Event.target(e);
-  var id = tar.getAttribute('data-id');
-  modalState(id)
+  var id = tar.getAttribute('data-id'),index=tar.getAttribute('data-index'),name = tar.getAttribute('data-name');
+  modalState(id,index,name)
 }
 
 const columns = [{
   title: '序号',
-  dataIndex: 'No',
-  key: 'No'
+  dataIndex: 'SortNo',
+  key: 'SortNo'
 }, {
   title: '起始批次号',
-  dataIndex: 'batchNumStart',
-  key: 'batchNumStart'
+  dataIndex: 'Start_Batch_Code',
+  key: 'Start_Batch_Code'
 }, {
   title: '结束批次号',
-  dataIndex: 'batchNumEnd',
-  key: 'batchNumEnd'
+  dataIndex: 'End_Batch_Code',
+  key: 'End_Batch_Code'
 }, {
   title: '起始箱号',
-  dataIndex: 'boxNumStart',
-  key: 'boxNumStart'
+  dataIndex: 'Start_Box_Code',
+  key: 'Start_Box_Code'
 },{
   title: '结束箱号',
-  dataIndex: 'boxNumEnd',
-  key: 'boxNumEnd'
+  dataIndex: 'End_Box_Code',
+  key: 'End_Box_Code'
 },{
   title: '销售区域',
-  dataIndex: 'saleRegion',
-  key: 'saleRegion'
+  dataIndex: 'SalesRegion_Name',
+  key: 'SalesRegion_Name'
 },{
   title: '录入时间',
-  dataIndex: 'areaTime',
-  key: 'areaTime'
+  dataIndex: 'Add_On',
+  key: 'Add_On'
 }, {
   title: '操作',
   key: 'operation',
-  render: function(text, record) {
-  	var edit = '/rule/area/edit/'+record.No,
-  		del = '/rule/area/del/' + record.No
-    return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.No} data-text="删除" >删除</a></span>;
+  render: function(text, record,index) {
+  	var edit = '/rule/area/edit/'+record.LotArea_Code,
+  		del = '/rule/area/del/' + record.LotArea_Code;
+    return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.LotArea_Code} data-name={record.LotArea_Code} data-index={index} data-text="删除" >删除</a></span>;
 	}
 }];
-const data = [{
-  key: '1',
-  No: '000001',
-  batchNumStart: 2015102840,
-  batchNumEnd : 2015102899,
-  boxNumStart : 10001,
-  boxNumEnd : 10008,
-  saleRegion : '华南',
-  areaTime : '2015-10-10 10:30'
-}, {
-  key: '2',
-  No: '000002',
-  userName: '李楠',
-  batchNumStart: 2015102840,
-  batchNumEnd : 2015102899,
-  boxNumStart : 10001,
-  boxNumEnd : 10008,
-  saleRegion : '华南',
-  areaTime : '2015-10-10 10:30'
-}, {
-  key: '3',
-  No: '000003',
-  batchNumStart: 2015102840,
-  batchNumEnd : 2015102899,
-  boxNumStart : 10001,
-  boxNumEnd : 10008,
-  saleRegion : '华南',
-  areaTime : '2015-10-10 10:30'
-}, {
-  key: '4',
-  No: '000004',
-  batchNumStart: 2015102840,
-  batchNumEnd : 2015102899,
-  boxNumStart : 10001,
-  boxNumEnd : 10008,
-  saleRegion : '华南',
-  areaTime : '2015-10-10 10:30'
-}, {
-  key: '5',
-  No: '000005',
-  batchNumStart: 2015102840,
-  batchNumEnd : 2015102899,
-  boxNumStart : 10001,
-  boxNumEnd : 10008,
-  saleRegion : '华南',
-  areaTime : '2015-10-10 10:30'
-}, {
-  key: '6',
-  No: '000006',
-  batchNumStart: 2015102840,
-  batchNumEnd : 2015102899,
-  boxNumStart : 10001,
-  boxNumEnd : 10008,
-  saleRegion : '华南',
-  areaTime : '2015-10-10 10:30'
-}];
+
 
 
 class RuleArea extends React.Component{
@@ -281,40 +239,147 @@ class RuleArea extends React.Component{
       visible : false,
       title : '',
       ModalText : '',
-      changeId : false,
-      total : 100
+      changeId : '',
+      total : 0,
+      delId : false,
+      index:false,
+      data : [],
+      loading:false,
+      opts : {
+        page :1,
+        pageSize : 10,
+      },
     }
     this.showModal = this.showModal.bind(this);
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
+    this.changeTableState = this.changeTableState.bind(this);
+    this.tableChange = this.tableChange.bind(this);
+    this.showSizechange = this.showSizechange.bind(this);
 	}
 
+  // 点击分页
+  tableChange(pagination, filters, sorter){
+    var opts = Object.assign({},this.state.opts);
+    opts.page = pagination.current;
+    opts.pageSize = pagination.pageSize;
+
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+  }
+  // 每页数据条数变化
+  showSizechange(current, pageSize){
+    var opts = Object.assign({},this.state.opts);
+    opts.pageSize = pageSize;
+    opts.page = current;
+
+    console.log(opts);
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+
+  }
+
+  // 发送ajax请求，获取table值
+  changeTableState(opts){
+
+    var opts = opts || {};
+    opts.page = opts.page || this.state.opts.page;
+    opts.pageSize = opts.pageSize ||  this.state.opts.pageSize;
+
+    this.setState({
+      opts : opts
+    })
+    
+    //opts.EntityCode = 'DEFAULT';
+    var that = this;
+
+    _G.ajax({
+      url : ruleAreaSearch,
+      type: "get",
+      data : opts,
+      success:function(res){
+        console.log(res.Data)
+        var d = [];
+        for(var i=0,l=res.Data.length;i<l;i++){
+          d[i]=res.Data[i];
+          d[i].Add_On = ''+_G.timeFormat2(res.Data[i].Add_On);
+          d[i]['key'] = res.Data[i].SortNo;
+        }
+        this.setState({
+          data : d,
+          total : res.TotalCount,
+          opts : opts
+        })
+
+      }.bind(this)
+
+    })
+
+  }
+
   componentDidMount(){
-    console.log(changeTableState)
+    changeTableState = this.changeTableState;
     modalState = this.showModal;
     
   }
   componentWillUnmount(){
     modalState = false;
   }
-  showModal(id){
+  showModal(id,index,name){
     this.setState({
       visible : true,
       ModalText: '你正要删除 "'+ id +'"的批次号，是否继续？',
       confirmLoading: false,
-      changeId : id
+      changeId : id,
+      index:index,
     })
   }
   handleOk(e){
     //******************* 冻结，解冻 逻辑 changeId , 然后 关闭****************************
+
+    this.setState({
+      loading : true
+    })
+
+    
+    _G.ajax({
+      url : ruleAreaDel,
+      method : 'post',
+      data : {
+        LotArea_Code : this.state.changeId
+      },
+      success:function(res){
+        if(res.ReturnOperateStatus == 'True'){
+          this.setState({
+            visible : false
+          })
+          var d = [].concat(this.state.data);
+          d.splice(this.state.index,1);
+          this.setState({
+            data : d,
+            loading : false
+          })
+          return
+        }
+        if(res.ReturnOperateStatus == 'False'){
+          console.log('删除失败')
+        }
+      }.bind(this)
+    })
     this.setState({
       confirmLoading:true
     })
-    setTimeout(()=>{
-      this.setState({
-        visible : false
-      })
-    },2000)
+    
   }
   handleCancel(e){
     this.setState({
@@ -328,10 +393,15 @@ class RuleArea extends React.Component{
 		return(
 			<div className="m-list">
 				<Row>
-					<SelectForm />
+					<SelectForm changeTableState={this.changeTableState} />
 				</Row>
 				<Row>
-					<Table columns={columns} dataSource={data} pagination={{showQuickJumper:true,pageSize:10,current:1,showSizeChanger:true,total:this.state.total}}  />
+
+          <Table onChange={this.tableChange}  onShowSizeChange={this.showSizechange}
+            loading={this.state.loading} 
+            columns={columns} 
+            dataSource={this.state.data} 
+            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total}}  />
 				</Row>
         <Modal 
           visible={this.state.visible}
