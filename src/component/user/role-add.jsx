@@ -99,14 +99,13 @@ class UserRoleAdd extends React.Component{
     // 编辑
     if(this.props.params.id){
       // ajax获取当前id的内容，变更state ****************************
-      var data = decodeURIComponent([].concat(this.props.params.id) ).split('-');
-      var formData = _extends(this.state.formData,{ id:this.props.params.id , title : '编辑角色' , Role_Name : data[0],Role_Type:data[1] });
+      var data = this.props.params.id;
+      var formData = _extends(this.state.formData,{ id:this.props.params.id , title : '编辑角色' });
       _G.ajax({
         url : urlRoleGet,
         type : 'get',
         data : {
-          Role_Name :  encodeURIComponent(data[0]),
-          Role_Type : data[1]
+          Role_Code :  data
         },
         success:function(res){
 
@@ -197,7 +196,8 @@ class UserRoleAdd extends React.Component{
         data : {
           Role_Name : formData.Role_Name,
           Role_Type : formData.Role_Type,
-          Role_Description : formData.Role_Description
+          Role_Description : formData.Role_Description,
+          Role_Code : this.props.params.id
         },
         success:function(res){
 

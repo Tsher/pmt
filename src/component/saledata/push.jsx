@@ -177,8 +177,10 @@ class SaleDataPush extends React.Component{
     //opts.EntityCode = 'DEFAULT';
     var that = this;
 
-    opts.Recharge_Time_S = ''+_G.timeFormat( new Date(opts.Recharge_Time_S).getTime() );
-    opts.Recharge_Time_E = ''+_G.timeFormat( new Date(opts.Recharge_Time_E).getTime() );
+    opts.Recharge_Time_S = ''+_G.timeFormat2( new Date(opts.Recharge_Time_S).getTime() , 'YYYY-MM-DD' );
+    opts.Recharge_Time_E = ''+_G.timeFormat2( new Date(opts.Recharge_Time_E).getTime() , 'YYYY-MM-DD' );
+
+    console.log(opts.Recharge_Time_S)
 
     _G.ajax({
       url : saledataPushList,

@@ -236,16 +236,15 @@ const columns = [{
   dataIndex: 'Register_On',
   key: 'Register_On',
   render:function(text,record){
-    var time = _G.timeFormat(text);
+    var time = _G.timeFormat2(text);
     return <span>{time}</span>
   }
 },{
   title: '用户状态',
-  dataIndex: 'User_Status',
-  key: 'User_Status',
+  dataIndex: 'UserStatusName',
+  key: 'UserStatusName',
   render:function(text,record){
-    var s = _G.userStatus(text);
-    return <span>{s}</span>;
+    return <span>{record.UserStatusName}</span>;
   }
 },{
   title: '电子邮箱',
