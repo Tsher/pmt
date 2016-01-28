@@ -302,7 +302,7 @@ class UserUser extends React.Component{
     this.setState({
       opts : opts
     })
-
+    console.log(opts)
     this.changeTableState(opts);
   }
   // 每页数据条数变化
