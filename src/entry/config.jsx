@@ -215,6 +215,7 @@ window['config'] = {
 	saledata : {
 		round : {
 			list : '/api/SReport/GetCustomerDraw_Report', // 消费者抽奖流水
+			info : '/api/SReport/GetAwardList',//点击数量二级页面
 		},
 		send : {
 			list : '/api/SSendTextMsgs/SendText', // 发送短信流水
@@ -236,6 +237,7 @@ window['config'] = {
 			add : '/api/SIntegralRule/AddRule',  // 增加积分规则
 			edit : '/api/SIntegralRule/UpdateRule',   // 编辑积分规则
 			editList : '/api/SIntegralRule/GetRule',   // 获取指定积分规则
+			type : '/api/SIntegralRule/GetIntegralRuleTypes',//获取类型
 		},
 		area : {
 			list : '/api/SBatchRegion/GetBatchRegion',//获取指定页的批次区域
