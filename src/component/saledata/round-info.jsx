@@ -46,7 +46,11 @@ const columns = [{
 },{
   title: '兑换状态',
   dataIndex: 'Convert_Status',
-  key: 'Convert_Status'
+  key: 'Convert_Status',
+  render: function(text,record) {
+    var str = record.Convert_Status == 1 ? '未兑奖' : '已兑奖';
+    return <div>{str}</div>
+  }
 }];
 
 class SaleDataRoundInfo extends React.Component{
