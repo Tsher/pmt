@@ -49,17 +49,17 @@ class SaleVipInfo extends React.Component{
   constructor(props) {
       super(props);
       this.state = {
-          Member_Code: undefined, // 会员id
+          Member_Code: '', // 会员id
           title: '会员信息',
-          Member_SName: undefined, // 昵称
-          Member_Level: undefined, // 会员级别
-          Member_Sex: undefined, // 会员性别
-          Member_Phone: undefined, // 会员手机
-          Member_Status: undefined, // 会员状态
-          RegisterTime: undefined, //注册日期
-          Member_Email: undefined, // 电子邮件
-          SortNo: undefined, // 行政区域
-          Member_Address: undefined, // 详细地址
+          Member_SName: '', // 昵称
+          Member_Level: '', // 会员级别
+          Member_Sex: '', // 会员性别
+          Member_Phone: '', // 会员手机
+          Member_Status: '', // 会员状态
+          RegisterTime: '', //注册日期
+          Member_Email: '', // 电子邮件
+          SortNo: '', // 行政区域
+          Member_Address: '', // 详细地址
       };
       this.handleResetPwd = this.handleResetPwd.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);

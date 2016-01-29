@@ -85,7 +85,7 @@ class SaleUserAdd extends React.Component {
          this.handleSubmit = this.handleSubmit.bind(this);
          this.handleProvinceChange = this.handleProvinceChange.bind(this);
          this.handleCityChange = this.handleCityChange.bind(this);
-         this.onSecondAreaChange = this.onSecondAreaChange.bind(this);
+         this.handleAreaChange = this.handleAreaChange.bind(this);
          this.renderValidateStyle = this.renderValidateStyle.bind(this);
          this.getProvince = this.getProvince.bind(this);
          this.getCity = this.getCity.bind(this);
@@ -129,7 +129,6 @@ class SaleUserAdd extends React.Component {
                          Province_Name: name
                      })
                  })
-                 console.log(this.state.formData)
                  this.getCity()
              }.bind(this)
          })
@@ -219,7 +218,7 @@ class SaleUserAdd extends React.Component {
          this.getArea()
      }
 
-     onSecondAreaChange(value, name) {
+     handleAreaChange(value, name) {
          this.setState({
              formData: Object.assign(this.state.formData, {
                  Area: value,
@@ -339,7 +338,7 @@ class SaleUserAdd extends React.Component {
                                       <Select value={this.state.formData.City_Name} style={{width:"33%"}} onChange={this.handleCityChange}>
                                           {cityOptions}
                                       </Select>
-                                      <Select value={this.state.formData.Area_Name} style={{width:"33%"}} onChange={this.onSecondAreaChange}>
+                                      <Select value={this.state.formData.Area_Name} style={{width:"33%"}} onChange={this.handleAreaChange}>
                                           {areaOptions}
                                       </Select>
                                   </FormItem>
