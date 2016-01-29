@@ -16,6 +16,8 @@ import '../../entry/config';
 const saledataSendList = config.__URL + config.saledata.send.list;
 
 var changeTableState;
+var rTimes={};
+var rPages={};
 
 
 const columns = [{
@@ -32,10 +34,21 @@ const columns = [{
   key: 'Send_Status'
 },{
   title: '发送次数',
-  dataIndex: 'SendNum',
-  key: 'SendNum',
+  dataIndex: 'Receive_Num',
+  key: 'Receive_Num',
   render: function(text,record) {
-    var href= '/saledata/send/info/'+text;
+    var timeS = ''+_G.timeFormat2( new Date(rTimes.Recharge_Time_S).getTime() , 'YYYY-MM-DD' )
+    var timeE = ''+_G.timeFormat2( new Date(rTimes.Recharge_Time_E).getTime() , 'YYYY-MM-DD' )
+    var arr = {
+       Send_Phone:record.Send_Phone,
+       Receive_Phone:record.Receive_Phone,
+       Send_Status:record.Send_Status,
+       Recharge_Time_S:timeS,
+       Recharge_Time_E:timeE,
+       Page:rPages.page,
+       PageSize:rPages.pageSize
+    }
+    var href= '/saledata/send/info/'+JSON.stringify(arr);
     return <Link to={href}>{text}</Link>;
   }
 }];
@@ -62,6 +75,7 @@ class DateRange extends React.Component{
     this.setState({
       [field]: value,
     });
+    rTimes[field] = value;
   }
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
@@ -142,6 +156,7 @@ class SaleDataSend extends React.Component{
     this.setState({
       opts : opts
     })
+    rPages = opts;
 
     this.changeTableState(opts);
   }
@@ -150,13 +165,11 @@ class SaleDataSend extends React.Component{
     var opts = Object.assign({},this.state.opts);
     opts.pageSize = pageSize;
     opts.page = current;
-
-    console.log(opts);
     
-
     this.setState({
       opts : opts
     })
+    rPages = opts;
 
     this.changeTableState(opts);
 
@@ -172,7 +185,7 @@ class SaleDataSend extends React.Component{
     this.setState({
       opts : opts
     })
-    
+    rPages = opts;
     //opts.EntityCode = 'DEFAULT';
     var that = this;
 

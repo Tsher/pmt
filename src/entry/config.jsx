@@ -220,9 +220,11 @@ window['config'] = {
 		},
 		send : {
 			list : '/api/SSendTextMsgs/SendText', // 发送短信流水
+			info : '/api/SSendTextMsgs/GetTextDetails',//点击数量二级页面
 		},
 		push : {
 			list : '/api/SRecharge/Recharge', // 话费充值流水
+			info : '/api/SRecharge/GetRechargeDetails',//点击数量二级页面
 		},
 		user : {
 			list : '/api/SReport/GetCusmorJoin_Report', // 消费者参与流水

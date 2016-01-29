@@ -16,7 +16,11 @@ import '../../entry/config';
 const saledataPushList = config.__URL + config.saledata.push.list;
 
 var changeTableState;
-
+var rTimes={};
+var rPages={
+  page :1,
+  pageSize : 0
+};
 
 const columns = [{
   title: '账号',
@@ -35,7 +39,18 @@ const columns = [{
   dataIndex: 'RechargeNum',
   key: 'RechargeNum',
   render: function(text,record) {
-    var href= '/saledata/push/info/'+text;
+    var timeS = ''+_G.timeFormat2( new Date(rTimes.Recharge_Time_S).getTime() , 'YYYY-MM-DD' )
+    var timeE = ''+_G.timeFormat2( new Date(rTimes.Recharge_Time_E).getTime() , 'YYYY-MM-DD' )
+    var arr = {
+       Recharge_Account:record.Recharge_Account,
+       Recharge_Phone:record.Recharge_Phone,
+       Recharge_Status:record.Recharge_Status,
+       Recharge_Time_S:timeS,
+       Recharge_Time_E:timeE,
+       Page:rPages.page,
+       PageSize:rPages.pageSize
+    }
+    var href= '/saledata/push/info/'+JSON.stringify(arr);
     return <Link to={href}>{text}</Link>;
   }
 }];
@@ -62,6 +77,7 @@ class DateRange extends React.Component{
     this.setState({
       [field]: value,
     });
+    rTimes[field] = value;
   }
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
@@ -143,6 +159,7 @@ class SaleDataPush extends React.Component{
     this.setState({
       opts : opts
     })
+    rPages = opts;
 
     this.changeTableState(opts);
   }
@@ -158,6 +175,7 @@ class SaleDataPush extends React.Component{
     this.setState({
       opts : opts
     })
+    rPages = opts;
 
     this.changeTableState(opts);
 
@@ -173,6 +191,7 @@ class SaleDataPush extends React.Component{
     this.setState({
       opts : opts
     })
+    rPages = opts;
     
     //opts.EntityCode = 'DEFAULT';
     var that = this;
