@@ -354,7 +354,7 @@ class RuleArea extends React.Component{
     
     _G.ajax({
       url : ruleAreaDel,
-      method : 'post',
+      type : 'get',
       data : {
         LotArea_Code : this.state.changeId
       },
