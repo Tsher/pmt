@@ -66,15 +66,17 @@ import '../../entry/config';
 // EntityCode : DEFAULT 
 
 const baseProductAdd = config.__URL + config.base.product.add;
+const baseProductOne = config.__URL + config.base.product.one;
 const baseProductEdit = config.__URL + config.base.product.edit;
 const baseProductInfo = config.__URL + config.base.product.info;
+let baseProductUpload = config.__URL + config.base.product.upload;
 
 
 // 图片上传参数定义
 const upload_props = {
   name: 'file',
   showUploadList: true,
-  action: '/upload.do'
+  action: baseProductUpload
 };
 
 
@@ -82,24 +84,24 @@ const upload_props = {
 
 const columns = [{
   title: '序号',
-  dataIndex: 'No',
-  key: 'No',
+  dataIndex: 'Product_PPR_Code',
+  key: 'Product_PPR_Code',
   // render: function(text,record) {
   //  var href= '/sale/do/info/'+text;
   //   return <Link to={href}>{text}</Link>;
   // }
 }, {
   title: '包装级数',
-  dataIndex: 'levels',
-  key: 'levels'
+  dataIndex: 'Pack_Level',
+  key: 'Pack_Level'
 }, {
   title: '包装比例',
-  dataIndex: 'sizes',
-  key: 'sizes'
+  dataIndex: 'Packing_Proportion',
+  key: 'Packing_Proportion'
 }, {
   title: '包装单位',
-  dataIndex: 'unit',
-  key: 'unit'
+  dataIndex: 'Unit',
+  key: 'Unit'
 },{
   title: '操作',
   key: 'operation',
@@ -119,76 +121,51 @@ function showModal(e){
 }
 
 
-const data = [{
-  key: '1',
-  No : '1',
-  levels: '3',
-  sizes: '1:3',
-  unit : '箱',
-}, {
-  key: '2',
-  No : '2',
-  levels: '3',
-  sizes: '1:3',
-  unit : '箱',
-}, {
-  key: '3',
-  No : '3',
-  levels: '3',
-  sizes: '1:3',
-  unit : '箱',
-}, {
-  key: '4',
-  No : '4',
-  levels: '3',
-  sizes: '1:3',
-  unit : '箱',
-}];
 
-
+let packing_data=[];
 const packing_cloumns = [
-      {
-        title: '包装级数',
-        dataIndex: 'levels',
-        key: 'levels',
-        index:'levels'
-      },
-      {
-        title: '计量单位',
-        dataIndex: 'unit',
-        key: 'unit',
-        index : 'unit',
-        render:function(text,record,index){
-          return (
-            <Select onChange={function(value,label){
-              packingUnitChange(value,label,record,'unit')
-            }} style={{width:'60px'}}>
-              <Option value="箱">箱</Option>
-              <Option value="包">包</Option>
-              <Option value="支">支</Option>
-            </Select>
-          )
-        }
-      },
-      {
-        title: '下级包装数量',
-        dataIndex: 'sizes',
-        key: 'sizes',
-        index : 'sizes',
-        render : function(text,record,index){
-          if(packing_data==0 || index==packing_data.length-1){
-            return (<span></span>)
-          }
-          return (
-            <InputNumber min={1} onChange={function(value,label){
-              packingUnitChange(value,label,record,'sizes')
-            }} />
-          )
-        }
-      }, 
-      ];
+  {
+    title: '包装级数',
+    dataIndex: 'Level',
+    key: 'Level',
+    index:'Level'
+  },
+  {
+    title: '计量单位',
+    dataIndex: 'Unit',
+    key: 'Unit',
+    index : 'Unit',
+    render:function(text,record,index){
+      return (
+        <Select onChange={function(value,label){
+          packingUnitChange(value,label,record,'Unit')
+        }} style={{width:'60px'}}>
+          <Option value="箱">箱</Option>
+          <Option value="包">包</Option>
+          <Option value="支">支</Option>
+        </Select>
+      )
+    }
+  },
+  {
+    title: '下级包装数量',
+    dataIndex: 'Lower_PackageQTY',
+    key: 'Lower_PackageQTY',
+    index : 'Lower_PackageQTY',
+    render : function(text,record,index){
+      if(packing_data==0 || index==packing_data.length-1){
+        return (<span></span>)
+      }
+      return (
+        <InputNumber min={1} onChange={function(value,label){
+          packingUnitChange(value,label,record,'Lower_PackageQTY')
+        }} />
+      )
+    }
+  }
+];
 
-let packing_data=[]
+
 
 function packingUnitChange(value,label,record){
   console.log(value,label,record)
@@ -207,31 +184,75 @@ class BaseProductAdd extends React.Component{
       ModalText : '',
       status : {
         
-        Product_Short_Name : {}, // 产品简称
-        
-        desc : {}, // 描述
-        unit : {}, // 规格
+        SName : {}, // 产品简称
+        Product_Description : {}, // 描述
+        Pack_Unit : {}, // 规格
         
       },
       formData: {
-        Product_Code : undefined,
+        Product_Code : '', // 商品编码
         title : '新增产品',
         Product_Name : undefined, // 产品名称
-        Product_Short_Name : undefined, // 产品简称
+        SName : undefined, // 产品简称
         Brand : undefined, // 品牌
-        desc : undefined, // 描述
-        unit : undefined, // 规格
-        validity : undefined, // 有效期
-        validity_year : undefined, // 有效期年份
-        validity_month : undefined, // 有效期月份
-        barcode : undefined, // 商品码
-        pics : [], // 图片
-        packing_proportion : [], // 比例
-        addPacking : {
-          level : undefined, // 级别
-          data : []
+        Product_Description : undefined, // 描述
+        Pack_Unit : undefined, // 规格
+        Validity : undefined, // 有效期
+        Validity_Unit:'', // 有效期单位
+        Validity_Units : '', // 所有有效期类别
+        Units:'', // 所有计量单位
+        Industry_Code : undefined, // 行业编码
+        DataImage : [], // 图片
+        DataDetail : [], // 比例
+        addPacking : []
+      },
+      upload_props : {
+        name: 'file',
+        showUploadList: true,
+        data : {
+          Token : _G.Token
+        },
+        action: baseProductUpload
+      },
+      packing_cloumns : [
+        {
+          title: '包装级数',
+          dataIndex: 'Level',
+          key: 'Level',
+          index:'Level'
+        },
+        {
+          title: '计量单位',
+          dataIndex: 'Unit',
+          key: 'Unit',
+          index : 'Unit',
+          render:function(text,record,index){
+            return (
+              <Select onChange={function(value,label){
+                packingUnitChange(value,label,record,'Unit')
+              }} style={{width:'60px'}}>
+                {this.state.formData.Units}
+              </Select>
+            )
+          }
+        },
+        {
+          title: '下级包装数量',
+          dataIndex: 'Lower_PackageQTY',
+          key: 'Lower_PackageQTY',
+          index : 'Lower_PackageQTY',
+          render : function(text,record,index){
+            if(packing_data==0 || index==packing_data.length-1){
+              return (<span></span>)
+            }
+            return (
+              <InputNumber min={1} onChange={function(value,label){
+                packingUnitChange(value,label,record,'Lower_PackageQTY')
+              }} />
+            )
+          }
         }
-      }
+      ]
     };
     this.setField = FieldMixin.setField.bind(this);
     this.handleValidate = FieldMixin.handleValidate.bind(this);
@@ -257,53 +278,87 @@ class BaseProductAdd extends React.Component{
     this.modalState = this.modalState.bind(this);
   }
 
-  modalState(){
-    console.log(...args)
+  // 删除表格中某条数据
+  modalState(id,index,name){
+    console.log(id,index,name)
+    // var data = Object.assign({},this.state);
+    // data.formData.addPacking.splice(index,1);
+
+    // this.setState(data);
   }
 
   componentDidMount(){
     packingUnitChange = this.packingUnitChange;
     modalState = this.modalState;
+
+    //baseProductUpload += '?Token='+_G.Token;
+    var upload_props = Object.assign({},this.state.upload_props);
+    upload_props.Token = _G.Token;
+    this.setState({
+      upload_props : upload_props
+    })
+
+    // 获取有效期
+    var that = this;
+    _G.get_data(config['base']['product']['dic'],'Validity_Unit',{},function(res){
+      
+      const doms = res.Data.map( (item,index)=>{
+        return <Option key={index} value={item['CODE_NM']}>{item['CODE_NM']}</Option>
+      } )
+      that.setState({
+        Validity_Units : doms
+      })
+    }); 
+
+    // 获取计量单位
+    var that = this;
+    _G.get_data(config['base']['product']['unit'],'product_Units',{},function(res){
+      
+      const doms = res.Data.map( (item,index)=>{
+        return <Option key={index} value={item['CODE_NM']}>{item['CODE_NM']}</Option>
+      } )
+      that.setState({
+        Units : doms
+      })
+    }); 
+
+
     // 编辑
     if(this.props.params.id){
       // ajax获取当前id的内容，变更state ****************************
-      // $.ajax({
-      //   url : urlUserInfo,
-      //   type : 'get',
-      //   data : {
-      //     User_Code : this.props.params.id
-      //   },
-      //   success:function(res){
+      _G.ajax({
+        url : baseProductOne,
+        type : 'get',
+        data : {
+          Product_Code : this.props.params.id
+        },
+        success:function(res){
+          console.log(res)
+          
+          var d = {
+              Product_Code : this.props.params.id,
+              title : '编辑产品',
+              Product_Name : res.Data.Product_Name, // 产品名称
+              SName : res.Data.SName, // 产品简称
+              Brand : res.Data.Brand, // 品牌
+              Product_Description : res.Data.Product_Description, // 描述
+              Pack_Unit : res.Data.Pack_Unit, // 规格
+              Validity : res.Data.Validity, // 有效期
+              Validity_Unit:res.Data.Validity_Unit, // 有效期单位
+              Validity_year : undefined, // 有效期年份
+              Validity_month : undefined, // 有效期月份
+              Industry_Code : res.Data.Industry_Code, // 行业编码 商品码
+              DataImage : res.DataImage, // 图片
+              DataDetail : [], // 比例
+              addPacking : res.DataDetail
+            };
+          console.log(d,res)
+          this.setState({
+            formData:d
+          })
 
-      //     if(res == 'False' || res == 'NULL'){
-      //       msg_error();
-      //       // 跳转回列表页
-      //       return;
-      //     }
-      //     var d = {
-      //         User_Code : this.props.params.id,
-      //         title : '编辑产品',
-      //         Login_Name : res.Login_Name, // 登录名
-      //         User_Birthday : _G.timeFormat(res.User_Birthday), // 生日
-      //         Depart_Code : res.Depart_Code, // 隶属部门
-      //         Register_On : _G.timeFormat(res.Register_On), //加入日期
-      //         User_Name : res.User_Name, // 姓名
-      //         User_Hometown : res.User_Hometown, // 籍贯
-      //         Email : res.Email, // 电子邮件
-      //         Phone_Code : res.Phone_Code, // 手机
-      //         User_Nation : res.User_Nation , // 民族
-      //         Marital_Status : res.Marital_Status, // 婚姻
-      //         User_Status : res.User_Status, // 状态
-      //         User_IDCard : res.User_IDCard , // 身份证号
-      //         Home_Phone : res.Home_Phone // 家庭电话
-      //       };
-      //     console.log(d,res)
-      //     this.setState({
-      //       formData:d
-      //     })
-
-      //   }.bind(this)
-      // })
+        }.bind(this)
+      })
     }else{
       // 新增 *************
     }
@@ -405,7 +460,7 @@ class BaseProductAdd extends React.Component{
 
     data[name] = value;
 
-    this.setState({
+    this.setState({ 
       formData : data
     });
   }
@@ -481,15 +536,17 @@ class BaseProductAdd extends React.Component{
       d[i]={
         key : i,
         index : i,
-        levels:value-i,
-        unit : undefined,
-        sizes:undefined
+        Level : i,
+        Lower_PackageQTY:'',
+        Pack_Level:value-i,
+        Unit : undefined,
+        Packing_Proportion:undefined
       }
     }
     packing_data.length = value;
     let state = Object.assign({},this.state);
-    state.formData.addPacking.level = value;
-    state.formData.addPacking.data = d;
+    //state.formData.addPacking.level = value;
+    state.formData.addPacking = d;
     this.setState(state);
   }
 
@@ -497,18 +554,18 @@ class BaseProductAdd extends React.Component{
   packingUnitChange(e,label,record,type){
     console.log(e,label)
     let state = Object.assign({},this.state);
-    state.formData.addPacking.data[record.index][type] = e;
+    state.formData.addPacking[record.index][type] = e;
     this.setState(state);
   }
   
   packingSizeChange(e){
     let state = Object.assign({},this.state);
-    state.formData.addPacking.data[e.index] = e;
+    state.formData.addPacking[e.index] = e;
     this.setState(state);
   }
 
   renderPackage(){
-    let data = this.state.formData.addPacking.data;
+    let data = this.state.formData.addPacking;
     
     return (
       <Row>
@@ -555,14 +612,14 @@ class BaseProductAdd extends React.Component{
                 </FormItem>
                 <FormItem
                   label="产品简称："
-                  id="Product_Short_Name"
+                  id="SName"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('Product_Short_Name')}
-                  help={status.Product_Short_Name.errors ? status.Product_Short_Name.errors.join(',') : null}
+                  validateStatus={this.renderValidateStyle('SName')}
+                  help={status.SName.errors ? status.SName.errors.join(',') : null}
                   required>
                     <Validator rules={[{required: true, message: '请输入产品简称',type:"string"}]}>
-                      <Input name="Product_Short_Name" value={formData.Product_Short_Name} />
+                      <Input name="SName" value={formData.SName} />
                     </Validator>
                 </FormItem>
                 <FormItem
@@ -575,39 +632,27 @@ class BaseProductAdd extends React.Component{
                 </FormItem>
                 <FormItem
                   label="描述："
-                  id="desc"
+                  id="Product_Description"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
                   >
-                    <Input type="textarea" name="desc" value={formData.desc} />
+                    <Input type="textarea" name="Product_Description" value={formData.Product_Description} />
                     
                 </FormItem>
             </Col>
             <Col span="12">
                 <FormItem
                   label="有效期："
-                  id="validity"
+                  id="Validity"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}} >
                     <Row>
                       <Col span="15">
-                        <InputNumber name="valudity-year" value={formData.validity_year} onChange={this.onChange.bind(this,'valudity-year')} />
+                        <InputNumber name="Validity" value={formData.Validity} onChange={this.onChange.bind(this,'Validity')} />
                       </Col>
                       <Col span="9">
-                        <Select name="validity-month" style={{width:'100%'}} value={formData.validity_month} onChange={this.onChange.bind(this,'validity-month')}>
-                          <Option value="">月</Option>
-                          <Option value="1">1</Option>
-                          <Option value="2">2</Option>
-                          <Option value="3">3</Option>
-                          <Option value="4">4</Option>
-                          <Option value="5">5</Option>
-                          <Option value="6">6</Option>
-                          <Option value="7">7</Option>
-                          <Option value="8">8</Option>
-                          <Option value="9">9</Option>
-                          <Option value="10">10</Option>
-                          <Option value="11">11</Option>
-                          <Option value="12">12</Option>
+                        <Select name="Validity_Unit" defaultValue={formData.Validity_Unit} style={{width:'100%'}} value={formData.Validity_Unit} onChange={this.onChange.bind(this,'Validity_Unit')}>
+                          {this.state.Validity_Units}
                         </Select>
                       </Col>
                     </Row>
@@ -621,10 +666,10 @@ class BaseProductAdd extends React.Component{
                 </FormItem>
                 <FormItem
                   label="规格："
-                  id="unit"
+                  id="Unit"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}} >
-                    <Input name="unit" value={formData.unit} onChange={this.setValue} />
+                    <Input name="Unit" value={formData.Unit} onChange={this.setValue} />
                 </FormItem>
             </Col>
             <Col span="24">
@@ -636,7 +681,7 @@ class BaseProductAdd extends React.Component{
                   <Button type="primary" onClick={this.showModal} style={{'float':'right'}}>新增包装比例</Button>
                 </Col>
                 <Col span="24">
-                    <Table  columns={columns} dataSource={data} pagination={false} size='small'  />
+                    <Table  columns={columns} dataSource={formData.addPacking} pagination={false} size='small'  />
                 </Col>
               </Row>
               
@@ -650,7 +695,7 @@ class BaseProductAdd extends React.Component{
                   labelCol={{span: 4}}
                   wrapperCol={{span: 12}} >
                     <div style={{height:100}}>
-                      <Dragger {...upload_props} onChange={this.uploadChange} style={{height:100}}>
+                      <Dragger  {...this.upload_props} onChange={this.uploadChange} style={{height:100}}>
                         <Icon type="plus" />
                       </Dragger>
                     </div>

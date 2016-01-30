@@ -84,7 +84,7 @@ class SelectForm extends React.Component{
     e.preventDefault();
     var data = Object.assign({},this.state);
     data.Register_On_S = ''+_G.timeFormat( new Date(data.Register_On_S).getTime() );
-    data.Register_On_E = ''+_G.timeFormat( new Date(data.Register_On_S).getTime() );
+    data.Register_On_E = ''+_G.timeFormat( new Date(data.Register_On_E).getTime() );
     this.props.changeTableState(data);
     console.log(data)
     
