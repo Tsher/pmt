@@ -1,4 +1,4 @@
-//  促销数据   促销人员信息
+//  促销数据   促销人员信息  编辑
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -29,7 +29,6 @@ const FieldMixin = Validation.FieldMixin;
 const History = createHistory();
 
 const goBack = History.goBack;
-
 function cx(classNames) {
     if (typeof classNames === 'object') {
         return Object.keys(classNames).filter(function(className) {
@@ -47,148 +46,174 @@ const msg_success = function() {
     message.success('数据提交成功，等待后台处理')
 }
 
-const provinceData = ['浙江', '江苏'];
-const cityData = {
-    '浙江': ['杭州', '宁波', '温州'],
-    '江苏': ['南京', '苏州', '镇江']
-};
+var provinceData = []
+var cityData = {}
+var areaData = {}
 
 class SaleUserInfo extends React.Component {
 
-    //mixins: [Validation.FieldMixin],
-    constructor(props) {
-        super(props);
-        this.state = {
-            SalesPerson_Code: '', // 会员id
-            title: '促销人员信息',
-            SalesPerson_Name: '', // 姓名
-            SalesPerson_SName: '', // 昵称
-            Card_Code: '', // 身份证
-            SalesPerson_Sex: '', // 性别
-            Phone: '', // 手机
-            RegisterTime: '', // 注册日期
-            Email: '', // Email
-            Region_Code: '', // 行政区域
-            SalesPerson_Address: '', // 详细信息
-            cities: cityData[provinceData[0]], // 省
-            secondCity: cityData[provinceData[0]][0], // 市
-        };
+     constructor(props) {
+         super(props);
+         this.state = {
+             title: '促销人员信息',
+             SalesPerson_Name: '', // 姓名
+             SalesPerson_SName: '', // 昵称
+             Card_Code: '', // 身份证
+             SalesPerson_Sex: '', // 性别
+             Phone: '', // 手机
+             RegisterTime: '', // 注册日期
+             Email: '', // Email
+             SalesPerson_Address: '', // 详细信息
+             Province: '',
+             Province_Name: "",
+             City: '',
+             City_Name: "",
+             Area: '',
+             Area_Name: ""
+         };
+         this.handleReset = this.handleReset.bind(this);
+         this.getProvince = this.getProvince.bind(this);
+         this.getCity = this.getCity.bind(this);
+         this.getArea = this.getArea.bind(this);
+     }
 
-        this.handleResetPwd = this.handleResetPwd.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleProvinceChange = this.handleProvinceChange.bind(this);
-        this.onSecondCityChange = this.onSecondCityChange.bind(this);
-    }
+     getProvince() {
+         _G.ajax({
+             url: config.__URL + config.sale.user.province,
+             type: "get",
+             success: function(res) {
+                 provinceData = res.Data
+                 var code = this.state.Province ? this.state.Province : provinceData[0].Region_Code
+                 var name
+                 res.Data.map(function(elem) {
+                     if (elem.Region_Code == code) {
+                         name = elem.Region_Name
+                     }
+                 })
 
-    componentDidMount() {
-      var opts = {
+                 this.setState({
+                     Province: code,
+                     Province_Name: name
+                 })
+                 this.getCity()
+             }.bind(this)
+         })
+     }
+     getCity() {
+         var a = this.state.Province;
+         _G.ajax({
+             url: config.__URL + config.sale.user.city,
+             type: "get",
+             data: {
+                 Region_Code: a
+             },
+             success: function(res) {
+                 cityData[a] = res.Data
+                 var code = this.state.City ? this.state.City : cityData[a][0].Region_Code
+                 var name
+                 res.Data.map(function(elem) {
+                     if (elem.Region_Code == code) {
+                         name = elem.Region_Name
+                     }
+                 })
+
+                 this.setState({
+                     City: code,
+                     City_Name: name
+                 })
+                 this.getArea()
+             }.bind(this)
+         })
+     }
+     getArea() {
+         var a = this.state.City;
+         _G.ajax({
+             url: config.__URL + config.sale.user.area,
+             type: "get",
+             data: {
+                 Region_Code: a
+             },
+             success: function(res) {
+                 areaData[a] = res.Data
+                 var code = this.state.Area ? this.state.Area : areaData[a][0].Region_Code
+                 var name
+                 res.Data.map(function(elem) {
+                     if (elem.Region_Code == code) {
+                         name = elem.Region_Name
+                     }
+                 })
+                 this.setState({
+                     Area: code,
+                     Area_Name: name
+                 })
+             }.bind(this)
+         })
+     }
+
+     componentWillMount() {
+        var opts = {
           SalesPerson_Code: this.props.params.id
-      }
-      _G.ajax({
-          url: config.__URL + config.sale.user.info,
-          type: "get",
-          data: opts,
-          success: function(res) {
+        }
+        _G.ajax({
+            url: config.__URL + config.sale.user.info,
+            type: "get",
+            data: opts,
+            success: function(res) {
               this.setState(Object.assign(res.Data,{RegisterTime:_G.timeFormat2(res.Data.RegisterTime)}))
-          }.bind(this)
+              this.getProvince()
+            }.bind(this)
+        })
+     }
 
-      })
-    }
 
-    handleProvinceChange(value) {
-        console.log(value)
-        this.setState({
-            cities: cityData[value],
-            secondCity: cityData[value][0]
-        });
-    }
-
-    onSecondCityChange(value) {
-        console.log(value)
-        this.setState({
-            secondCity: value
-        });
-    }
-
-    handleResetPwd(e) {
-        // 重置密码***********************************
-      e.preventDefault();
-      var opts = {
-          SalesPerson_Code: this.props.params.id
-      }
-
-      _G.ajax({
-          url: config.__URL + config.sale.user.resetPwd,
-          type: "get",
-          data: opts,
-          success: function(res) {
-              msg_success();
-          }.bind(this)
-
-      })
-    }
-
-    handleSubmit(e) {
-        //***********************************等待ajax提交数据 ******** 区分 新增 或者 编辑
-        e.preventDefault();
-        goBack();
-
-    }
+     handleReset(e) {
+         e.preventDefault();
+         goBack();
+     }
 
     render() {
-
-        const provinceOptions = provinceData.map(function(province) {
-            return <Option key={province}>{province}</Option>;
-        });
-        const cityOptions = this.state.cities.map(function(city) {
-            return <Option key={city}>{city}</Option>;
-        });
-
         return (
-            <div className="m-form">
+          <div className="m-form">
               <div className="m-form-title">{this.state.title}</div>
               <div className="m-form-con">
                   <Form horizontal>
-                      <Row>
-                          <Col span="8">
-                              <FormItem label="会员名称：" id="SalesPerson_Name" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                  <Input name="SalesPerson_Name" value={this.state.SalesPerson_Name} disabled />
-                              </FormItem>
-                              <FormItem label="昵称：" id="SalesPerson_SName" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                  <Input name="SalesPerson_SName" value={this.state.SalesPerson_SName} disabled />
-                              </FormItem>
-                              <FormItem label="身份证号：" id="Card_Code" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                  <Input name="Card_Code" value={this.state.Card_Code} disabled />
-                              </FormItem>
-                              <FormItem label="性别：" id="SalesPerson_Sex" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                  <RadioGroup name="SalesPerson_Sex" value={this.state.SalesPerson_Sex} disabled>
-                                      <Radio value="男">男</Radio>
-                                      <Radio value="女">女</Radio>
-                                      <Radio value="神秘">神秘</Radio>
-                                  </RadioGroup>
-                              </FormItem>
-                              <FormItem label="手机：" id="Phone" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                  <Input name="Phone" value={this.state.Phone} disabled />
-                              </FormItem>
-                          </Col>
-                          <Col span="12">
-                              <FormItem label="注册日期：" id="RegisterTime" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                  <Input name="RegisterTime" value={this.state.RegisterTime} disabled />
-                              </FormItem>
-                              <FormItem label="电子邮箱：" id="Email" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                  <Input name="Email" value={this.state.Email} disabled />
-                              </FormItem>
-                              <FormItem label="行政区域：" id="Region_Code" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                  <Select defaultValue={provinceData[0]} style={{width:100}} onChange={this.handleProvinceChange}>
-                                      {provinceOptions}
-                                  </Select>
-                                  <Select value={this.state.secondCity} style={{width:100}} onChange={this.onSecondCityChange}>
-                                      {cityOptions}
-                                  </Select>
-                              </FormItem>
-                              <FormItem label="地址：" id="SalesPerson_Address" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                  <Input name="SalesPerson_Address" value={this.state.SalesPerson_Address} disabled />
-                              </FormItem>
+                    <Row>
+                        <Col span="8">
+                            <FormItem label="会员名称：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                <Input name="SalesPerson_Name" value={this.state.SalesPerson_Name} disabled />
+                            </FormItem>
+                            <FormItem label="昵称：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                <Input name="SalesPerson_SName" value={this.state.SalesPerson_SName} disabled />
+                            </FormItem>
+                            <FormItem label="身份证号：" id="Card_Code" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                <Input name="Card_Code" value={this.state.Card_Code} disabled />
+                            </FormItem>
+                            <FormItem label="性别：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                <RadioGroup name="SalesPerson_Sex" value={this.state.SalesPerson_Sex} disabled>
+                                    <Radio value="男">男</Radio>
+                                    <Radio value="女">女</Radio>
+                                    <Radio value="神秘">神秘</Radio>
+                                </RadioGroup>
+                            </FormItem>
+                            <FormItem label="手机：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                <Input name="Phone" value={this.state.Phone} disabled />
+                            </FormItem>
+                        </Col>
+                        <Col span="12">
+                            <FormItem label="注册日期：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                <Input name="RegisterTime" value={this.state.RegisterTime} disabled />
+                            </FormItem>
+                            <FormItem label="电子邮箱：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                <Input name="Email" value={this.state.Email} disabled />
+                            </FormItem>
+                            <FormItem label="行政区域：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                <Input name="Province_Name" value={this.state.Province_Name} disabled style={{width:"33%"}}  />
+                                <Input name="City_Name" value={this.state.City_Name} disabled style={{width:"33%"}}  />
+                                <Input name="Area_Name" value={this.state.Area_Name} disabled style={{width:"33%"}}  />
+                            </FormItem>
+                            <FormItem label="地址：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                <Input name="SalesPerson_Address" value={this.state.SalesPerson_Address} disabled />
+                            </FormItem>
                           </Col>
                       </Row>
                   </Form>
@@ -196,11 +221,10 @@ class SaleUserInfo extends React.Component {
               <div className="m-form-btns">
                   <Row>
                       <Col span="8" offset="2">
-                          <Button type="primary" onClick={this.handleResetPwd}>重置密码</Button>
                           &nbsp;&nbsp;&nbsp;&nbsp;
-                          <Button type="primary" onClick={this.handleSubmit}>确定</Button>
+                          <Button type="primary" onClick={this.handleReset}>确定</Button>
                           &nbsp;&nbsp;&nbsp;&nbsp;
-                          <Button type="primary" onClick={this.handleSubmit}>取消</Button>
+                          <Button type="primary" onClick={this.handleReset}>取消</Button>
                       </Col>
                   </Row>
               </div>
@@ -212,4 +236,3 @@ class SaleUserInfo extends React.Component {
 module.exports = {
     SaleUserInfo: SaleUserInfo
 }
-

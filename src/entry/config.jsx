@@ -200,6 +200,7 @@ window['config'] = {
 			info : '/api/SSalesPersonMana/GetSalesPerson',		//获取促销人员信息
 			province : '/api/SSalesPersonMana/GetProvince',		//获取省份信息
 			city : '/api/SSalesPersonMana/GetCity',				//获取城市信息
+			area : '/api/SSalesPersonMana/GetArea',				//获取地区
 			add : '/api/SSalesPersonMana/PostSalesPerson',		//添加促销人员
 			edit : '/api/SSalesPersonMana/PutSalesPerson',		//修改促销人员
 			del : '/api/SSalesPersonMana/DeleteSalesPerson',	// 删除促销人员
@@ -219,12 +220,15 @@ window['config'] = {
 	saledata : {
 		round : {
 			list : '/api/SReport/GetCustomerDraw_Report', // 消费者抽奖流水
+			info : '/api/SReport/GetAwardList',//点击数量二级页面
 		},
 		send : {
 			list : '/api/SSendTextMsgs/SendText', // 发送短信流水
+			info : '/api/SSendTextMsgs/GetTextDetails',//点击数量二级页面
 		},
 		push : {
 			list : '/api/SRecharge/Recharge', // 话费充值流水
+			info : '/api/SRecharge/GetRechargeDetails',//点击数量二级页面
 		},
 		user : {
 			list : '/api/SReport/GetCusmorJoin_Report', // 消费者参与流水
@@ -240,14 +244,18 @@ window['config'] = {
 			add : '/api/SIntegralRule/AddRule',  // 增加积分规则
 			edit : '/api/SIntegralRule/UpdateRule',   // 编辑积分规则
 			editList : '/api/SIntegralRule/GetRule',   // 获取指定积分规则
+			type : '/api/SIntegralRule/GetIntegralRuleTypes',//获取类型
+			del : '/api/SIntegralRule/DeleteRule', // 删除
 		},
 		area : {
 			list : '/api/SBatchRegion/GetBatchRegion',//获取指定页的批次区域
 			search : '/api/SBatchRegion/GetBatchRegionList',//按条件查询批次区域
-			add:'/api/SBatchRegion/PostBatchRegion',//添加批次区域
+			add :'/api/SBatchRegion/PostBatchRegion',//添加批次区域
 			edit:'/api/SBatchRegion/PutBatchRegion',//更新批次区域
-			del:'/api/SBatchRegion/PutBatchRegion',//删除批次区域
-			excel:'/api/SBatchRegion/ BatchRegionToExcel',//导出批次区域到EXCEL
+			del :'/api/SBatchRegion/PutBatchRegion',//删除批次区域
+			excel:'/api/SBatchRegion/BatchRegionToExcel',//导出批次区域到EXCEL
+			seles : '/api/SBatchRegion/GetSalesRegion',//销售区域下拉菜单
+			listOne : '/api/SBatchRegion/GetBatchRegionByCode',//获取单条数据
 		}
 	},
 	// 登录，修改密码

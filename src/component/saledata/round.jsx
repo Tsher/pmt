@@ -43,7 +43,13 @@ const columns = [{
   key: 'WinTimes',
   render: function(text,record) {
   	//var href= '/saledata/round/info/'+record.lotteryNo;
-    var href= '/saledata/round/info/';
+    var arr = {
+       ScanAddress:record.ScanAddress,
+       ScanPhone:record.ScanPhone,
+       ScanWeiXinNo:record.ScanWeiXinNo,
+       Prize_Name:record.Prize_Name,
+    }
+    var href= '/saledata/round/info/'+JSON.stringify(arr);
     return <Link to={href}>{text}</Link>;
   }
 },{
@@ -60,8 +66,8 @@ class DateRange extends React.Component{
 	constructor() {
 		super();
 		this.state =  {
-      MA_StartTime : '',
-      MA_EndTime : ''
+      MA_StartTime : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
+      MA_EndTime : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
     };
 	    this.handleSubmit = this.handleSubmit.bind(this);
 	    this.onChange = this.onChange.bind(this);
@@ -81,7 +87,6 @@ class DateRange extends React.Component{
     return endValue.getTime() <= this.state.MA_StartTime.getTime();
   }
   onChange(field, value) {
-    console.log(field,value)
     this.setState({
       [field]: value,
     });
@@ -89,7 +94,6 @@ class DateRange extends React.Component{
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
-    console.log(this.state)
     
     this.props.changeTableState(this.state);
 
@@ -163,8 +167,6 @@ class SaleDataRound extends React.Component{
     opts.page = pagination.current;
     opts.pageSize = pagination.pageSize;
 
-    
-
     this.setState({
       opts : opts
     })
@@ -176,9 +178,6 @@ class SaleDataRound extends React.Component{
     var opts = Object.assign({},this.state.opts);
     opts.pageSize = pageSize;
     opts.page = current;
-
-    console.log(opts);
-    
 
     this.setState({
       opts : opts
@@ -202,8 +201,8 @@ class SaleDataRound extends React.Component{
     //opts.EntityCode = 'DEFAULT';
     var that = this;
 
-    opts.MA_StartTime = ''+_G.timeFormat( new Date(opts.MA_StartTime).getTime());
-    opts.MA_EndTime = ''+_G.timeFormat( new Date(opts.MA_EndTime).getTime());
+    opts.MA_StartTime = ''+_G.timeFormat( new Date(opts.MA_StartTime).getTime(),'YYYY-MM-DD');
+    opts.MA_EndTime = ''+_G.timeFormat( new Date(opts.MA_EndTime).getTime(),'YYYY-MM-DD');
 
     _G.ajax({
       url : saledataRoundList,

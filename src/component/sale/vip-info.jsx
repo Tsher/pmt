@@ -49,17 +49,17 @@ class SaleVipInfo extends React.Component{
   constructor(props) {
       super(props);
       this.state = {
-          Member_Code: undefined, // 会员id
+          Member_Code: '', // 会员id
           title: '会员信息',
-          Member_SName: undefined, // 昵称
-          Member_Level: undefined, // 会员级别
-          Member_Sex: undefined, // 会员性别
-          Member_Phone: undefined, // 会员手机
-          Member_Status: undefined, // 会员状态
-          RegisterTime: undefined, //注册日期
-          Member_Email: undefined, // 电子邮件
-          SortNo: undefined, // 行政区域
-          Member_Address: undefined, // 详细地址
+          Member_SName: '', // 昵称
+          Member_Level: '', // 会员级别
+          Member_Sex: '', // 会员性别
+          Member_Phone: '', // 会员手机
+          Member_Status: '', // 会员状态
+          RegisterTime: '', //注册日期
+          Member_Email: '', // 电子邮件
+          SortNo: '', // 行政区域
+          Member_Address: '', // 详细地址
       };
       this.handleResetPwd = this.handleResetPwd.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
@@ -77,10 +77,6 @@ class SaleVipInfo extends React.Component{
               this.setState(Object.assign(res.Data,{RegisterTime:_G.timeFormat2(res.Data.RegisterTime)}))
               RegisterTime
           }.bind(this)
-
-      })
-      this.setState({
-          Member_Code: this.props.params.id
       })
   }
 
@@ -90,7 +86,6 @@ class SaleVipInfo extends React.Component{
       var opts = {
           Member_Code: this.props.params.id
       }
-
       _G.ajax({
           url: config.__URL + config.sale.vip.resetPwd,
           type: "get",
@@ -98,7 +93,6 @@ class SaleVipInfo extends React.Component{
           success: function(res) {
               msg_success();
           }.bind(this)
-
       })
   }
 
@@ -116,36 +110,36 @@ class SaleVipInfo extends React.Component{
               <Form horizontal>
                   <Row>
                       <Col span="8">
-                          <FormItem label="会员ID：" id="Member_Code" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                          <FormItem label="会员ID：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                               <Input name="Member_Code" value={this.state.Member_Code} disabled />
                           </FormItem>
-                          <FormItem label="昵称：" id="Member_SName" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                          <FormItem label="昵称：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                               <Input name="Member_SName" value={this.state.Member_SName} disabled />
                           </FormItem>
-                          <FormItem label="会员级别：" id="Member_Level" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                          <FormItem label="会员级别：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                               <Input name="Member_Level" value={this.state.Member_Level} disabled />
                           </FormItem>
-                          <FormItem label="性别：" id="Member_Sex" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                          <FormItem label="性别：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                               <Input name="Member_Sex" value={this.state.Member_Sex} disabled />
                           </FormItem>
-                          <FormItem label="手机：" id="Member_Phone" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                          <FormItem label="手机：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                               <Input name="Member_Phone" value={this.state.Member_Phone} disabled />
                           </FormItem>
                       </Col>
                       <Col span="8">
-                          <FormItem label="会员状态：" id="Member_Status" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                          <FormItem label="会员状态：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                               <Input name="Member_Status" value={this.state.Member_Status} disabled />
                           </FormItem>
-                          <FormItem label="注册日期：" id="RegisterTime" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                          <FormItem label="注册日期：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                               <Input name="RegisterTime" value={this.state.RegisterTime} disabled />
                           </FormItem>
-                          <FormItem label="电子邮箱：" id="Member_Email" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                          <FormItem label="电子邮箱：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                               <Input name="Member_Email" value={this.state.Member_Email} disabled />
                           </FormItem>
-                          <FormItem label="行政区域：" id="SortNo" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                          <FormItem label="行政区域：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                               <Input name="SortNo" value={this.state.SortNo} disabled />
                           </FormItem>
-                          <FormItem label="地址：" id="Member_Address" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                          <FormItem label="地址：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                               <Input name="Member_Address" value={this.state.Member_Address} disabled />
                           </FormItem>
                       </Col>

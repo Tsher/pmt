@@ -80,14 +80,13 @@ class RuleNumber extends React.Component{
     this.changeTableState = this.changeTableState.bind(this);
     this.tableChange = this.tableChange.bind(this);
     this.showSizechange = this.showSizechange.bind(this);
-
-    this.changeTableState(this.state.opts);
   }
 
 
   componentDidMount(){
+    
+    modalState = this.showModal;
 
-    console.log('hu');
     this.changeTableState(this.state.opts);
 
     this.setState({
@@ -140,7 +139,6 @@ class RuleNumber extends React.Component{
       data : opts,
       success:function(res){
         var d = [];
-        console.log(res.Data)
         for(var i=0,l=res.Data.length;i<l;i++){
           d[i]=res.Data[i];
           d[i]['key'] = i;
@@ -159,12 +157,6 @@ class RuleNumber extends React.Component{
 
   }
 
-
-  componentDidMount(){
-
-    modalState = this.showModal;
-    
-  }
   showModal(id,index,name){
     this.setState({
       visible : true,
@@ -195,7 +187,7 @@ class RuleNumber extends React.Component{
           })
           console.log('删除成功');
           var d = [].concat(this.state.data);
-          d.splice(d[this.state.index],1);
+          d.splice(this.state.index,1);
           console.log(this.state.index)
           this.setState({
             data : d,

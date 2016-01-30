@@ -16,149 +16,129 @@ const history = createHistory();
 
 const goBack = history.goBack;
 
+import '../../entry/config';
+const saledataRoundInfo = config.__URL + config.saledata.round.info;
+
 const columns = [{
+  title: '序号',
+  dataIndex: 'WR_Code',
+  key: 'WR_Code'
+},{
   title: '抽奖地区',
-  dataIndex: 'lotteryArea',
-  key: 'lotteryArea'
-}, {
-  title: '兑换手机号',
-  dataIndex: 'lotteryMobile',
-  key: 'lotteryMobile'
+  dataIndex: 'Region_Address',
+  key: 'Region_Address'
 },{
   title: '微信号',
-  dataIndex: 'lotteryWx',
-  key: 'lotteryWx'
+  dataIndex: 'ScanWeiXinNo',
+  key: 'ScanWeiXinNo'
 },{
   title: '奖品',
-  dataIndex: 'lotteryPrize',
-  key: 'lotteryPrize'
+  dataIndex: 'Prize_Name',
+  key: 'Prize_Name'
 },{
-  title: '是否中奖',
-  dataIndex: 'lotteryWinning',
-  key: 'lotteryWinning'
+  title: '中奖时间',
+  dataIndex: 'WR_Time',
+  key: 'WR_Time'
 },{
-  title: '中奖次数',
-  dataIndex: 'lotteryNumber',
-  key: 'lotteryNumber',
+  title: '兑换时间',
+  dataIndex: 'Convert_Time',
+  key: 'Convert_Time'
+},{
+  title: '兑换状态',
+  dataIndex: 'Convert_Status',
+  key: 'Convert_Status',
   render: function(text,record) {
-    var href= '/saledata/round/info/'+record.lotteryNo;
-    return <Link to={href}>{text}</Link>;
+    var str = record.Convert_Status == 1 ? '未兑奖' : '已兑奖';
+    return <div>{str}</div>
   }
-},{
-  title: '积分',
-  dataIndex: 'lotteryIntegral',
-  key: 'lotteryIntegral'
 }];
-const data = [{
-  key: '1',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '2',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '3',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '4',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '5',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '6',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '7',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '8',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '9',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '10',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}, {
-  key: '11',
-  lotteryArea: '北京',
-  lotteryMobile : 13661111111,
-  lotteryWx : 'weixin123',
-  lotteryPrize : 'iphone',
-  lotteryWinning : '是',
-  lotteryNumber : 2,
-  lotteryIntegral : 30
-}];
-
 
 class SaleDataRoundInfo extends React.Component{
 	constructor(){
 		super();
 		this.state =  {
-	      total : 100,
-        id : '',
-	    };
+        total : 0,
+        data : [],
+        opts : {
+          page :1,
+          pageSize : 10,
+        },
+    };
+
+    this.changeTableState = this.changeTableState.bind(this);
+    this.tableChange = this.tableChange.bind(this);
+    this.showSizechange = this.showSizechange.bind(this);
 	}
+
+  componentDidMount(){
+    var id = this.props.params.id;
+    var opts = JSON.parse(id);
+
+    this.changeTableState(opts);
+  }
+
+  // 点击分页
+  tableChange(pagination, filters, sorter){
+    var opts = Object.assign({},this.state.opts);
+    opts.page = pagination.current;
+    opts.pageSize = pagination.pageSize;
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+  }
+  // 每页数据条数变化
+  showSizechange(current, pageSize){
+    var opts = Object.assign({},this.state.opts);
+    opts.pageSize = pageSize;
+    opts.page = current;
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+
+  }
+
+  // 发送ajax请求，获取table值
+  changeTableState(opts){
+
+    var opts = opts || {};
+    opts.page = opts.page || this.state.opts.page;
+    opts.pageSize = opts.pageSize ||  this.state.opts.pageSize;
+
+    this.setState({
+      opts : opts
+    })
+    
+    //opts.EntityCode = 'DEFAULT';
+    var that = this;
+
+    _G.ajax({
+      url : saledataRoundInfo,
+      type: "get",
+      data : opts,
+      success:function(res){
+        var d = res.Data;
+        for(var i=0;i<d.length;i++){
+          d[i].key = i;
+          d[i].WR_Time = _G.timeFormat2(d[i].WR_Time,'YYYY-MM-DD');
+        }
+        
+        this.setState({
+          data : d,
+          total : res.TotalCount,
+          opts : opts
+        })
+
+      }.bind(this)
+
+    })
+  }
   
   handleReset(e) {
     // 返回***********************************
@@ -169,7 +149,7 @@ class SaleDataRoundInfo extends React.Component{
 		return(
 			<div className="m-list">
 			    <Row>
-    					<Table columns={columns} dataSource={data} pagination={{showQuickJumper:true,pageSize:10,current:1,showSizeChanger:true,total:this.state.total}}  />
+    					<Table onChange={this.tableChange} columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}} />
     			</Row>
           <Row>
             <Button type="primary" onClick={this.handleReset}>返回</Button>

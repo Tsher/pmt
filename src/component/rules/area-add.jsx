@@ -32,6 +32,15 @@ const confirm = Modal.confirm;
 const History = createHistory();
 const goBack = History.goBack;
 
+import '../../entry/config';
+const ruleAreaAdd = config.__URL + config.rule.area.add;
+const ruleAreaEdit  = config.__URL + config.rule.area.edit;
+const ruleAreaSeles  = config.__URL + config.rule.area.seles;
+const ruleAreaSearch  = config.__URL + config.rule.area.search;
+const ruleAreaListOne = config.__URL + config.rule.area.listOne;
+
+var changeTableState;
+
 function cx(classNames) {
   if (typeof classNames === 'object') {
     return Object.keys(classNames).filter(function(className) {
@@ -65,16 +74,21 @@ class SelectForm extends React.Component{
         batchNumEnd: {},
         boxNumStart: {},
         boxNumEnd: {},
-        saleRegion: {}
+        saleRegion: {},
+        SalesRegion_Code:{},
+        SalesRegion_Name:{},
       },
       formData: {
         title : '新增批次区域',
-        batchNumStart: undefined,
-        batchNumEnd: undefined,
-        boxNumStart: undefined,
-        boxNumEnd: undefined,
-        saleRegion: undefined
-      }
+        batchNumStart: '',
+        batchNumEnd: '',
+        boxNumStart: '',
+        boxNumEnd: '',
+        saleRegion: '',
+        SalesRegion_Code :'',
+        SalesRegion_Name : '',
+      },
+      selesD:[],
     };
     this.handleValidate = FieldMixin.handleValidate.bind(this);
     this.onValidate = FieldMixin.onValidate.bind(this);
@@ -87,19 +101,70 @@ class SelectForm extends React.Component{
   componentDidMount(){
     var id = this.props.params.id;
 
+    _G.ajax({
+      url : ruleAreaSeles,
+      type: "get",
+      success:function(res){
+
+        this.setState({
+          selesD : res.Data
+        })
+
+        if(id){
+          // 编辑
+          // ajax 请求当前id的数据 ********************************
+
+          _G.ajax({
+            url : ruleAreaListOne,
+            type : 'get',
+            data : {
+              LotArea_Code : id
+            },
+            success:function(res){
+
+              if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
+                msg_error();
+                // 跳转回列表页
+                return;
+              }
+              res = res.Data[0];
+              var sD = this.state.selesD;
+              var code = '';
+              for(var i=0;i<sD.length;i++){
+                if (sD[i].SalesRegion_Name == res.SalesRegion_Name) {
+                   code = sD[i].SalesRegion_Code;
+                };
+              }
+              console.log(code)
+              var d = {
+                  title : '新增批次区域',
+                  batchNumStart : res.Start_Batch_Code,
+                  batchNumEnd : res.End_Batch_Code,
+                  boxNumStart : res.Start_Box_Code,
+                  boxNumEnd : res.End_Box_Code,
+                  saleRegion : res.SalesRegion_Name,
+                  SalesRegion_Name : res.SalesRegion_Name,
+                  LotArea_Code : id,
+                  SalesRegion_Code:code,
+              };
+              this.setState({
+                formData:d,
+              })
+
+            }.bind(this)
+          })
+          
+        }
+
+      }.bind(this)
+
+    })
+
     
-    if(id){
-      // 编辑
-      // ajax 请求当前id的数据 ********************************
-      var state = Object.assign({},this.state);
-      state.formData.id = this.props.params.id;
-      state.formData.title = '编辑批次区域';
-      this.setState(state);
-      return
-    }
     
     
   }
+
 
   
   // 文本框的值 同步到 state
@@ -137,9 +202,40 @@ class SelectForm extends React.Component{
       } else {
         console.log('submit');
       }
-      console.log(this.state.formData);
       msg_success();
     });
+
+    // 提交数据
+      let u = this.props.params.id ? ruleAreaEdit : ruleAreaAdd;
+      var fD = Object.assign({},this.state.formData);
+      var d = {
+          Start_Batch_Code:fD.batchNumStart,
+          End_Batch_Code:fD.batchNumEnd,
+          Start_Box_Code:fD.boxNumStart,
+          End_Box_Code:fD.boxNumEnd,
+          SalesRegion_Code:fD.SalesRegion_Code,
+          LotArea_Code :fD.LotArea_Code,
+      };
+      _G.ajax({
+        url  : u+'?LotArea_Code='+fD.LotArea_Code,
+        data : {JsonValue:JSON.stringify(d)},
+        method : 'post',
+        success:function(res){
+          if(res.ReturnOperateStatus == 'True'){
+            msg_success();
+            // 调转到列表页
+            goBack();
+            return;
+          }
+          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
+            msg_error(res.Msg);
+            return
+          }
+        },
+        fail:function(res){
+          msg_error();
+        }
+      })
     
     
   }
@@ -147,9 +243,24 @@ class SelectForm extends React.Component{
   // datepicker change
   onChange(field,value){
     var data = Object.assign({},this.state);
-    data.formData[field] = value;
+    if (field == 'SalesRegion_Name') {
+      var sD = this.state.selesD;
+      var name = '';
+      for(var i=0;i<sD.length;i++){
+        if (sD[i].SalesRegion_Code == value) {
+           name = sD[i].SalesRegion_Name;
+        };
+      }
+      data.formData[field] = name;
+      data.formData['SalesRegion_Code'] = value;
+    }else{
+      data.formData[field] = value;
+    }
+    
     this.setState(data)
   }
+
+
 
   handleReset(e) {
     e.preventDefault();
@@ -242,16 +353,17 @@ class SelectForm extends React.Component{
                         <span className="timepicker">
                           <FormItem
                             label=""
-                            id="saleRegion"
-                            validateStatus={this.renderValidateStyle('saleRegion')}
-                            help={status.saleRegion.errors ? status.saleRegion.errors.join(',') : null}
+                            id="SalesRegion_Name"
+                            validateStatus={this.renderValidateStyle('SalesRegion_Name')}
+                            help={status.SalesRegion_Name.errors ? status.SalesRegion_Name.errors.join(',') : null}
                             required>
                               <Validator rules={[{required: true, message: '选择销售区域',type:'string'}]}>
-                                <Select name="saleRegion" style={{width:200}} value={formData.saleRegion}>
-                                  <Option value="华南">华南</Option>
-                                  <Option value="华北">华北</Option>
-                                  <Option value="西南">西南</Option>
-                                  <Option value="西北">西北</Option>
+                                <Select defaultValue={formData.SalesRegion_Name} name="SalesRegion_Name" style={{width:200}} value={formData.SalesRegion_Code}  onChange={this.onChange.bind(this,'SalesRegion_Name')}>
+                                  {
+                                     this.state.selesD.map(function(d){
+                                        return <Option key={d.SalesRegion_Code} value={d.SalesRegion_Code} >{d.SalesRegion_Name}</Option>
+                                     })
+                                  }
                                 </Select>
                               </Validator>
                           </FormItem>

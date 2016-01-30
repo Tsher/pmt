@@ -39,10 +39,9 @@ class SelectForm extends React.Component {
         this.disabledEndDate = this.disabledEndDate.bind(this);
     }
 
-
     // 文本框的值 同步到 state
     setValue(e) {
-        var name = e.target.id;
+        var name = e.target.name;
         this.setState({
             [name]: e.target.value
         })
@@ -52,11 +51,11 @@ class SelectForm extends React.Component {
     handleSubmit(e) {
         // ********************************************************** ajax提交数据，获取table的data值
         e.preventDefault();
-        var data = Object.assign(this.state, {
+        this.setState({
             Register_On_S: _G.timeFormat2(new Date(this.state.Register_On_S).getTime(), 'YYYY-MM-DD'),
             Register_On_E: _G.timeFormat2(new Date(this.state.Register_On_E).getTime(), 'YYYY-MM-DD')
-        });
-        this.props.changeTableState(data);
+        })
+        this.props.changeTableState(this.state);
     }
 
     // datepicker change
@@ -65,7 +64,6 @@ class SelectForm extends React.Component {
             [field]: value
         })
     }
-
 
     disabledEndDate(endValue) {
         if (!endValue || !this.state.Register_On_S) {
@@ -83,20 +81,20 @@ class SelectForm extends React.Component {
                       <div className="fright">
                           <ul className="clearfix">
                               <li className="fleft">
-                                  <FormItem label="登录名：" id="Member_Name">
-                                      <Input placeholder="" id="Member_Name" name="Member_Name" onChange={this.setValue} value={this.state.Member_Name} />
+                                  <FormItem label="登录名：">
+                                      <Input placeholder="" name="Member_Name" onChange={this.setValue} value={this.state.Member_Name} />
                                   </FormItem>
                               </li>
                               <li className="fleft">
-                                  <FormItem label="昵称：" id="Member_SName">
-                                      <Input placeholder="" id="Member_SName" name="Member_SName" onChange={this.setValue} value={this.state.Member_SName} />
+                                  <FormItem label="昵称：" >
+                                      <Input placeholder="" name="Member_SName" onChange={this.setValue} value={this.state.Member_SName} />
                                   </FormItem>
                               </li>
                               <li className="fleft date-picker">
                                   <FormItem id="Register_On_S" label="注册时段：" labelCol={{span : 5}}>
                                       <Row span="24">
                                           <Col span="10">
-                                              <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this, 'Register_On_S')} />
+                                              <DatePicker placeholder="开始日期"  onChange={this.onChange.bind(this, 'Register_On_S')} />
                                           </Col>
                                           <Col span="1">
                                               <p className="ant-form-split">-</p>
@@ -108,8 +106,8 @@ class SelectForm extends React.Component {
                                   </FormItem>
                               </li>
                               <li className="fleft">
-                                  <FormItem id="Member_Phone" label="手机号：">
-                                      <Input placeholder="" id="Member_Phone" name="Member_Phone" onChange={this.setValue} value={this.state.Member_Phone} />
+                                  <FormItem label="手机号：">
+                                      <Input placeholder="" name="Member_Phone" onChange={this.setValue} value={this.state.Member_Phone} />
                                   </FormItem>
                               </li>
                               <li className="fleft">
@@ -202,11 +200,12 @@ class SaleVip extends React.Component {
         this.handleOk = this.handleOk.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.changeTableState = this.changeTableState.bind(this);
+        this.tableChange = this.tableChange.bind(this);
+        this.showSizechange = this.showSizechange.bind(this);
     }
 
     componentDidMount() {
         modalState = this.showModal;
-
     }
     componentWillUnmount() {
         modalState = false;
@@ -219,6 +218,22 @@ class SaleVip extends React.Component {
             changeId: id
         })
     }
+
+    // 点击分页
+    tableChange(pagination){
+        var opts = Object.assign({},this.state.opts);
+        opts.page = pagination.current;
+        opts.pageSize = pagination.pageSize;
+        this.changeTableState(opts);
+    }
+    // 每页数据条数变化
+    showSizechange(current, pageSize){
+        var opts = Object.assign({},this.state.opts);
+        opts.page = current;
+        opts.pageSize = pageSize;
+        this.changeTableState(opts);
+    }
+
     handleOk(e) {
         //******************* 冻结，解冻 逻辑 changeId , 然后 关闭****************************
         var opts = {
@@ -229,25 +244,16 @@ class SaleVip extends React.Component {
             type: "get",
             data: opts,
             success: function(res) {
+                var _tmp = this.state.data
+                for(var i=0;i<_tmp.length;i++){
+                  if(_tmp[i].Member_Code==opts.Member_Code){
+                    _tmp[i]['Member_Status'] = _tmp[i]['Member_Status'] =='正常'?'冻结':'正常'
+                  }
+                }
                 this.setState({
-                    confirmLoading: true
+                    data: _tmp,
+                    visible: false
                 })
-                setTimeout(() => {
-                    var d = [],_tmp = this.state.data
-                    for(var i=0;i<_tmp.length;i++){
-                      if(_tmp[i].Member_Code==opts.Member_Code){
-                        _tmp[i]['Member_Status'] = _tmp[i]['Member_Status'] =='正常'?'冻结':'正常'
-                      }
-                    }
-                    this.setState({
-                        data: _tmp,
-                        total: this.state.total,
-                        opts: this.state.opts
-                    })
-                    this.setState({
-                        visible: false
-                    })
-                }, 2000)
             }.bind(this)
         })
     }
@@ -256,18 +262,14 @@ class SaleVip extends React.Component {
             visible: false
         })
     }
-    handleClick(e) {
-        console.log(e);
-    }
 
     // 发送ajax请求，获取table值
     changeTableState(opts) {
         var opts = opts || {};
         opts.page = opts.page || this.state.opts.page;
-        opts.pageSize = opts.pageSize || this.state.opts.pageSize;
-
+        opts.pageSize = opts.pageSize ||  this.state.opts.pageSize;
         this.setState({
-            opts: opts
+          opts : opts
         })
         _G.ajax({
             url: config.__URL + config.sale.vip.list,
@@ -282,8 +284,7 @@ class SaleVip extends React.Component {
                 }
                 this.setState({
                     data: d,
-                    total: res.TotalCount,
-                    opts: opts
+                    total : res.TotalCount
                 })
             }.bind(this)
         })
@@ -298,7 +299,12 @@ class SaleVip extends React.Component {
                 </Col>
             </Row>
             <Row>
-                <Table columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total}} />
+                <Table 
+                  onChange={this.tableChange}
+                  onShowSizeChange={this.showSizechange}
+                  columns={columns} 
+                  dataSource={this.state.data} 
+                  pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total}} />
             </Row>
             <Modal visible={this.state.visible} onOk={this.handleOk} confirmLoading={this.state.confirmLoading} onCancel={this.handleCancel}>
                 <p>{this.state.ModalText}</p>
