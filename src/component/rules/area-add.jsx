@@ -118,7 +118,7 @@ class SelectForm extends React.Component{
             url : ruleAreaListOne,
             type : 'get',
             data : {
-              LotArea_Code : this.props.params.id
+              LotArea_Code : id
             },
             success:function(res){
 
@@ -208,7 +208,6 @@ class SelectForm extends React.Component{
     // 提交数据
       let u = this.props.params.id ? ruleAreaEdit : ruleAreaAdd;
       var fD = Object.assign({},this.state.formData);
-      console.log(fD)
       var d = {
           Start_Batch_Code:fD.batchNumStart,
           End_Batch_Code:fD.batchNumEnd,
@@ -217,9 +216,8 @@ class SelectForm extends React.Component{
           SalesRegion_Code:fD.SalesRegion_Code,
           LotArea_Code :fD.LotArea_Code,
       };
-      console.log(fD.SalesRegion_Name)
       _G.ajax({
-        url  : u,
+        url  : u+'?LotArea_Code='+fD.LotArea_Code,
         data : {JsonValue:JSON.stringify(d)},
         method : 'post',
         success:function(res){

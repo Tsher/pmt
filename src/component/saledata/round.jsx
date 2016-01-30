@@ -66,8 +66,8 @@ class DateRange extends React.Component{
 	constructor() {
 		super();
 		this.state =  {
-      MA_StartTime : '',
-      MA_EndTime : ''
+      MA_StartTime : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
+      MA_EndTime : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
     };
 	    this.handleSubmit = this.handleSubmit.bind(this);
 	    this.onChange = this.onChange.bind(this);
@@ -201,8 +201,8 @@ class SaleDataRound extends React.Component{
     //opts.EntityCode = 'DEFAULT';
     var that = this;
 
-    opts.MA_StartTime = ''+_G.timeFormat( new Date(opts.MA_StartTime).getTime());
-    opts.MA_EndTime = ''+_G.timeFormat( new Date(opts.MA_EndTime).getTime());
+    opts.MA_StartTime = ''+_G.timeFormat( new Date(opts.MA_StartTime).getTime(),'YYYY-MM-DD');
+    opts.MA_EndTime = ''+_G.timeFormat( new Date(opts.MA_EndTime).getTime(),'YYYY-MM-DD');
 
     _G.ajax({
       url : saledataRoundList,

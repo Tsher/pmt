@@ -39,10 +39,6 @@ const columns = [{
   title: '发送状态',
   dataIndex: 'Recharge_Status',
   key: 'Recharge_Status',
-  render: function(text,record) {
-    var str = record.Recharge_Status == 0 ? '失败' : '成功';
-    return <div>{str}</div>
-  }
 },{
   title: '次数',
   dataIndex: 'RechargeNum',

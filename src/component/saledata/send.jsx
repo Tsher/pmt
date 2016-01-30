@@ -16,7 +16,10 @@ import '../../entry/config';
 const saledataSendList = config.__URL + config.saledata.send.list;
 
 var changeTableState;
-var rTimes={};
+var rTimes={
+  Send_Time_S:new Date().getTime(),
+  Send_Time_E:new Date().getTime()
+};
 var rPages={};
 
 
@@ -37,14 +40,14 @@ const columns = [{
   dataIndex: 'Receive_Num',
   key: 'Receive_Num',
   render: function(text,record) {
-    var timeS = ''+_G.timeFormat2( new Date(rTimes.Recharge_Time_S).getTime() , 'YYYY-MM-DD' )
-    var timeE = ''+_G.timeFormat2( new Date(rTimes.Recharge_Time_E).getTime() , 'YYYY-MM-DD' )
+    var timeS = ''+_G.timeFormat2( new Date(rTimes.Send_Time_S).getTime() ,'YYYY-MM-DD');
+    var timeE = ''+_G.timeFormat2( new Date(rTimes.Send_Time_E).getTime() ,'YYYY-MM-DD');
     var arr = {
        Send_Phone:record.Send_Phone,
        Receive_Phone:record.Receive_Phone,
        Send_Status:record.Send_Status,
-       Recharge_Time_S:timeS,
-       Recharge_Time_E:timeE,
+       Send_Time_S:timeS,
+       Send_Time_E:timeE,
        Page:rPages.page,
        PageSize:rPages.pageSize
     }
@@ -58,8 +61,8 @@ class DateRange extends React.Component{
 	constructor() {
 		super();
 		this.state =  {
-	      Send_Time_S : '',
-        Send_Time_E : ''
+	      Send_Time_S : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
+        Send_Time_E : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
 	    };
 	    this.handleSubmit = this.handleSubmit.bind(this);
 	    this.onChange = this.onChange.bind(this);
@@ -189,8 +192,8 @@ class SaleDataSend extends React.Component{
     //opts.EntityCode = 'DEFAULT';
     var that = this;
 
-    opts.Send_Time_S = ''+_G.timeFormat( new Date(opts.Send_Time_S).getTime() );
-    opts.Send_Time_E = ''+_G.timeFormat( new Date(opts.Send_Time_E).getTime() );
+    opts.Send_Time_S = ''+_G.timeFormat2( new Date(opts.Send_Time_S).getTime() ,'YYYY-MM-DD');
+    opts.Send_Time_E = ''+_G.timeFormat2( new Date(opts.Send_Time_E).getTime() ,'YYYY-MM-DD');
 
     _G.ajax({
       url : saledataSendList,

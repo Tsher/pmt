@@ -16,7 +16,10 @@ import '../../entry/config';
 const saledataPushList = config.__URL + config.saledata.push.list;
 
 var changeTableState;
-var rTimes={};
+var rTimes={
+  Recharge_Time_S:new Date().getTime(),
+  Recharge_Time_E:new Date().getTime()
+};
 var rPages={
   page :1,
   pageSize : 0
@@ -60,8 +63,8 @@ class DateRange extends React.Component{
 	constructor() {
 		super();
 		this.state =  {
-	      Recharge_Time_S : '',
-        Recharge_Time_E : ''
+	      Recharge_Time_S : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
+        Recharge_Time_E : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
 	    };
 	    this.handleSubmit = this.handleSubmit.bind(this);
 	    this.onChange = this.onChange.bind(this);

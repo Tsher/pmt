@@ -241,6 +241,7 @@ window['config'] = {
 			edit : '/api/SIntegralRule/UpdateRule',   // 编辑积分规则
 			editList : '/api/SIntegralRule/GetRule',   // 获取指定积分规则
 			type : '/api/SIntegralRule/GetIntegralRuleTypes',//获取类型
+			del : '/api/SIntegralRule/DeleteRule', // 删除
 		},
 		area : {
 			list : '/api/SBatchRegion/GetBatchRegion',//获取指定页的批次区域

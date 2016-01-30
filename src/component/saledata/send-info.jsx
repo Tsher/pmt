@@ -20,6 +20,10 @@ import '../../entry/config';
 const saledataSendInfo = config.__URL + config.saledata.send.info;
 
 const columns = [{
+  title: '发送序号',
+  dataIndex: 'SMS_Send_Code',
+  key: 'SMS_Send_Code'
+},{
   title: '公用号',
   dataIndex: 'Send_Phone',
   key: 'Send_Phone'
@@ -31,10 +35,6 @@ const columns = [{
   title: '发送状态',
   dataIndex: 'Send_Status',
   key: 'Send_Status'
-},{
-  title: '发送次数',
-  dataIndex: 'SendNum',
-  key: 'SendNum'
 },{
   title: '发送时间',
   dataIndex: 'Send_Time',

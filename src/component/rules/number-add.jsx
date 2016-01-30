@@ -101,7 +101,7 @@ class RuleNumberAdd extends React.Component{
     this.onChange = this.onChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
     
-    
+    this.disabledEndDate = this.disabledEndDate.bind(this);
   }
 
   // datepicker change
@@ -121,6 +121,7 @@ class RuleNumberAdd extends React.Component{
       data.formData[field] = value;
     }
     
+    
     this.setState(data)
   }
 
@@ -135,45 +136,63 @@ class RuleNumberAdd extends React.Component{
         this.setState({
           selesD : res.Data
         })
+
+
+        if(id){
+        // 编辑
+        // ajax 请求当前id的数据 ********************************
+        _G.ajax({
+          url : ruleNumberEditList,
+          type : 'get',
+          data : {
+            IntegralRule_Code : this.props.params.id
+          },
+          success:function(res){
+
+            if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
+              msg_error();
+              // 跳转回列表页
+              return;
+            }
+
+            res = res.Data;
+            var d = {
+                title : '编辑积分规则',
+                IntegralRule_Code : this.props.params.id,
+                IntegralRule_Name : res.IntegralRule_Name,
+                Description : res.Description,
+                Bas_Integral : res.Bas_Integral,
+                Effective_Time : _G.timeFormat2(res.Effective_Time,'YYYY-MM-DD'),
+                Failure_Time : _G.timeFormat2(res.Failure_Time,'YYYY-MM-DD'),
+            };
+            var t = res.IntegralRule_Type;
+            this.state.selesD.map(function(item){
+              if(item.REAL_Code == t){
+                d.SalesRegion_Code = t;
+                d.SalesRegion_Name = item.CODE_NM;
+              }
+            })
+            this.setState({
+              formData:d,
+            })
+
+          }.bind(this)
+        })
+
+      }else{
+        console.log('add')
+      }
+
+
+
+
+
+
       }.bind(this)
     })
 
     
-    if(id){
-      // 编辑
-      // ajax 请求当前id的数据 ********************************
-      _G.ajax({
-        url : ruleNumberEditList,
-        type : 'get',
-        data : {
-          IntegralRule_Code : this.props.params.id
-        },
-        success:function(res){
-
-          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
-            msg_error();
-            // 跳转回列表页
-            return;
-          }
-          res = res.Data;
-          var d = {
-              IntegralRule_Code : this.props.params.id,
-              IntegralRule_Name : res.IntegralRule_Name,
-              Description : res.Description,
-              Bas_Integral : res.Bas_Integral,
-              Effective_Time : _G.timeFormat2(res.Effective_Time,'YYYY-MM-DD'),
-              Failure_Time : _G.timeFormat2(res.Failure_Time,'YYYY-MM-DD'),
-          };
-          this.setState({
-            formData:d,
-          })
-
-        }.bind(this)
-      })
-
-    }else{
-      console.log('add')
-    }
+    
     
     
   }
@@ -199,19 +218,17 @@ class RuleNumberAdd extends React.Component{
         console.log('submit');
       }
       
-      msg_success();
-    });
-
-    // 提交数据
+      // 提交数据
       let u = this.props.params.id ? ruleNumberEdit : ruleNumberAdd;
       var fD = Object.assign({},this.state.formData);
       fD.Effective_Time = _G.timeFormat(fD.Effective_Time,'YYYY-MM-DD');
       fD.Failure_Time = _G.timeFormat(fD.Failure_Time,'YYYY-MM-DD');
       fD.REAL_Code = fD.SalesRegion_Code;
-      fD = JSON.stringify(fD);
+      fD.IntegralRule_Type = fD.SalesRegion_Code;
+      // fD = JSON.stringify(fD);
       _G.ajax({
         url  : u,
-        data : {Bas_IntegralRule_Rule:fD},
+        data : fD,
         method : 'post',
         success:function(res){
           if(res.ReturnOperateStatus == 'True'){
@@ -229,13 +246,20 @@ class RuleNumberAdd extends React.Component{
           msg_error();
         }
       })
+
+      msg_success();
+    });
+
+    
+
+    
     
     
   }
 
   // 文本框的值 同步到 state
   setValue(e){
-    var name = e.target.id;
+    var name = e.target.id || e.target.name;
     var data = Object.assign({},this.state);
     data.formData[name] = e.target.value;
     this.setState(data);
@@ -267,7 +291,13 @@ class RuleNumberAdd extends React.Component{
   handleChange(value){
     console.log('changed'+value);
   }
-
+  
+  disabledEndDate(endValue){
+    if (!endValue || !this.state.formData.Effective_Time) {
+      return false;
+    }
+    return endValue.getTime() <= this.state.formData.Effective_Time.getTime();
+  }
 
   
 
@@ -288,8 +318,13 @@ class RuleNumberAdd extends React.Component{
                   id="IntegralRule_Name"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
+                  validateStatus={this.renderValidateStyle('IntegralRule_Name')}
+                  help={status.IntegralRule_Name.errors ? status.IntegralRule_Name.errors.join(',') : null}
+                  required
                   >
-                    <Input name="IntegralRule_Name" value={formData.IntegralRule_Name} />
+                    <Validator rules={[{required: true, message: '请输入规则名称',type:"string"}]}>
+                      <Input name="IntegralRule_Name"  value={formData.IntegralRule_Name} />
+                    </Validator>
                 </FormItem>
 
                 <FormItem
@@ -297,6 +332,9 @@ class RuleNumberAdd extends React.Component{
                   id="SalesRegion_Name"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
+                  validateStatus={this.renderValidateStyle('SalesRegion_Name')}
+                  help={status.SalesRegion_Name.errors ? status.SalesRegion_Name.errors.join(',') : null}
+                  required
                   >
                     <Validator rules={[{required: true, message: '选择销售区域',type:'string'}]}>
                       <Select defaultValue={formData.SalesRegion_Name} name="SalesRegion_Name" style={{width:156}} value={formData.SalesRegion_Code}  onChange={this.onChange.bind(this,'SalesRegion_Name')}>
@@ -316,9 +354,8 @@ class RuleNumberAdd extends React.Component{
                   id="Description"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
-                  
                   >
-                    <Validator rules={[{required: true, message: '请描述'}]}>
+                    <Validator rules={[{required: false, message: '请描述'}]}>
                       <Input type="textarea" style={{height:90}} name="Description" value={formData.Description} />
                     </Validator>
                 </FormItem>
@@ -330,9 +367,11 @@ class RuleNumberAdd extends React.Component{
                   id="Bas_Integral"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
+                  validateStatus={this.renderValidateStyle('Bas_Integral')}
+                  help={status.Bas_Integral.errors ? status.Bas_Integral.errors.join(',') : null}
+                  required
                   >
-                  <Input type="number" min="0" name="Bas_Integral" value={formData.Bas_Integral} />
-
+                  <Input type="number" min="0" onChange={this.setValue} name="Bas_Integral" id="Bas_Integral" value={formData.Bas_Integral} />
                   
                 </FormItem>
 
@@ -341,8 +380,11 @@ class RuleNumberAdd extends React.Component{
                   id="Effective_Time"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
+                  validateStatus={this.renderValidateStyle('Effective_Time')}
+                  help={status.Effective_Time.errors ? status.Effective_Time.errors.join(',') : null}
+                  required
                   >
-                    <DatePicker placeholder="" value={formData.Effective_Time} name="Effective_Time"  />
+                 <DatePicker placeholder="" value={formData.Effective_Time} name="Effective_Time" onChange={this.onChange.bind(this,'Effective_Time')}  />
                 </FormItem>
 
                 <FormItem
@@ -350,8 +392,11 @@ class RuleNumberAdd extends React.Component{
                   id="Failure_Time"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
+                  validateStatus={this.renderValidateStyle('Failure_Time')}
+                  help={status.Failure_Time.errors ? status.Failure_Time.errors.join(',') : null}
+                  required
                   >
-                    <DatePicker placeholder="" value={formData.Failure_Time} id="Failure_Time" name="Failure_Time" onChange={this.onChange.bind(this,'Failure_Time')} />
+                  <DatePicker disabledDate={this.disabledEndDate} placeholder="" value={formData.Failure_Time} id="Failure_Time" name="Failure_Time" onChange={this.onChange.bind(this,'Failure_Time')} />
                 </FormItem>
             </Col>
             
