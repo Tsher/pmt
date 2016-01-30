@@ -52,193 +52,226 @@ var areaData = {}
 
 class SaleUserAdd extends React.Component {
 
-    //mixins: [Validation.FieldMixin],
-    constructor(props) {
-        super(props);
-        this.state = {
-            status: {
-                name: {},
-                mobile: {},
-                email: {},
-                sfz: {}
-            },
-            formData: {
-                title: '添加促销人员',
-                SalesPerson_Name: '', // 姓名
-                SalesPerson_SName: '', // 昵称
-                Card_Code: '', // 身份证
-                SalesPerson_Sex: '', // 性别
-                Phone: '', // 手机
-                RegisterTime: _G.timeFormat2(new Date().getTime()), // 注册日期
-                Email: '', // Email
-                Region_Code: '', // 行政区域
-                SalesPerson_Address: '', // 详细信息
-                Province:210000,
-                Province_Name:"辽宁省",
-                City:210700,
-                City_Name:"锦州市",
-                Area:210781,
-                Area_Name:"凌海市",
-            }
-        };
+     constructor(props) {
+         super(props);
+         this.state = {
+             status: {
+                 name: {},
+                 mobile: {},
+                 email: {},
+                 sfz: {}
+             },
+             formData: {
+                 title: '添加促销人员',
+                 SalesPerson_Name: '', // 姓名
+                 SalesPerson_SName: '', // 昵称
+                 Card_Code: '', // 身份证
+                 SalesPerson_Sex: '', // 性别
+                 Phone: '', // 手机
+                 RegisterTime: _G.timeFormat2(new Date().getTime()), // 注册日期
+                 Email: '', // Email
+                 SalesPerson_Address: '', // 详细信息
+                 Province: '',
+                 Province_Name: "",
+                 City: '',
+                 City_Name: "",
+                 Area: '',
+                 Area_Name: "",
+             }
+         };
 
-        this.handleValidate = FieldMixin.handleValidate.bind(this);
-        this.onValidate = FieldMixin.onValidate.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleProvinceChange = this.handleProvinceChange.bind(this);
-        this.handleCityChange = this.handleCityChange.bind(this);
-        this.onSecondAreaChange = this.onSecondAreaChange.bind(this);
-        this.renderValidateStyle = this.renderValidateStyle.bind(this);
-        this.getProvince = this.getProvince.bind(this);
-        this.getCity = this.getCity.bind(this);
-        this.getArea = this.getArea.bind(this);
-        this.onChange = this.onChange.bind(this);
-    }
+         this.handleValidate = FieldMixin.handleValidate.bind(this);
+         this.onValidate = FieldMixin.onValidate.bind(this);
+         this.handleSubmit = this.handleSubmit.bind(this);
+         this.handleProvinceChange = this.handleProvinceChange.bind(this);
+         this.handleCityChange = this.handleCityChange.bind(this);
+         this.handleAreaChange = this.handleAreaChange.bind(this);
+         this.renderValidateStyle = this.renderValidateStyle.bind(this);
+         this.getProvince = this.getProvince.bind(this);
+         this.getCity = this.getCity.bind(this);
+         this.getArea = this.getArea.bind(this);
+         this.onChange = this.onChange.bind(this);
+         this.setValue = this.setValue.bind(this);
+     }
 
-    onChange(e) {
-      var state = Object.assign({}, this.state);
-      state.formData.SalesPerson_Sex = e.target.value;
-      this.setState(state)
-    }
-    getProvince(callback){
-      _G.ajax({
-            url: config.__URL + config.sale.user.province,
-            type: "get",
-            success: function(res) {
-              provinceData = res.Data
-              this.setState({
-                formData : Object.assign(this.state.formData,{
-                  Province:this.state.formData.Province?this.state.formData.Province:provinceData[0].Region_Code,
-                  Province_Name : this.state.formData.Province_Name?this.state.formData.Province_Name:provinceData[0].Region_Name
-                })
-              })
-              this.getCity()
-              callback && callback()
-            }.bind(this)
-        })
-    }
-    getCity(){
-      var a = this.state.formData.Province;
-      _G.ajax({
-            url: config.__URL + config.sale.user.city,
-            type: "get",
-            data : {Region_Code : a},
-            success: function(res) {
-              cityData[a] = res.Data
-              this.setState({
-                formData : Object.assign(this.state.formData,{
-                  City:this.state.formData.City?this.state.formData.City:cityData[a][0].Region_Code,
-                  City_Name : this.state.formData.City_Name?this.state.formData.City_Name:cityData[a][0].Region_Name
-                })
-              })
-              this.getArea()
-            }.bind(this)
-        })
-    }
-    getArea(){
-      var a = this.state.formData.City;
-      _G.ajax({
-            url: config.__URL + config.sale.user.area,
-            type: "get",
-            data : {Region_Code : a},
-            success: function(res) {
-              areaData[a] = res.Data
-              this.setState({
-                formData : Object.assign(this.state.formData,{
-                  Area:this.state.formData.Area?this.state.formData.Area:areaData[a][0].Region_Code,
-                  Area_Name : this.state.formData.Area_Name?this.state.formData.Area_Name:areaData[a][0].Region_Name
-                })
-              })
-            }.bind(this)
-        })
-    }
+     onChange(e) {
+         var state = Object.assign({}, this.state);
+         state.formData.SalesPerson_Sex = e.target.value;
+         this.setState(state)
+     }
 
-    componentWillMount(){
-        this.getProvince()
-    }
+     setValue(e) {
+         var name = e.target.name;
+         var value = e.target.value;
+         var data = Object.assign({}, this.state.formData);
+         data[name] = value;
+         this.setState({
+             formData: data
+         });
+     }
+     getProvince() {
+         _G.ajax({
+             url: config.__URL + config.sale.user.province,
+             type: "get",
+             success: function(res) {
+                 provinceData = res.Data
+                 var code = this.state.formData.Province ? this.state.formData.Province : provinceData[0].Region_Code
+                 var name
+                 res.Data.map(function(elem) {
+                     if (elem.Region_Code == code) {
+                         name = elem.Region_Name
+                     }
+                 })
 
-    componentDidMount() {
-        
-    }
+                 this.setState({
+                     formData: Object.assign(this.state.formData, {
+                         Province: code,
+                         Province_Name: name
+                     })
+                 })
+                 this.getCity()
+             }.bind(this)
+         })
+     }
+     getCity() {
+         var a = this.state.formData.Province;
+         _G.ajax({
+             url: config.__URL + config.sale.user.city,
+             type: "get",
+             data: {
+                 Region_Code: a
+             },
+             success: function(res) {
+                 cityData[a] = res.Data
+                 var code = this.state.formData.City ? this.state.formData.City : cityData[a][0].Region_Code
+                 var name
+                 res.Data.map(function(elem) {
+                     if (elem.Region_Code == code) {
+                         name = elem.Region_Name
+                     }
+                 })
 
-    handleProvinceChange(value,name) {
-        this.setState({
-          formData : Object.assign(this.state.formData,{
-            Province:value,
-            Province_Name : name,
-            City:null,
-            City_Name : null,
-            Area:null,
-            Area_Name : null
-          })
-        })
-        this.getCity()
-    }
+                 this.setState({
+                     formData: Object.assign(this.state.formData, {
+                         City: code,
+                         City_Name: name
+                     })
+                 })
+                 this.getArea()
+             }.bind(this)
+         })
+     }
+     getArea() {
+         var a = this.state.formData.City;
+         _G.ajax({
+             url: config.__URL + config.sale.user.area,
+             type: "get",
+             data: {
+                 Region_Code: a
+             },
+             success: function(res) {
+                 areaData[a] = res.Data
+                 var code = this.state.formData.Area ? this.state.formData.Area : areaData[a][0].Region_Code
+                 var name
+                 res.Data.map(function(elem) {
+                     if (elem.Region_Code == code) {
+                         name = elem.Region_Name
+                     }
+                 })
+                 this.setState({
+                     formData: Object.assign(this.state.formData, {
+                         Area: code,
+                         Area_Name: name
+                     })
+                 })
+             }.bind(this)
+         })
+     }
 
-    handleCityChange(value,name) {
-       this.setState({
-          formData : Object.assign(this.state.formData,{
-            City:value,
-            City_Name : name,
-            Area:null,
-            Area_Name : null
-          })
-        })
-        this.getArea()
-    }
+     componentWillMount() {
+         this.getProvince()
+     }
 
-    onSecondAreaChange(value,name) {
-        this.setState({
-          formData : Object.assign(this.state.formData,{
-            Area:value,
-            Area_Name : name
-          })
-        })
-    }
+     componentDidMount() {
 
-    handleReset(e) {
-        e.preventDefault();
-        goBack();
-    }
+     }
 
-    handleSubmit(e) {
-        //***********************************等待ajax提交数据 ******** 区分 新增 或者 编辑
-        e.preventDefault();
+     handleProvinceChange(value, name) {
+         this.setState({
+             formData: Object.assign(this.state.formData, {
+                 Province: value,
+                 Province_Name: name,
+                 City: null,
+                 Area: null
+             })
+         })
+         this.getCity()
+     }
 
-        const validation = this.refs.validation;
-        validation.validate((valid) => {
-            // if (!valid) {
-            //     console.log('error in form');
-            //     msg_error()
-            //     return;
-            // } else {
-            //     console.log('submit');
-            // }
-            _G.ajax({
-                url: config.__URL + config.sale.user.edit,
-                type: "post",
-                data: this.state.formData,
-                success: function(res) {
-                  msg_success();
-                }.bind(this)
-            })
-        });
+     handleCityChange(value, name) {
+         this.setState({
+             formData: Object.assign(this.state.formData, {
+                 City: value,
+                 Area: null,
+             })
+         })
+         this.getArea()
+     }
+
+     handleAreaChange(value, name) {
+         this.setState({
+             formData: Object.assign(this.state.formData, {
+                 Area: value,
+                 Area_Name: name
+             })
+         })
+     }
+
+     handleReset(e) {
+         e.preventDefault();
+         goBack();
+     }
+
+     handleSubmit(e) {
+         //***********************************等待ajax提交数据 ******** 区分 新增 或者 编辑
+         e.preventDefault();
+
+         const validation = this.refs.validation;
+         validation.validate((valid) => {
+             if (!valid) {
+                 console.log('error in form');
+                 msg_error()
+                 return;
+             } else {
+                 console.log('submit');
+             }
+             _G.ajax({
+                 url: config.__URL + config.sale.user.add,
+                 type: "post",
+                 data: this.state.formData,
+                 success: function(res) {
+                     msg_success();
+                     setTimeout(goBack,2000)
+                 }.bind(this)
+             })
+         });
 
 
-    }
+     }
 
-    renderValidateStyle(item) {
-        const formData = this.state.formData;
-        const status = this.state.status;
+     renderValidateStyle(item) {
+         const formData = this.state.formData;
+         const status = this.state.status;
 
-        const classes = cx({
-            'error': status[item].errors,
-            'validating': status[item].isValidating,
-            'success': formData[item] && !status[item].errors && !status[item].isValidating
-        });
+         const classes = cx({
+             'error': status[item].errors,
+             'validating': status[item].isValidating,
+             'success': formData[item] && !status[item].errors && !status[item].isValidating
+         });
 
-        return classes;
-    }
+         return classes;
+     }
+
 
     render() {
         const status = this.state.status;
@@ -269,7 +302,7 @@ class SaleUserAdd extends React.Component {
                                       </Validator>
                                   </FormItem>
                                   <FormItem label="昵称：" id="SalesPerson_SName" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                      <Input name="SalesPerson_SName" value={this.state.formData.SalesPerson_SName} />
+                                      <Input name="SalesPerson_SName" value={this.state.formData.SalesPerson_SName} onChange={this.setValue} />
                                   </FormItem>
                                   <FormItem label="身份证号：" id="Card_Code" labelCol={{span: 8}} wrapperCol={{span: 12}} validateStatus={this.renderValidateStyle( 'sfz')} help={status.sfz.errors ? status.sfz.errors.join( ',') : null} required>
                                       <Validator rules={[{required: true, message: '请输入身份证',type: 'string',min:18,max:18}]}>
@@ -277,7 +310,7 @@ class SaleUserAdd extends React.Component {
                                       </Validator>
                                   </FormItem>
                                   <FormItem label="性别：" id="SalesPerson_Sex" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                      <RadioGroup name="SalesPerson_Sex" value={this.state.formData.SalesPerson_Sex}  onChange={this.onChange} >
+                                      <RadioGroup name="SalesPerson_Sex" value={this.state.formData.SalesPerson_Sex} onChange={this.onChange} >
                                           <Radio value="男">男</Radio>
                                           <Radio value="女">女</Radio>
                                           <Radio value="神秘">神秘</Radio>
@@ -305,12 +338,12 @@ class SaleUserAdd extends React.Component {
                                       <Select value={this.state.formData.City_Name} style={{width:"33%"}} onChange={this.handleCityChange}>
                                           {cityOptions}
                                       </Select>
-                                      <Select value={this.state.formData.Area_Name} style={{width:"33%"}} onChange={this.onSecondAreaChange}>
+                                      <Select value={this.state.formData.Area_Name} style={{width:"33%"}} onChange={this.handleAreaChange}>
                                           {areaOptions}
                                       </Select>
                                   </FormItem>
                                   <FormItem label="地址：" id="SalesPerson_Address" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                      <Input name="SalesPerson_Address" value={this.state.formData.SalesPerson_Address} />
+                                      <Input name="SalesPerson_Address" value={this.state.formData.SalesPerson_Address} onChange={this.setValue} />
                                   </FormItem>
                               </Col>
                           </Row>
