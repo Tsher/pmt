@@ -155,8 +155,12 @@ window['config'] = {
 	base : {
 		// 产品管理
 		product:{
-			list : '/api/',
-			GetProductUnit : '/api/SProduct/GetProductUnit', // 获取行业
+			list : '/api/SProduct/GetProduct', 
+			GetIndustry : '/api/SProduct/GetIndustry', // 获取行业
+			one : '/api/SProduct/GetProduct',
+			dic : '/api/SProduct/GetProductDic', // 有效期类型
+			unit : '/api/SProduct/GetProductUnit', // 计量单位
+			upload : '/api/SProduct/UpProImage', // 上传图片
 		},
 		info : {
 			list : '/api/SEnterprise/GetEnterprise'

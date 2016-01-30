@@ -168,7 +168,7 @@ class Login extends React.Component{
                     labelCol={{span:6}}
                     wrapperCol={{span:12}}
                     required>
-                    <Input name="ValidateCode" id="ValidateCode" value={this.state.ValidateCode} onChange={this.setValue} />
+                    <Input id="ValidateCode" value={this.state.ValidateCode} onChange={this.setValue} />
                     <img src={this.state.ValidateCodePic} className="login-code"/>
                   </FormItem>
                   <Row>
