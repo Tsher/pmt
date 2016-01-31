@@ -157,7 +157,12 @@ window['config'] = {
 		},
 		// 组织机构管理
 		group : {
-			list : '/api/SOrganization/GetOrganizations',
+			list : '/api/SOrganization/GetOrganizations',//获取所有组织结构信息
+			info : '/api/SOrganization/GetOrganization',//获取指定组织结构信息
+			del : '/api/SOrganization/DeleteOrganization',//删除组织结构
+			types : '/api/SOrganization/GetOrganizationTypes',//获取部门属性列表
+			add : '/api/SOrganization/AddOrganization',//新增组织结构
+			edit : '/api/SOrganization/UpdateOrganization',//修改组织结构
 		}
 	},
 	// 基础管理
@@ -265,7 +270,7 @@ window['config'] = {
 			search : '/api/SBatchRegion/GetBatchRegionList',//按条件查询批次区域
 			add :'/api/SBatchRegion/PostBatchRegion',//添加批次区域
 			edit:'/api/SBatchRegion/PutBatchRegion',//更新批次区域
-			del :'/api/SBatchRegion/PutBatchRegion',//删除批次区域
+			del :'/api/SBatchRegion/DeleteBatchRegion',//删除批次区域
 			excel:'/api/SBatchRegion/BatchRegionToExcel',//导出批次区域到EXCEL
 			seles : '/api/SBatchRegion/GetSalesRegion',//销售区域下拉菜单
 			listOne : '/api/SBatchRegion/GetBatchRegionByCode',//获取单条数据

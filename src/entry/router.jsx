@@ -96,7 +96,7 @@ const Router = (
 
 		// 用户管理  组织结构管理
 		<Route path="/user/group" component={UserGroup}></Route>
-		<Route path="/user/group/add" component={ UserGroupAdd }></Route>
+		<Route path="/user/group/add/:id" component={ UserGroupAdd }></Route>
 		<Route path="/user/group/edit/:id" component={ UserGroupAdd }></Route>
 
 		// 用户管理 企业角色管理
