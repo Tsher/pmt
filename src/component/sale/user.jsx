@@ -53,7 +53,7 @@ class SelectForm extends React.Component{
   handleSubmit(e) {
       // ********************************************************** ajax提交数据，获取table的data值
       e.preventDefault();
-      var data = Object.assign(this.state, {
+      var data = _G.assign(this.state, {
           Register_On_S: _G.timeFormat2(new Date(this.state.Register_On_S).getTime(), 'YYYY-MM-DD'),
           Register_On_E: _G.timeFormat2(new Date(this.state.Register_On_E).getTime(), 'YYYY-MM-DD')
       });
@@ -220,14 +220,14 @@ class SaleUser extends React.Component {
 
     // 点击分页
     tableChange(pagination){
-        var opts = Object.assign({},this.state.opts);
+        var opts = _G.assign({},this.state.opts);
         opts.page = pagination.current;
         opts.pageSize = pagination.pageSize;
         this.changeTableState(opts);
     }
     // 每页数据条数变化
     showSizechange(current, pageSize){
-        var opts = Object.assign({},this.state.opts);
+        var opts = _G.assign({},this.state.opts);
         opts.page = current;
         opts.pageSize = pageSize;
         this.changeTableState(opts);

@@ -212,7 +212,7 @@ class UserRoleSet extends React.Component{
 
 	handleSubmit(){
 		// // 已读取 选择 内容 ，等待ajax提交 *****************************************************
-		// var data = Object.assign({},this.state);
+		// var data = _G.assign({},this.state);
 		// // to do ***************************************************
 		// _G.ajax({
 		// 	url : saveRoles,

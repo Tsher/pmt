@@ -1,6 +1,6 @@
 //  用户管理   企业角色管理  新增
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = _G.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 import React from 'react';
 import Form from 'antd/lib/form';
@@ -131,7 +131,7 @@ class UserRoleAdd extends React.Component{
   }
 
   handleSelectChange(field,value){
-    var formData = Object.assign({},this.state.formData);
+    var formData = _G.assign({},this.state.formData);
     formData[field] = value;
     this.setState({
       formData : formData

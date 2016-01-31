@@ -1,6 +1,6 @@
 //  促销数据   促销人员信息  编辑
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = _G.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 import React from 'react';
 import Form from 'antd/lib/form';
@@ -95,7 +95,7 @@ class SaleUserAdd extends React.Component {
      }
 
      onChange(e) {
-         var state = Object.assign({}, this.state);
+         var state = _G.assign({}, this.state);
          state.formData.SalesPerson_Sex = e.target.value;
          this.setState(state)
      }
@@ -103,7 +103,7 @@ class SaleUserAdd extends React.Component {
      setValue(e) {
          var name = e.target.name;
          var value = e.target.value;
-         var data = Object.assign({}, this.state.formData);
+         var data = _G.assign({}, this.state.formData);
          data[name] = value;
          this.setState({
              formData: data
@@ -124,7 +124,7 @@ class SaleUserAdd extends React.Component {
                  })
 
                  this.setState({
-                     formData: Object.assign(this.state.formData, {
+                     formData: _G.assign(this.state.formData, {
                          Province: code,
                          Province_Name: name
                      })
@@ -152,7 +152,7 @@ class SaleUserAdd extends React.Component {
                  })
 
                  this.setState({
-                     formData: Object.assign(this.state.formData, {
+                     formData: _G.assign(this.state.formData, {
                          City: code,
                          City_Name: name
                      })
@@ -179,7 +179,7 @@ class SaleUserAdd extends React.Component {
                      }
                  })
                  this.setState({
-                     formData: Object.assign(this.state.formData, {
+                     formData: _G.assign(this.state.formData, {
                          Area: code,
                          Area_Name: name
                      })
@@ -198,7 +198,7 @@ class SaleUserAdd extends React.Component {
 
      handleProvinceChange(value, name) {
          this.setState({
-             formData: Object.assign(this.state.formData, {
+             formData: _G.assign(this.state.formData, {
                  Province: value,
                  Province_Name: name,
                  City: null,
@@ -210,7 +210,7 @@ class SaleUserAdd extends React.Component {
 
      handleCityChange(value, name) {
          this.setState({
-             formData: Object.assign(this.state.formData, {
+             formData: _G.assign(this.state.formData, {
                  City: value,
                  Area: null,
              })
@@ -220,7 +220,7 @@ class SaleUserAdd extends React.Component {
 
      handleAreaChange(value, name) {
          this.setState({
-             formData: Object.assign(this.state.formData, {
+             formData: _G.assign(this.state.formData, {
                  Area: value,
                  Area_Name: name
              })

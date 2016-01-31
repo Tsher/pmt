@@ -143,7 +143,7 @@ class SelectForm extends React.Component{
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
     console.log(this.state)
-    var opts = Object.assign({},this.state);
+    var opts = _G.assign({},this.state);
     if(!opts.Prize_Code || !opts.Prize_Level  || !opts.SActivityTime || !opts.EActivityTime ){
       msg_error('请填写内容');
       return;

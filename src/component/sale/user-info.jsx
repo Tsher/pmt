@@ -1,6 +1,6 @@
 //  促销数据   促销人员信息  编辑
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = _G.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 import React from 'react';
 import Form from 'antd/lib/form';
@@ -159,7 +159,7 @@ class SaleUserInfo extends React.Component {
             type: "get",
             data: opts,
             success: function(res) {
-              this.setState(Object.assign(res.Data,{RegisterTime:_G.timeFormat2(res.Data.RegisterTime)}))
+              this.setState(_G.assign(res.Data,{RegisterTime:_G.timeFormat2(res.Data.RegisterTime)}))
               this.getProvince()
             }.bind(this)
         })
