@@ -71,7 +71,7 @@ class SalePrizeAdd extends React.Component{
               Prize_Name: '', // 奖品名称
               Unit: '', // 单位
               Prize_Type: '', // 奖品类别
-              ImageDetail: [{"Image":"",}], // 奖品图片
+              ImageDetail: [], // 奖品图片
               Brand: '', // 品牌
               RegisterOn: _G.timeFormat2(new Date().getTime(),'YYYY-MM-DD'), // 入网日期
               Spec: '' // 规格
@@ -82,7 +82,6 @@ class SalePrizeAdd extends React.Component{
       this.onValidate = FieldMixin.onValidate.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
       this.renderValidateStyle = this.renderValidateStyle.bind(this);
-      this.uploadCallback = this.uploadCallback.bind(this);
       this.setValue = this.setValue.bind(this);
       this.onChange = this.onChange.bind(this);
       this.handlePrizeType = this.handlePrizeType.bind(this);
@@ -98,7 +97,7 @@ class SalePrizeAdd extends React.Component{
   // 上传成功回调
   uploadSuccess(src){
     var state = _G.assign({},this.state);
-    state.formData.Image = [{image : src}];
+    state.formData.Image.push({"Image" : src});
     this.setState(state);
   }
 
@@ -175,11 +174,6 @@ class SalePrizeAdd extends React.Component{
       var data = Object.assign({}, this.state);
       data.formData[name] = e.target.value;
       this.setState(data);
-  }
-
-  // 图片上传回调
-  uploadCallback(info) {
-      console.log(info)
   }
 
   renderValidateStyle(item) {

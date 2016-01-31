@@ -82,7 +82,6 @@ class SalePrizeEdit extends React.Component{
       this.onValidate = FieldMixin.onValidate.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
       this.renderValidateStyle = this.renderValidateStyle.bind(this);
-      this.uploadCallback = this.uploadCallback.bind(this);
       this.setValue = this.setValue.bind(this);
       this.onChange = this.onChange.bind(this);
       this.getSource = this.getSource.bind(this);
@@ -99,7 +98,7 @@ class SalePrizeEdit extends React.Component{
   // 上传成功回调
   uploadSuccess(src){
     var state = _G.assign({},this.state);
-    state.formData.Image = [{image : src}];
+    state.formData.Image.push({"Image" : src});
     this.setState(state);
   }
 
@@ -200,11 +199,6 @@ class SalePrizeEdit extends React.Component{
       var data = Object.assign({}, this.state);
       data.formData[name] = e.target.value;
       this.setState(data);
-  }
-
-  // 图片上传回调
-  uploadCallback(info) {
-      console.log(info)
   }
 
   renderValidateStyle(item) {
