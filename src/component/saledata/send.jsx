@@ -14,6 +14,7 @@ const FormItem = Form.Item;
 
 import '../../entry/config';
 const saledataSendList = config.__URL + config.saledata.send.list;
+const saledataSendExcel = config.__URL + config.saledata.send.excel;
 
 var changeTableState;
 var rTimes={
@@ -63,6 +64,7 @@ class DateRange extends React.Component{
 		this.state =  {
 	      Send_Time_S : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
         Send_Time_E : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
+        excel : 'javascript:;',
 	    };
 	    this.handleSubmit = this.handleSubmit.bind(this);
 	    this.onChange = this.onChange.bind(this);
@@ -83,6 +85,25 @@ class DateRange extends React.Component{
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
+
+    //excel导出 begin
+    var _this = this;
+    _G.getExcel({
+       url : saledataSendExcel,
+       data : {
+          Send_Time_S : _G.timeFormat2( new Date(_this.state.Send_Time_S).getTime() , 'YYYY-MM-DD' ),
+          Send_Time_E : _G.timeFormat2( new Date(_this.state.Send_Time_E).getTime() , 'YYYY-MM-DD' ),
+       },
+       callback : function(d){
+           var excel = d.ReturnOperateStatus;
+           _this.setState({
+               excel : excel
+           })
+       }
+    });
+    //excel导出 end
+
+
     this.props.changeTableState(this.state);
   }
   render() {
@@ -110,9 +131,9 @@ class DateRange extends React.Component{
         </Col>
         <Col span="3">
         <FormItem>
-          <Link to='/saledata/send/exports'>
-            <Button type="primary" size="large"  htmlType="submit" style={{marginLeft:10}}><Icon type="download" /><span>导出报表</span></Button>
-          </Link>
+          <a href={this.state.excel}>
+          <Button type="primary" size="large"  style={{marginLeft:10}}><Icon type="download" /><span>导出报表</span></Button>
+          </a>
         </FormItem>
         </Col>
       </Form>
@@ -191,14 +212,15 @@ class SaleDataSend extends React.Component{
     rPages = opts;
     //opts.EntityCode = 'DEFAULT';
     var that = this;
+    var optsD = Object.assign({},opts);
 
-    opts.Send_Time_S = ''+_G.timeFormat2( new Date(opts.Send_Time_S).getTime() ,'YYYY-MM-DD');
-    opts.Send_Time_E = ''+_G.timeFormat2( new Date(opts.Send_Time_E).getTime() ,'YYYY-MM-DD');
+    optsD.Send_Time_S = ''+_G.timeFormat2( new Date(opts.Send_Time_S).getTime() ,'YYYY-MM-DD');
+    optsD.Send_Time_E = ''+_G.timeFormat2( new Date(opts.Send_Time_E).getTime() ,'YYYY-MM-DD');
 
     _G.ajax({
       url : saledataSendList,
       method: "get",
-      data : opts,
+      data : optsD,
       success:function(res){
         console.log('h'+res.Data)
         var d = [];

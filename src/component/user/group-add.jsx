@@ -134,10 +134,13 @@ class UserGroupAdd extends React.Component{
           
         }else{
           var fD = Object.assign({},this.state.formData);
-          fD.parent = name;
-          this.setState({
-            formData : fD
-          })
+          if (name != 'add') {
+              fD.parent = name;
+              this.setState({
+                formData : fD
+              })
+          };
+          
         }
 
       }.bind(this)

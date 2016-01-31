@@ -105,6 +105,21 @@ window['_G']={
 			}
 		})
 	},
+	getExcel:function(opts){
+		var url = opts.url;
+		var data = Object.assign({},opts.data);
+		var callback = opts.callback;
+		var str = '';
+		this.ajax({
+			url:url,
+			type:'get',
+			data : data,
+			success : function(res){
+				callback(res)
+			}
+
+		})
+	},
 	get_data : get_data,
 }
 
@@ -226,14 +241,17 @@ window['config'] = {
 		round : {
 			list : '/api/SReport/GetCustomerDraw_Report', // 消费者抽奖流水
 			info : '/api/SReport/GetAwardList',//点击数量二级页面
+			excel : '/api/SReport/ExportExcel_CustomerDraw_Report',//导出excel
 		},
 		send : {
 			list : '/api/SSendTextMsgs/SendText', // 发送短信流水
 			info : '/api/SSendTextMsgs/GetTextDetails',//点击数量二级页面
+			excel : '/api/SSendTextMsgs/TextMessagesExcel',//导出excel
 		},
 		push : {
 			list : '/api/SRecharge/Recharge', // 话费充值流水
 			info : '/api/SRecharge/GetRechargeDetails',//点击数量二级页面
+			excel : '/api/SRecharge/RechargeToExcel',//导出excel
 		},
 		user : {
 			list : '/api/SReport/GetCusmorJoin_Report', // 消费者参与流水

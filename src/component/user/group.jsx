@@ -72,7 +72,7 @@ class UserGroup extends React.Component{
         DataDetail:[],
 	      showEditBtn : false, // 是否可点 编辑按钮
 	      showDelBtn : false, // 是否可点 删除按钮
-        editLink : '/user/group/edit/,edit',// 编辑链接地址
+        editLink : '',// 编辑链接地址
         addLink : '/user/group/add/,add',// 添加链接地址
 	      showInfo : 'none' , // none 隐藏， block 显示   右侧详细信息
         rightClickMenuStyle:{
@@ -88,6 +88,7 @@ class UserGroup extends React.Component{
 	    this.handleOk = this.handleOk.bind(this);
 	    this.handleCancel = this.handleCancel.bind(this);
       this.hideRightClickMenu = this.hideRightClickMenu.bind(this);
+      this.renderEdit = this.renderEdit.bind(this);
 	}
 
   hideRightClickMenu(){
@@ -222,6 +223,15 @@ class UserGroup extends React.Component{
       visible : false
     })
   }
+
+  renderEdit(){
+    if(this.state.editLink){
+      return (<Link to={this.state.editLink}>
+              <Button type="primary" size="large"><Icon type="edit" /><span>修改</span></Button>
+                </Link>)
+    }
+    return (<Button type="primary" size="large"><Icon type="edit" /><span>修改</span></Button>)
+  }
   
   render(){
 	const loop = (data) => {
@@ -246,9 +256,7 @@ class UserGroup extends React.Component{
 				        </Link>
 					</Col>
 					<Col span="2">
-				        <Link to={this.state.editLink}>
-							<Button type="primary" size="large"><Icon type="edit" /><span>修改</span></Button>
-				        </Link>
+				        {this.renderEdit()}
 					</Col>
 					<Col span="2">
 				        <Button type="primary" size="large" onClick={this.showModal}><Icon type="edit" /><span>删除</span></Button>
