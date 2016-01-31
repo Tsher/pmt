@@ -172,14 +172,6 @@ function showModalPublish(e){
 }
 
 const columns = [{
-  title: '活动编码',
-  dataIndex: 'MA_Code',
-  key: 'MA_Code',
-  // render: function(text,record) {
-  // 	var href= '/sale/do/info/'+text;
-  //   return <Link to={href}>{text}</Link>;
-  // }
-}, {
   title: '活动名称',
   dataIndex: 'MA_Name',
   key: 'MA_Name'
@@ -211,6 +203,9 @@ const columns = [{
   title: '操作',
   key: 'operation',
   render: function(text, record,index) {
+    if(record.MA_RStatus == '已发布'){
+      return <span>已发布</span>
+    }
   	var publish = '/sale/do/publish/'+ record.MA_Code,
       edit = '/sale/do/edit/'+record.MA_Code,
   		del = '/sale/do/del/' + record.MA_Code
@@ -310,7 +305,8 @@ class SaleDo extends React.Component{
 
     
     var that = this;
-
+    opts.MA_StartTime = _G.timeFormat(opts.MA_StartTime,'YYYY-MM-DD');
+    opts.MA_EndTime = _G.timeFormat(opts.MA_EndTime,'YYYY-MM-DD')
     _G.ajax({
       url : saleDoList,
       type: "get",
@@ -320,8 +316,8 @@ class SaleDo extends React.Component{
         for(var i=0,l=res.Data.length;i<l;i++){
           d[i]=res.Data[i];
           d[i]['key'] = res.Data[i].MA_Code;
-          d[i].MA_EndTime = _G.timeFormat2(d[i].MA_EndTime);
-          d[i].MA_StartTime = _G.timeFormat2(d[i].MA_StartTime);
+          d[i].MA_EndTime = _G.timeFormat2(d[i].MA_EndTime,'YYYY-MM-DD');
+          d[i].MA_StartTime = _G.timeFormat2(d[i].MA_StartTime,'YYYY-MM-DD');
         }
         console.log(d)
         this.setState({

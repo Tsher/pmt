@@ -6,6 +6,7 @@
     <!--link rel="stylesheet" type="text/css" href="./index.css"/-->
     <link rel="stylesheet" type="text/css" href="./index.css"/>
     <script src="./jquery-1.11.3.js"></script>
+    <script src="./jquery.ajaxfileupload.js"></script>
     <script type="text/javascript" src="./tools.js"></script>
     <!--[if lt IE 10]>
     <script src="https://as.alipayobjects.com/g/component/??console-polyfill/0.2.2/index.js,es5-shim/4.1.14/es5-shim.min.js,es5-shim/4.1.14/es5-sham.min.js,html5shiv/3.7.2/html5shiv.min.js,media-match/2.0.2/media.match.min.js"></script>
@@ -13,9 +14,40 @@
 </head>
 <body>
 <div id="react-content"></div>
+<div id="uploads"></div>
+<div class="upload" style="display:none">
+	<input type="file" name="upImage" id="demo1" />
+</div>
 </body>
 <!--script src="./common.js"></script>
 <script src="./index.js"></script-->
 <script src="./common.js"></script>
 <script src="./index.js"></script>
+
+<script>
+	var uploadSuccess = function(){}
+	function fireUplpad(state){
+		var ev = new MouseEvent('click', {
+	      'view': window,
+	      'bubbles': true,
+	      'cancelable': true
+	    });
+	    document.getElementById('demo1').dispatchEvent(ev);
+	}
+	$(document).ready(function() {
+		$("#demo1").AjaxFileUpload({
+			action : config.__URL + config.base.product.upload + '?Token=' + _G.Token,
+	        onComplete: function(filename, response) {
+	        	console.log(filename,response)
+	        	// {"Data":"~//images//DEFAULT//Productsass.png"}
+	        	// 调用组件方法，回填图片url地址
+	        	uploadSuccess('https://os.alipayobjects.com/rmsportal/NDbkJhpzmLxtPhB.png')
+	        	//uploadSuccess(response.Data);
+	          $("#uploads").append(
+	            $("<img />").attr("src", filename).attr("width", 200)
+	          );
+	        }
+	      });
+	})
+</script>
 </html>

@@ -93,7 +93,7 @@ class SelectForm extends React.Component{
       Prize_Name : ''
     },function(res){
       const doms = res.Data.map( (item,index)=>{
-        return <Option key={index} value={item['Prize_Code']}>{item['Prize_Name']}</Option>
+        return <Option key={index} value={item['REAL_Code']}>{item['CODE_NM']}</Option>
       } )
       that.setState({
         sale_all_prizeName : doms

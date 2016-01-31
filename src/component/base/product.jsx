@@ -39,7 +39,7 @@ import '../../entry/config';
 
 const baseProductList = config.__URL + config.base.product.list;
 const baseGetIndustry  = config.__URL + config.base.product.GetIndustry;
-
+const baseProductDel = config.__URL + config.base.product.del;
 
 
 class SelectForm extends React.Component{
@@ -76,8 +76,8 @@ class SelectForm extends React.Component{
     console.log(this.state)
 
     var data = Object.assign({},this.state);
-    data.Register_On_S = ''+_G.timeFormat( new Date(data.Register_On_S).getTime() );
-    data.Register_On_E = ''+_G.timeFormat( new Date(data.Register_On_E).getTime() );
+    data.Register_On_S = ''+_G.timeFormat2( new Date(data.Register_On_S).getTime() , 'YYYY-MM-DD' );
+    data.Register_On_E = ''+_G.timeFormat2( new Date(data.Register_On_E).getTime() , 'YYYY-MM-DD');
     this.props.changeTableState(data);
 
 
@@ -192,8 +192,8 @@ const columns = [{
   key: 'Preparation_Unit'
 }, {
   title: '商品码',
-  dataIndex: 'Industry_Code',
-  key: 'Industry_Code'
+  dataIndex: 'Append_Code',
+  key: 'Append_Code'
 }, {
   title: '品牌',
   dataIndex: 'Brand',
@@ -264,15 +264,20 @@ class BaseProduct extends React.Component{
 
 
         var that = this,level={};
-        const loop = (data) => {
-          return data.map( (item) => {
-            return level[item.Code] = item.Industry_Level;
-          } )
+        console.log(res.Data)
+        function loop(d){
+          d.map(function(item){
+            console.log(item.Code)
+            level[item.Code] = item.Industry_Level;
+            if(item.Children){
+              loop(item.Children)
+            }
+          })
         }
-        const parseTree = (data) => loop(data);
-        let treeNodes = parseTree(res.Data);
+        loop(res.Data)
+        
 
-
+        console.log(level)
         this.setState({
           treedata : res.Data,
           level : level
@@ -286,15 +291,7 @@ class BaseProduct extends React.Component{
   componentWillUnmount(){
     modalState = false;
   }
-  showModal(id,index){
-    this.setState({
-      visible : true,
-      ModalText: '你正要删除 "'+ id +'"的产品，是否继续？',
-      confirmLoading: false,
-      changeId : id,
-      index:index
-    })
-  }
+  
   // 点击分页
   tableChange(pagination, filters, sorter){
     var opts = Object.assign({},this.state.opts);
@@ -360,9 +357,39 @@ class BaseProduct extends React.Component{
 
 
   }
+
+  showModal(id,index,name){
+    this.setState({
+      visible : true,
+      ModalText: '你正要删除 "'+ name +'"的产品，是否继续？',
+      confirmLoading: false,
+      changeId : id,
+      index:index
+    })
+  }
+
   handleOk(e){
     //******************* 冻结，解冻 逻辑 changeId , 然后 关闭****************************
     console.log(this.state.changeId,this.state.index)
+
+    // 删除
+    _G.ajax({
+      url : baseProductDel,
+      type : 'get',
+      data :{
+        Product_Code : this.state.changeId
+      },
+      success:function(res){
+
+        var data = [].concat(this.state.data);
+        data.splice(this.state.index,1);
+        this.setState({
+          data : data
+        })
+
+      }.bind(this)
+    })
+
     this.setState({
       confirmLoading:true
     })
@@ -383,21 +410,38 @@ class BaseProduct extends React.Component{
 
   // 点击树菜单
   checkhandle(info){
-    console.log(info.checkedKeys);
-    var level=[],that=this;
-    info.checkedKeys.map( (item,index)=>{
-      return level[index] = that.state.level[item]
+    var level=[],that=this,state=0,key;
+
+    info.checkedKeys.map( function(item,index){
+      level[index] = that.state.level[item];
+      if(that.state.level[item] == 3){
+        key = item;
+      }
     } )
     console.log(level)
-    //******************* ajax 请求，选中树节点的数据 **********************************
-    this.setState({
-      selectedKeys : info.checkedKeys,
+    level.map(function(item,index){
+      if(item == 3){
+        state++;
+      }
     })
+    if(state==1){
+      this.setState({
+        selectedKeys : info.checkedKeys,
+        addBtnStatus : 1
+      })
+    }else{
+      this.setState({
+        selectedKeys : info.checkedKeys,
+        addBtnStatus : 0
+      })
+    }
+    //******************* ajax 请求，选中树节点的数据 **********************************
+    
   }
 
   renderButton(){
     if(this.state.addBtnStatus){
-      var url = '/base/product/add?Industry_Code='+this.state.selectedKeys[0]
+      var url = '/base/product/add/'+this.state.selectedKeys[0];
       return (<Link to={url}>
               <Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
             </Link>)
@@ -443,7 +487,7 @@ class BaseProduct extends React.Component{
             <div className="border border-raduis base-product">
               <div className="title">产品类别</div>
               <div className="con">
-                <Tree multiple={true} checkable={true} onCheck={this.checkhandle}>
+                <Tree multiple={false} checkable={true} onCheck={this.checkhandle}>
                         {treeNodes}
                     </Tree>
               </div>

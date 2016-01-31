@@ -55,7 +55,8 @@ import '../../entry/config';
 
 const urlUserInfo = config.__URL + config.user.user.info;
 const urlUserRole = config.__URL + config.user.user.role;
-
+const urlUserAllRoles = config.__URL + config.user.user.all;
+const urlUserSaveRole = config.__URL + config.user.user.save;
 
 let userRole=[]; // 用户角色信息
 
@@ -107,10 +108,11 @@ class UserUserRole extends React.Component{
           }
           console.log('用户信息',res.Data)
           var d = {
-              User_Code : this.props.params.id,
-              Login_Name : res.Login_Name, // 登录名
-              Depart_Code : res.Depart_Code, // 隶属部门
-              User_Name : res.User_Name, // 姓名
+              User_Code : res.Data.User_Code,
+              Login_Name : res.Data.Login_Name, // 登录名
+              Depart_Code : res.Data.Depart_Code, // 隶属部门
+              User_Name : res.Data.User_Name, // 姓名
+              Organization_Name : res.Data.Organization_Name
             };
             console.log(d)
           d = Object.assign({},d);
@@ -119,24 +121,43 @@ class UserUserRole extends React.Component{
         }.bind(this)
       });
 
-    // 用户角色信息
+    var id = this.props.params.id,that=this;
+
+    // 所有角色信息
     _G.ajax({
-      url : urlUserRole,
+      url : urlUserAllRoles,
       type : 'get',
-      data : {
-        User_Code : this.props.params.id
-      },
       success : function(res){
-          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
-            msg_error();
-            // 跳转回列表页
-            return;
-          }
-          console.log('用户角色信息',res.Data)
-          userRole = res.Data;
-          this.getMock()
-      }.bind(this)
+          var allroles = res.Data,role;
+
+          // 用户角色信息
+          _G.ajax({
+            url : urlUserRole,
+            type : 'get',
+            data : {
+              User_Code : id
+            },
+            success : function(res){
+                if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
+                  msg_error();
+                  // 跳转回列表页
+                  goBack();
+                  return;
+                }
+                console.log('用户角色信息',res.Data)
+                role = res.Data;
+
+                // 设置穿梭框
+                that.getMock(allroles,role);
+
+            }.bind(this)
+          })
+
+
+      }
     })
+
+
     
     }
 
@@ -184,8 +205,35 @@ class UserUserRole extends React.Component{
     // this.setState({
     //   isEmailOver: true
     // });
-    console.log(this.state.targetKeys,this.state.targetKeys2);
-    msg_success();
+    console.log(this.state.targetKeys);
+
+    var data = {
+      User_Code : this.state.User_Code,
+      RoleCodeList : []
+    }
+    this.state.targetKeys.map(function(item){
+      data.RoleCodeList.push({
+        'Role_Code' : item
+      })
+    })
+
+    _G.ajax({
+      url : urlUserSaveRole,
+      type : 'post',
+      data : {
+        JsonValue : JSON.stringify(data)
+      },
+      success : function(res){
+        console.log(res);
+        msg_success();
+        setTimeout(function(){
+          goBack();
+        },300)
+        
+      }
+    })
+
+    
     // const validation = this.refs.validation;
     // validation.validate((valid) => {
     //   if (!valid) {
@@ -201,22 +249,24 @@ class UserUserRole extends React.Component{
   }
 
   // 操作角色
-  getMock() {
+  getMock(allroles,role) {
+    console.log(allroles,role)
+    var roledata = '';
+    role.map(function(item){
+      roledata+= item.Role_Code
+    })
     let targetKeys = [];
     let mockData = [];
     mockData = _G.user_role_all;
-    for (let i = 0; i < _G.user_role_all.length; i++) {
-      // role_type : 0 = 操作角色
-      if(_G.user_role_all[i].Role_Type == 0){
-        const data = {
-          key: _G.user_role_all[i].Role_Code,
-          title: _G.user_role_all[i].Role_Name,
-          description: '',
-          chosen : _G.user_role_all[i].Role_Code in userRole
-        };
-        if (data.chosen) {
-          targetKeys.push(data.key);
-        }
+    for (let i = 0; i < allroles.length; i++) {
+      const data = {
+        key: allroles[i].Role_Code,
+        title: allroles[i].Role_Name,
+        description: '',
+        chosen :  roledata.indexOf(allroles[i].Role_Code) > -1 ? true : false
+      };
+      if (data.chosen) {
+        targetKeys.push(data.key);
       }
       mockData.push(data);
     }
@@ -313,11 +363,11 @@ class UserUserRole extends React.Component{
           <Col span="6">
             <FormItem
                   label="隶属部门："
-                  id="Depart_Code"
+                  id="Organization_Name"
                   labelCol={{span: 6}}
                   wrapperCol={{span: 12}}
                   >
-                    <Input name="part" value={this.state.part} disabled />
+                    <Input name="Organization_Name" value={this.state.Organization_Name} disabled />
                 </FormItem>
           </Col>
         </Row>

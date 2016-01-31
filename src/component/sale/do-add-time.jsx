@@ -93,7 +93,7 @@ class SelectForm extends React.Component{
       Prize_Name : ''
     },function(res){
       const doms = res.Data.map( (item,index)=>{
-        return <Option key={index} value={item['Prize_Code']}>{item['Prize_Name']}</Option>
+        return <Option key={index} value={item['REAL_Code']}>{item['CODE_NM']}</Option>
       } )
       that.setState({
         sale_all_prizeName : doms
@@ -143,6 +143,20 @@ class SelectForm extends React.Component{
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
     console.log(this.state)
+    var opts = Object.assign({},this.state);
+    if(!opts.Prize_Code || !opts.Prize_Level  || !opts.SActivityTime || !opts.EActivityTime ){
+      msg_error('请填写内容');
+      return;
+    }
+    if(!opts.FirstWinningRate){
+      opts.FirstWinningRate = 0;
+    }
+    if(!opts.NFirstWinningRate){
+      opts.NFirstWinningRate = 0;
+    }
+    if(!opts.WinningPlaces){
+      opts.WinningPlaces = 0;
+    }
 
     // 修改已有数据
     if(this.state.index){

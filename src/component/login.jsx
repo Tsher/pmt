@@ -97,10 +97,15 @@ class Login extends React.Component{
       type : 'get',
       success : function(res){
         _G.Token = res.Data.Token; 
+        _G.userName = res.Data.User_Name;
         console.log(res)
         Cookie.write({
           name : 'Token',
           value : _G.Token || '' 
+        })
+        Cookie.write({
+          name : 'userName',
+          value : _G.userName
         })
         var url = location.href;
         url = url.split('#');
