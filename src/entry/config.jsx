@@ -232,6 +232,7 @@ window['config'] = {
 			one : '/api/SPromotionActivity/GetMarketingActivitie', // 获取指定活动信息
 			del : '/api/SPromotionActivity/DeleteMarketingActivitie', // 删除活动
 			publish : '/api/SPromotionActivity/PublishMarketingActivitie', // 发布活动
+			excel : '/api/SPromotionActivity/ExportExcelActivity',//导出excel
 		},
 		'vip':{
 			list : '/api/SMember/GetMemberBy',	//获取会员列表
