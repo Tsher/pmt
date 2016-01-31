@@ -294,6 +294,7 @@ window['config'] = {
 			editList : '/api/SIntegralRule/GetRule',   // 获取指定积分规则
 			type : '/api/SIntegralRule/GetIntegralRuleTypes',//获取类型
 			del : '/api/SIntegralRule/DeleteRule', // 删除
+			excel : '/api/SIntegralRule/ExportExcelRule',//导出excel
 		},
 		area : {
 			list : '/api/SBatchRegion/GetBatchRegion',//获取指定页的批次区域
