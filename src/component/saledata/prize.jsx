@@ -103,14 +103,15 @@ class SaleDataPrize extends React.Component{
         
         //opts.EntityCode = 'DEFAULT';
         var that = this;
+        var optsD = _G.assign({},opts);
 
-        opts.MA_StartTime = ''+_G.timeFormat( new Date(opts.MA_StartTime).getTime() );
-        opts.MA_EndTime = ''+_G.timeFormat( new Date(opts.MA_EndTime).getTime() );
+        optsD.MA_StartTime = ''+_G.timeFormat( new Date(opts.MA_StartTime).getTime() );
+        optsD.MA_EndTime = ''+_G.timeFormat( new Date(opts.MA_EndTime).getTime() );
 
         _G.ajax({
           url : saledataPrizeList,
           type: "get",
-          data : opts,
+          data : optsD,
           success:function(res){
             var d = [];
             optionData = [

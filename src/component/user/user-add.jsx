@@ -1,6 +1,6 @@
 //  用户管理   企业用户管理  新增
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = _G.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 import React from 'react';
 import Form from 'antd/lib/form';
@@ -13,7 +13,8 @@ import Col from 'antd/lib/col';
 import Row from 'antd/lib/row';
 import DatePicker from 'antd/lib/date-picker';
 import InputNumber from 'antd/lib/input-number';
-
+import Tree from 'antd/lib/tree';
+const TreeNode = Tree.TreeNode;
 import Select from 'antd/lib/select';
 import Radio from 'antd/lib/radio';
 
@@ -22,8 +23,9 @@ import { createHistory } from 'history';
 const FormItem = Form.Item;
 const Validator = Validation.Validator;
 const Option = Select.Option;
-const RadioGroup = Radio.Group;
+const OptGroup = Select.OptGroup;
 
+const RadioGroup = Radio.Group;
 const FieldMixin = Validation.FieldMixin;
 
 const History = createHistory();
@@ -62,8 +64,9 @@ import '../../entry/config';
 const urlUserAdd = config.__URL + config.user.user.add;
 const urlUserEdit = config.__URL + config.user.user.edit;
 const urlUserInfo = config.__URL + config.user.user.info;
-
-
+const urlUserNation = config.__URL + config.user.user.nation;
+const urlUserStatus = config.__URL + config.user.user.status;
+const urlUserPart = config.__URL + config.user.user.part;
 
 class UserUserAdd extends React.Component{
 
@@ -100,7 +103,11 @@ class UserUserAdd extends React.Component{
         User_Status : undefined, // 状态
         User_IDCard : undefined , // 身份证号
         Home_Phone : undefined // 家庭电话
-      }
+      },
+      treeData : [],
+      left: 0,
+      top:-1000,
+      width:100,
     };
     this.setField = FieldMixin.setField.bind(this);
     this.handleValidate = FieldMixin.handleValidate.bind(this);
@@ -110,11 +117,61 @@ class UserUserAdd extends React.Component{
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleReset = this.handleReset.bind(this);
+    this.departCheck = this.departCheck.bind(this);
+    this.checkhandle = this.checkhandle.bind(this);
   }
 
   // 插入到dom之后执行
   componentDidMount(){
     console.log(this.props.params.id)
+    var that = this;
+
+    // 获取民族
+    _G.get_data(config['user']['user']['nation'],'user_nation',{},function(res){
+      const doms = res.Data.map( (item,index)=>{
+        return <Option key={index} value={item['REAL_Code']}>{item['CODE_NM']}</Option>
+      } )
+      that.setState({
+        user_nation : doms
+      })
+    }); 
+
+    // 获取用户状态
+    _G.get_data(config['user']['user']['status'],'user_status',{},function(res){
+      const doms = res.Data.map( (item,index)=>{
+        return <Option key={index} value={item['REAL_Code']}>{item['CODE_NM']}</Option>
+      } )
+      that.setState({
+        user_status : doms
+      })
+    }); 
+
+    // 获取部门
+    _G.ajax({
+      url : urlUserPart,
+      type : 'get',
+      success : function(res){
+
+        const loop = (data) => {
+          return data.map( (item) => {
+            if(item.Children){
+              return (<TreeNode title={item.Name} key={item.Code}>{loop(item.Children)}</TreeNode>);
+            }else{
+              return (<TreeNode title={item.Name} key={item.Code}></TreeNode>);
+            }
+          } )
+        }
+        const parseTree = (data) => loop(data);
+        let treeNodes = parseTree(res.Data);
+
+        this.setState({
+          treeNodes : treeNodes
+        })
+      }.bind(this)
+    })
+
+    
+
     // 编辑
     if(this.props.params.id){
       // ajax获取当前id的内容，变更state ****************************
@@ -215,10 +272,12 @@ class UserUserAdd extends React.Component{
       // 提交数据
       let u = this.props.params.id ? urlUserEdit : urlUserAdd;
       let t = this.props.params.id ? 'PUT' : 'POST';
-      console.log(this.state.formData)
+      var data = _G.assign({},this.state.formData);
+      data.User_Birthday = _G.timeFormat( new Date(data.User_Birthday), 'YYYY-MM-DD');
+      data.Register_On = _G.timeFormat( new Date(data.Register_On), 'YYYY-MM-DD');
       _G.ajax({
         url  : u,
-        data : this.state.formData,
+        data : data,
         method : 'post',
         success:function(res){
           if(res.ReturnOperateStatus == 'True'){
@@ -241,6 +300,20 @@ class UserUserAdd extends React.Component{
     });
   }
 
+  // 点击树菜单
+  checkhandle(info){
+    // 根据 eventKey 查询 相关信息 展示右侧详细信息
+    console.log(info)
+    var state = _G.assign({},this.state);
+    state.formData.Depart_Code = info.node.props.eventKey;
+    state.formData.Depart_Name = info.node.props.title;
+    this.setState({
+      top:-1000,
+      formData : state.formData
+    })
+    // 根据选中的 key ，获取 相关数据 ,更新state，展示再右侧
+  }
+
   checkUserState(rule, value, callback) {
     if (!value){
       callback(new Error('请选择用户状态!'));
@@ -255,7 +328,7 @@ class UserUserAdd extends React.Component{
     var name = e.target.id || e.target.name;
     var value = e.target.value;
 
-    var data = Object.assign( {}, this.state.formData );
+    var data = _G.assign( {}, this.state.formData );
 
     data[name] = value;
 
@@ -264,9 +337,19 @@ class UserUserAdd extends React.Component{
     });
   }
 
+  departCheck(e){
+    var tar = e.target;
+    var size = $(tar).offset();
+    this.setState({
+      left : size.left,
+      top : size.top + tar.offsetHeight,
+      width : tar.offsetWidth
+    })
+  }
+
   // datepicker change
   onChange(field,value){
-   var data = Object.assign({},this.state);
+   var data = _G.assign({},this.state);
     data.formData[field]=value;
     this.setState(data)
   }
@@ -337,9 +420,7 @@ class UserUserAdd extends React.Component{
                   required>
                     <Validator rules={[{required: true, message: '请选择状态'},{validator: this.checkUserState}]}>
                       <Select size="large" placeholder="请选择状态" style={{width: '100%'}} name="User_Status" value={formData.User_Status}>
-                        <Option value="0">在职</Option>
-                        <Option value="1">离职</Option>
-                        <Option value="2">不限</Option>
+                        {this.state.user_status}
                       </Select>
                     </Validator>
                 </FormItem>
@@ -377,10 +458,8 @@ class UserUserAdd extends React.Component{
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}} >
                     <Select size="large" placeholder="请选择民族" style={{width: '100%'}} id="User_Nation" name="User_Nation" value={formData.User_Nation}  onChange={this.onChange.bind(this,'User_Nation')}>
-                        <Option value="1">汉</Option>
-                        <Option value="2">回</Option>
-                        <Option value="3">藏</Option>
-                      </Select>
+                      {this.state.user_nation}
+                    </Select>
                 </FormItem>
                 <FormItem
                   label="身份证号："
@@ -396,11 +475,7 @@ class UserUserAdd extends React.Component{
                   id="Depart_Code"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}} >
-                    <Select size="large" placeholder="请选择部门" style={{width: '100%'}} name="Depart_Code" value={formData.Depart_Code} onChange={this.onChange.bind(this,'Depart_Code')} >
-                        <Option value="1">部门1</Option>
-                        <Option value="2">部门2</Option>
-                        <Option value="3">部门3</Option>
-                      </Select>
+                    <Input name="Depart_Name" value={formData.Depart_Name} onClick={this.departCheck} />
                 </FormItem>
                 <FormItem
                   label="加入日期："
@@ -441,6 +516,11 @@ class UserUserAdd extends React.Component{
         </Col>
       </Row>
         
+      </div>
+      <div id="fixedTree" className="fixedTree" style={{left:this.state.left,top:this.state.top,width:this.state.width}}>
+        <Tree multiple={false} onSelect={this.checkhandle}>
+            {this.state.treeNodes}
+        </Tree>
       </div>
       </div>
     );

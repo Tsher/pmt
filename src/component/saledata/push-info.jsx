@@ -39,10 +39,6 @@ const columns = [{
   title: '发送状态',
   dataIndex: 'Recharge_Status',
   key: 'Recharge_Status',
-  render: function(text,record) {
-    var str = record.Recharge_Status == 0 ? '失败' : '成功';
-    return <div>{str}</div>
-  }
 },{
   title: '次数',
   dataIndex: 'RechargeNum',
@@ -81,7 +77,7 @@ class SaleDataPushInfo extends React.Component{
 
   // 点击分页
   tableChange(pagination, filters, sorter){
-    var opts = Object.assign({},this.state.opts);
+    var opts = _G.assign({},this.state.opts);
     opts.page = pagination.current;
     opts.pageSize = pagination.pageSize;
 
@@ -93,7 +89,7 @@ class SaleDataPushInfo extends React.Component{
   }
   // 每页数据条数变化
   showSizechange(current, pageSize){
-    var opts = Object.assign({},this.state.opts);
+    var opts = _G.assign({},this.state.opts);
     opts.pageSize = pageSize;
     opts.page = current;
     

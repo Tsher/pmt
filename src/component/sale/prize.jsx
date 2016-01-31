@@ -54,7 +54,7 @@ class SelectForm extends React.Component{
 
   handleSubmit(e) {
     e.preventDefault();
-      var data = Object.assign(this.state, {
+      var data = _G.assign(this.state, {
           Register_On_S: _G.timeFormat2(new Date(this.state.Register_On_S).getTime(), 'YYYY-MM-DD'),
           Register_On_E: _G.timeFormat2(new Date(this.state.Register_On_E).getTime(), 'YYYY-MM-DD')
       });

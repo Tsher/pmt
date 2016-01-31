@@ -1,6 +1,6 @@
 //  促销数据   奖品  新增 and 编辑
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = _G.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 import React from 'react';
 import Form from 'antd/lib/form';
@@ -100,7 +100,7 @@ class SalePrizeAdd extends React.Component{
 
   // datepicker change
   onChange(field,value){
-    var data = Object.assign({},this.state);
+    var data = _G.assign({},this.state);
     data.formData[field] = value;
     this.setState(data)
   }
@@ -112,7 +112,7 @@ class SalePrizeAdd extends React.Component{
     if(id){
       // 编辑
       // ajax 请求当前id的数据 ********************************
-      var state = Object.assign({},this.state);
+      var state = _G.assign({},this.state);
       state.formData.id = this.props.params.id;
       state.formData.title = '编辑奖品信息';
       this.setState(state);
@@ -145,6 +145,7 @@ class SalePrizeAdd extends React.Component{
             data: this.state.formData,
             success: function(res) {
               msg_success();
+              goBack();
             }.bind(this)
         })
       }
@@ -157,7 +158,7 @@ class SalePrizeAdd extends React.Component{
   // 文本框的值 同步到 state
   setValue(e){
     var name = e.target.id;
-    var data = Object.assign({},this.state);
+    var data = _G.assign({},this.state);
     data.formData[name] = e.target.value;
     this.setState(data);
   }

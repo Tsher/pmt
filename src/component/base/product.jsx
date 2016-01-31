@@ -27,16 +27,31 @@ const history = createHistory();
 
 const FormItem = Form.Item;
 
+
+
+import '../../entry/config';
+
+
+// 用户列表api  http://172.31.0.49:8088/api/SUser/GetUsers?EntityCode=DEFAULT&page=0&pageSize=100
+// page ：当前请求页
+// pageSize : 每页条数
+// EntityCode : DEFAULT 
+
+const baseProductList = config.__URL + config.base.product.list;
+const baseGetIndustry  = config.__URL + config.base.product.GetIndustry;
+const baseProductDel = config.__URL + config.base.product.del;
+
+
 class SelectForm extends React.Component{
 	//mixins: [Form.ValueMixin],
 
   constructor() {
   	super();
     this.state =  {
-      name : undefined, // 产品名称
-      brand: undefined, // 产品品牌
-      startTime : undefined, // 注册开始时间
-      endTime : undefined, // 注册结束时间
+      Product_Name : undefined, // 产品名称
+      Brand: undefined, // 产品品牌
+      Register_On_S : undefined, // 注册开始时间
+      Register_On_E : undefined, // 注册结束时间
     };
     this.setValue = this.setValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -57,22 +72,30 @@ class SelectForm extends React.Component{
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
+
     console.log(this.state)
-    message.success('收到表单值~~~ ：' + JSON.stringify(this.state, function(k, v) {
-      if (typeof v === 'undefined') {
-        return '';
-      }
-      return v;
-    }));
+
+    var data = _G.assign({},this.state);
+    data.Register_On_S = ''+_G.timeFormat2( new Date(data.Register_On_S).getTime() , 'YYYY-MM-DD' );
+    data.Register_On_E = ''+_G.timeFormat2( new Date(data.Register_On_E).getTime() , 'YYYY-MM-DD');
+    this.props.changeTableState(data);
+
+
+    // message.success('收到表单值~~~ ：' + JSON.stringify(this.state, function(k, v) {
+    //   if (typeof v === 'undefined') {
+    //     return '';
+    //   }
+    //   return v;
+    // }));
   }
 
   // datepicker change
   onChange(field,value){
-    if(field == 'startTime' && this.state.endTime){
-      if(value.getTime() > this.state.endTime.getTime()){
+    if(field == 'Register_On_S' && this.state.Register_On_E){
+      if(value.getTime() > this.state.Register_On_E.getTime()){
         this.setState({
-          endTime : value,
-          startTime : value
+          Register_On_E : value,
+          Register_On_S : value
         })
         return;
       }
@@ -84,10 +107,10 @@ class SelectForm extends React.Component{
   
 
   disabledEndDate(endValue){
-    if (!endValue || !this.state.startTime) {
+    if (!endValue || !this.state.Register_On_S) {
       return false;
     }
-    return endValue.getTime() <= this.state.startTime.getTime();
+    return endValue.getTime() <= this.state.Register_On_S.getTime();
   }
 
  
@@ -102,28 +125,28 @@ class SelectForm extends React.Component{
             	<li className="fleft">
 	            	<FormItem
 		            label="产品名称："
-		            id="name">
-		              <Input placeholder="" id="name" name="name" onChange={this.setValue} value={this.state.name} />
+		            id="Product_Name">
+		              <Input placeholder="" id="Product_Name" name="Product_Name" onChange={this.setValue} value={this.state.Product_Name} />
 		          </FormItem>
             	</li>
             	<li className="fleft">
 	            	<FormItem
 		            label="品牌："
-		            id="brand">
-		              <Input placeholder="" id="brand" name="brand" onChange={this.setValue} value={this.state.brand} />
+		            id="Brand">
+		              <Input placeholder="" id="Brand" name="Brand" onChange={this.setValue} value={this.state.Brand} />
 		          </FormItem>
             	</li>
               <li className="fleft date-picker">
-                <FormItem id="startTime" label="入网日期：" labelCol={{span : 5}} >
+                <FormItem id="Register_On_S" label="入网日期：" labelCol={{span : 5}} >
                   	<Row span="24" >
                   	<Col span="10">
-			            <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'startTime')} value={this.state.startTime} />
+			            <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'Register_On_S')} value={this.state.Register_On_S} />
 			          </Col>
 			          <Col span="1">
 			            <p className="ant-form-split">-</p>
 			          </Col>
 			          <Col span="10">
-			            <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" value={this.state.endTime} onChange={this.onChange.bind(this,'endTime')} />
+			            <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" value={this.state.Register_On_E} onChange={this.onChange.bind(this,'Register_On_E')} />
 			          </Col>
 			          </Row>
                 </FormItem>
@@ -151,116 +174,51 @@ let modalState;
 function showModal(e){
   Event.stop(e);
   var tar = Event.target(e);
-  var id = tar.getAttribute('data-id'),index=tar.getAttribute('data-index')
-  modalState(id,index)
+  var id = tar.getAttribute('data-id'),index=tar.getAttribute('data-index'),name=tar.getAttribute('data-name');
+  modalState(id,index,name);
 }
 
 const columns = [{
   title: '产品名称',
-  dataIndex: 'productName',
-  key: 'productName',
+  dataIndex: 'Product_Name',
+  key: 'Product_Name',
 }, {
   title: '产品简称',
-  dataIndex: 'productShortName',
-  key: 'productShortName'
+  dataIndex: 'SName',
+  key: 'SName'
 }, {
   title: '单位',
-  dataIndex: 'unit',
-  key: 'unit'
+  dataIndex: 'Preparation_Unit',
+  key: 'Preparation_Unit'
 }, {
   title: '商品码',
-  dataIndex: 'ma',
-  key: 'ma'
+  dataIndex: 'Append_Code',
+  key: 'Append_Code'
 }, {
   title: '品牌',
-  dataIndex: 'brand',
-  key: 'brand'
+  dataIndex: 'Brand',
+  key: 'Brand'
 },{
   title: '规格',
-  dataIndex: 'guige',
-  key: 'guige'
+  dataIndex: 'Product_Spec',
+  key: 'Product_Spec'
 },{
   title: '有效期',
-  dataIndex: 'pretime',
-  key: 'pretime'
+  dataIndex: 'Validity',
+  key: 'Validity'
 },{
   title: '入网日期',
-  dataIndex: 'createTime',
-  key: 'createTime'
+  dataIndex: 'Register_Time',
+  key: 'Register_Time'
 }, {
   title: '操作',
   key: 'operation',
   render: function(text, record,index) {
-  	var edit = '/base/product/edit/'+record.ma,
-  		del = '/base/product/del/' + record.ma
-    return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.ma} data-index={index} data-text="删除" >删除</a></span>;
+  	var edit = '/base/product/edit/'+record.Product_Code,
+  		del = '/base/product/del/' + record.Product_Code
+    return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.Product_Code} data-name={record.Product_Name} data-index={index} data-text="删除" >删除</a></span>;
 	}
 }];
-const data = [{
-  key: '1',
-  productName: '产品呢1',
-  productShortName:'餐1',
-  unit: 'ml',
-  ma : '123123123',
-  brand : 'zara',
-  guige : '240',
-  pretime : '2015-12-12',
-  createTime : '2015-10-10 10:30',
-}, {
-  key: '2',
-  productName: '产品呢1',
-  productShortName:'餐1',
-  unit: 'ml',
-  ma : '123123123',
-  brand : 'zara',
-  guige : '240',
-  pretime : '2015-12-12',
-  createTime : '2015-10-10 10:30',
-}, {
-  key: '3',
-  productName: '产品呢1',
-  productShortName:'餐1',
-  unit: 'ml',
-  ma : '123123123',
-  brand : 'zara',
-  guige : '240',
-  pretime : '2015-12-12',
-  createTime : '2015-10-10 10:30',
-}];
-
-
-// tree data
-var _data = [
-  {
-    title : 'dom1111',
-    key : 'key1',
-    children:[
-      {
-        title : 'dom1-1',
-        key : 'key1-1'
-      },
-      {
-        title : 'dom1-2',
-        key : 'key1-2'
-      }
-    ]
-  },
-  {
-    title : 'dom2',
-    key : 'key2',
-    children:[
-      {
-        title : 'dom2-1',
-        key : 'key2-1'
-      },
-      {
-        title : 'dom2-2',
-        key : 'key2-2'
-      }
-    ]
-  }
-];
-
 
 
 
@@ -273,39 +231,165 @@ class BaseProduct extends React.Component{
       ModalText : '',
       changeId : false,
       index:false,
-      total : 100,
+      total : 0,
       treedata : [],
-      selectedKeys:[]
+      selectedKeys:[],
+      addBtnStatus : false,
+      data:[],
+      level:{},
+      opts : {
+        page :1,
+        pageSize : 10,
+      },
     }
     this.showModal = this.showModal.bind(this);
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.checkhandle = this.checkhandle.bind(this);
+    this.changeTableState = this.changeTableState.bind(this);
+    this.tableChange = this.tableChange.bind(this);
+    this.showSizechange = this.showSizechange.bind(this);
+    this.renderButton = this.renderButton.bind(this);
 	}
 
   componentDidMount(){
     modalState = this.showModal;
 
-    this.setState({
-      treedata : _data
-    });
+    _G.ajax({
+      url : baseGetIndustry,
+      type : 'get',
+      success : function(res){
+
+        
+
+
+        var that = this,level={};
+        console.log(res.Data)
+        function loop(d){
+          d.map(function(item){
+            console.log(item.Code)
+            level[item.Code] = item.Industry_Level;
+            if(item.Children){
+              loop(item.Children)
+            }
+          })
+        }
+        loop(res.Data)
+        
+
+        console.log(level)
+        this.setState({
+          treedata : res.Data,
+          level : level
+        });
+
+      }.bind(this)
+    })
+    
     
   }
   componentWillUnmount(){
     modalState = false;
   }
-  showModal(id,index){
+  
+  // 点击分页
+  tableChange(pagination, filters, sorter){
+    var opts = _G.assign({},this.state.opts);
+    opts.page = pagination.current;
+    opts.pageSize = pagination.pageSize;
+
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+  }
+  // 每页数据条数变化
+  showSizechange(current, pageSize){
+    var opts = _G.assign({},this.state.opts);
+    opts.pageSize = pageSize;
+    opts.page = current;
+
+    console.log(opts);
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+
+  }
+
+  changeTableState(opts){
+    var opts = opts || {};
+    opts.page = opts.page || this.state.opts.page;
+    opts.pageSize = opts.pageSize ||  this.state.opts.pageSize;
+
+    this.setState({
+      opts : opts
+    })
+
+    var that = this;
+
+    _G.ajax({
+      url : baseProductList,
+      type: "get",
+      data : opts,
+      success:function(res){
+        console.log(res.Data)
+        var d = [];
+        for(var i=0,l=res.Data.length;i<l;i++){
+          d[i]=res.Data[i];
+          d[i]['key'] = res.Data[i].Product_Code;
+        }
+        this.setState({
+          data : d,
+          total : res.TotalCount,
+          opts : opts
+        })
+
+      }.bind(this)
+
+    })
+
+
+  }
+
+  showModal(id,index,name){
     this.setState({
       visible : true,
-      ModalText: '你正要删除 "'+ id +'"的产品，是否继续？',
+      ModalText: '你正要删除 "'+ name +'"的产品，是否继续？',
       confirmLoading: false,
       changeId : id,
       index:index
     })
   }
+
   handleOk(e){
     //******************* 冻结，解冻 逻辑 changeId , 然后 关闭****************************
     console.log(this.state.changeId,this.state.index)
+
+    // 删除
+    _G.ajax({
+      url : baseProductDel,
+      type : 'get',
+      data :{
+        Product_Code : this.state.changeId
+      },
+      success:function(res){
+
+        var data = [].concat(this.state.data);
+        data.splice(this.state.index,1);
+        this.setState({
+          data : data
+        })
+
+      }.bind(this)
+    })
+
     this.setState({
       confirmLoading:true
     })
@@ -326,22 +410,55 @@ class BaseProduct extends React.Component{
 
   // 点击树菜单
   checkhandle(info){
-    console.log(info.checkedKeys);
-    //******************* ajax 请求，选中树节点的数据 **********************************
-    this.setState({
-      selectedKeys : info.checkedKeys,
+    var level=[],that=this,state=0,key;
+
+    info.checkedKeys.map( function(item,index){
+      level[index] = that.state.level[item];
+      if(that.state.level[item] == 3){
+        key = item;
+      }
+    } )
+    console.log(level)
+    level.map(function(item,index){
+      if(item == 3){
+        state++;
+      }
     })
+    if(state==1){
+      this.setState({
+        selectedKeys : info.checkedKeys,
+        addBtnStatus : 1
+      })
+    }else{
+      this.setState({
+        selectedKeys : info.checkedKeys,
+        addBtnStatus : 0
+      })
+    }
+    //******************* ajax 请求，选中树节点的数据 **********************************
+    
+  }
+
+  renderButton(){
+    if(this.state.addBtnStatus){
+      var url = '/base/product/add/'+this.state.selectedKeys[0];
+      return (<Link to={url}>
+              <Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
+            </Link>)
+    }
+    return (<Button size="large"><Icon type="plus" /><span>新增</span></Button>)
   }
 
 	render(){
 
-
+    var that = this,level={};
     const loop = (data) => {
       return data.map( (item) => {
-        if(item.children){
-          return (<TreeNode title={item.title} key={item.key}>{loop(item.children)}</TreeNode>);
+        level[item.Code] = item.Industry_Level;
+        if(item.Children){
+          return (<TreeNode title={item.Name} key={item.Code} level={item.Industry_Level}>{loop(item.Children)}</TreeNode>);
         }else{
-          return (<TreeNode title={item.title} key={item.key}></TreeNode>);
+          return (<TreeNode title={item.Name} key={item.Code} level={item.Industry_Level}></TreeNode>);
         }
       } )
     }
@@ -354,9 +471,7 @@ class BaseProduct extends React.Component{
 			<div className="m-list">
 				<Row>
 					<Col span="2">
-						<Link to='/base/product/add'>
-							<Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
-	          			</Link>
+						{this.renderButton()}
 					</Col>
 					<Col span="2">
 						<Link to='/base/product/exports'>
@@ -364,7 +479,7 @@ class BaseProduct extends React.Component{
 	          			</Link>
 					</Col>
 					<Col span="20">
-						<SelectForm />
+						<SelectForm changeTableState={this.changeTableState} addBtnStatus={this.state.addBtnStatus} />
 					</Col>
 				</Row>
 				<Row>
@@ -372,14 +487,16 @@ class BaseProduct extends React.Component{
             <div className="border border-raduis base-product">
               <div className="title">产品类别</div>
               <div className="con">
-                <Tree multiple={true} checkable={true} onCheck={this.checkhandle}>
+                <Tree multiple={false} checkable={true} onCheck={this.checkhandle}>
                         {treeNodes}
                     </Tree>
               </div>
             </div>
           </Col>
           <Col span="20">
-					 <Table columns={columns} dataSource={data} pagination={{showQuickJumper:true,pageSize:10,current:1,showSizeChanger:true,total:this.state.total}}  />
+					 <Table onChange={this.tableChange}  onShowSizeChange={this.showSizechange}
+            columns={columns} dataSource={this.state.data} 
+            pagination={{showQuickJumper:true,pageSize:10,current:1,showSizeChanger:true,total:this.state.total}}  />
           </Col>
 				</Row>
         <Modal 

@@ -46,6 +46,7 @@ class SelectForm extends React.Component{
       boxNumEnd:undefined, // 结束箱号
       saleRegion : undefined,  // 销售区域
       selesD : [],
+      excel : 'javascript:;',
     };
     this.setValue = this.setValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -89,7 +90,20 @@ class SelectForm extends React.Component{
     subD.SalesRegion_Code = this.state.saleRegion;
 
     this.props.changeTableState(subD);
-    console.log(subD)
+
+    //excel导出 begin
+    var _this = this;
+    _G.getExcel({
+       url : ruleAreaExcel,
+       data : subD,
+       callback : function(d){
+           var excel = d.ReturnOperateStatus;
+           _this.setState({
+               excel : excel
+           })
+       }
+    });
+    //excel导出 end
     
   }
 
@@ -172,9 +186,9 @@ class SelectForm extends React.Component{
                 </Link>
               </Col>
               <Col span="2" >
-                <Link to='/rule/area/exports'>
+                <a href={this.state.excel}>
                   <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
-                </Link>
+                </a>
               </Col>
             </Row>
         </Col>
@@ -260,7 +274,7 @@ class RuleArea extends React.Component{
 
   // 点击分页
   tableChange(pagination, filters, sorter){
-    var opts = Object.assign({},this.state.opts);
+    var opts = _G.assign({},this.state.opts);
     opts.page = pagination.current;
     opts.pageSize = pagination.pageSize;
 
@@ -274,12 +288,9 @@ class RuleArea extends React.Component{
   }
   // 每页数据条数变化
   showSizechange(current, pageSize){
-    var opts = Object.assign({},this.state.opts);
+    var opts = _G.assign({},this.state.opts);
     opts.pageSize = pageSize;
     opts.page = current;
-
-    console.log(opts);
-    
 
     this.setState({
       opts : opts
@@ -354,7 +365,7 @@ class RuleArea extends React.Component{
     
     _G.ajax({
       url : ruleAreaDel,
-      method : 'post',
+      type : 'get',
       data : {
         LotArea_Code : this.state.changeId
       },

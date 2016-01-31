@@ -14,9 +14,13 @@ const FormItem = Form.Item;
 
 import '../../entry/config';
 const saledataSendList = config.__URL + config.saledata.send.list;
+const saledataSendExcel = config.__URL + config.saledata.send.excel;
 
 var changeTableState;
-var rTimes={};
+var rTimes={
+  Send_Time_S:new Date().getTime(),
+  Send_Time_E:new Date().getTime()
+};
 var rPages={};
 
 
@@ -37,14 +41,14 @@ const columns = [{
   dataIndex: 'Receive_Num',
   key: 'Receive_Num',
   render: function(text,record) {
-    var timeS = ''+_G.timeFormat2( new Date(rTimes.Recharge_Time_S).getTime() , 'YYYY-MM-DD' )
-    var timeE = ''+_G.timeFormat2( new Date(rTimes.Recharge_Time_E).getTime() , 'YYYY-MM-DD' )
+    var timeS = ''+_G.timeFormat2( new Date(rTimes.Send_Time_S).getTime() ,'YYYY-MM-DD');
+    var timeE = ''+_G.timeFormat2( new Date(rTimes.Send_Time_E).getTime() ,'YYYY-MM-DD');
     var arr = {
        Send_Phone:record.Send_Phone,
        Receive_Phone:record.Receive_Phone,
        Send_Status:record.Send_Status,
-       Recharge_Time_S:timeS,
-       Recharge_Time_E:timeE,
+       Send_Time_S:timeS,
+       Send_Time_E:timeE,
        Page:rPages.page,
        PageSize:rPages.pageSize
     }
@@ -58,8 +62,9 @@ class DateRange extends React.Component{
 	constructor() {
 		super();
 		this.state =  {
-	      Send_Time_S : '',
-        Send_Time_E : ''
+	      Send_Time_S : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
+        Send_Time_E : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
+        excel : 'javascript:;',
 	    };
 	    this.handleSubmit = this.handleSubmit.bind(this);
 	    this.onChange = this.onChange.bind(this);
@@ -80,6 +85,25 @@ class DateRange extends React.Component{
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
+
+    //excel导出 begin
+    var _this = this;
+    _G.getExcel({
+       url : saledataSendExcel,
+       data : {
+          Send_Time_S : _G.timeFormat2( new Date(_this.state.Send_Time_S).getTime() , 'YYYY-MM-DD' ),
+          Send_Time_E : _G.timeFormat2( new Date(_this.state.Send_Time_E).getTime() , 'YYYY-MM-DD' ),
+       },
+       callback : function(d){
+           var excel = d.ReturnOperateStatus;
+           _this.setState({
+               excel : excel
+           })
+       }
+    });
+    //excel导出 end
+
+
     this.props.changeTableState(this.state);
   }
   render() {
@@ -107,9 +131,9 @@ class DateRange extends React.Component{
         </Col>
         <Col span="3">
         <FormItem>
-          <Link to='/saledata/send/exports'>
-            <Button type="primary" size="large"  htmlType="submit" style={{marginLeft:10}}><Icon type="download" /><span>导出报表</span></Button>
-          </Link>
+          <a href={this.state.excel}>
+          <Button type="primary" size="large"  style={{marginLeft:10}}><Icon type="download" /><span>导出报表</span></Button>
+          </a>
         </FormItem>
         </Col>
       </Form>
@@ -147,7 +171,7 @@ class SaleDataSend extends React.Component{
 
   // 点击分页
   tableChange(pagination, filters, sorter){
-    var opts = Object.assign({},this.state.opts);
+    var opts = _G.assign({},this.state.opts);
     opts.page = pagination.current;
     opts.pageSize = pagination.pageSize;
 
@@ -162,7 +186,7 @@ class SaleDataSend extends React.Component{
   }
   // 每页数据条数变化
   showSizechange(current, pageSize){
-    var opts = Object.assign({},this.state.opts);
+    var opts = _G.assign({},this.state.opts);
     opts.pageSize = pageSize;
     opts.page = current;
     
@@ -188,14 +212,15 @@ class SaleDataSend extends React.Component{
     rPages = opts;
     //opts.EntityCode = 'DEFAULT';
     var that = this;
+    var optsD = _G.assign({},opts);
 
-    opts.Send_Time_S = ''+_G.timeFormat( new Date(opts.Send_Time_S).getTime() );
-    opts.Send_Time_E = ''+_G.timeFormat( new Date(opts.Send_Time_E).getTime() );
+    optsD.Send_Time_S = ''+_G.timeFormat2( new Date(opts.Send_Time_S).getTime() ,'YYYY-MM-DD');
+    optsD.Send_Time_E = ''+_G.timeFormat2( new Date(opts.Send_Time_E).getTime() ,'YYYY-MM-DD');
 
     _G.ajax({
       url : saledataSendList,
       method: "get",
-      data : opts,
+      data : optsD,
       success:function(res){
         console.log('h'+res.Data)
         var d = [];

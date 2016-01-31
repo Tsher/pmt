@@ -86,7 +86,7 @@ class Login extends React.Component{
     data.Login_Name = this.state.Login_Name;
     data.User_PW = this.state.User_PW;
     data.ValidateCode = this.state.ValidateCode;
-    if(!data.ValidateCode.length){
+    if(!data.ValidateCode){
       msg_error('请填写验证码');
       return;
     }
@@ -96,11 +96,19 @@ class Login extends React.Component{
       data : data,
       type : 'get',
       success : function(res){
+        if(res.ReturnOperateStatus && res.ReturnOperateStatus == 'False'){
+          msg_error('登录失败,请重试!');
+          return;
+        }
         _G.Token = res.Data.Token; 
-        console.log(res)
+        _G.userName = res.Data.User_Name;
         Cookie.write({
           name : 'Token',
           value : _G.Token || '' 
+        })
+        Cookie.write({
+          name : 'userName',
+          value : _G.userName
         })
         var url = location.href;
         url = url.split('#');
@@ -116,7 +124,7 @@ class Login extends React.Component{
     var name = e.target.id || e.target.name;
     var value = e.target.value;
 
-    var data = Object.assign( {}, this.state );
+    var data = _G.assign( {}, this.state );
 
     data[name] = value;
 
@@ -152,7 +160,7 @@ class Login extends React.Component{
                     labelCol={{span:6}}
                     wrapperCol={{span:12}}
                     required>
-                    <Input name="Login_Name" id="Login_Name" value={this.state.Login_Name} onChange={this.setValue} />
+                    <Input name="Login_Name" value={this.state.Login_Name} onChange={this.setValue} />
                   </FormItem>
                   <FormItem
                     id="User_PW"
@@ -160,7 +168,7 @@ class Login extends React.Component{
                     labelCol={{span:6}}
                     wrapperCol={{span:12}}
                     required>
-                    <Input type="password" id="User_PW" value={this.state.User_PW} onChange={this.setValue} />
+                    <Input type="password" name="User_PW" value={this.state.User_PW} onChange={this.setValue} />
                   </FormItem>
                   <FormItem
                     id="ValidateCode"
@@ -168,7 +176,7 @@ class Login extends React.Component{
                     labelCol={{span:6}}
                     wrapperCol={{span:12}}
                     required>
-                    <Input name="ValidateCode" id="ValidateCode" value={this.state.ValidateCode} onChange={this.setValue} />
+                    <Input name="ValidateCode" value={this.state.ValidateCode} onChange={this.setValue} />
                     <img src={this.state.ValidateCodePic} className="login-code"/>
                   </FormItem>
                   <Row>

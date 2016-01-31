@@ -92,7 +92,8 @@ class TreeView  extends React.Component{
 const urlMenus = config.__URL + config.menu;
 const saveRoles = config.__URL + config.user.role.saveRole;
 const getRoles = config.__URL + config.user.role.getRole; // 获取权限
-
+const getRole = config.__URL + config.user.role.get; // 获取用户信息
+const getRoleType = config.__URL + config.user.role.type; // 角色类型
 
 class UserRoleSet extends React.Component{
 	constructor(){
@@ -100,23 +101,79 @@ class UserRoleSet extends React.Component{
 		this.state = {
 			menus : [],
 			selectedRole : '',
+			selectedRoleArray : [],
 			checkedKeys : [],
-			id : '' // 如果是编辑状态
+			id : '', // 如果是编辑状态
+			Role_Name : '',
+			Role_Type : '',
+			Role_Code : '',
+			Roles : [],
 		}
 		this.onChange = this.onChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.checkhandle = this.checkhandle.bind(this);
 	}
 
+
+
 	componentDidMount(){
 		this.setState({
-			id : this.props.params.id
+			id : this.props.params.id,
+			Role_Code : this.props.params.id
+		})
+		// 获取角色类型
+		_G.ajax({
+			url : getRoleType,
+			type : 'get',
+			success : function(res){
+				console.log('角色信息');
+				console.log(res)
+				var t = this.state.Role_Type,that=this;
+				if(t){
+					res.Data.map(function(item){
+						if(item.REAL_Code == t){
+							this.setState({
+								Role_TypeName : item.CODE_NM
+							})
+						}
+					})
+				}
+				this.setState({
+					Roles : res.Data
+				})
+			}.bind(this)
+		})
+		// 读取用户信息
+		_G.ajax({
+			url : getRole,
+			type : 'get',
+			data : {
+				Role_Code : this.props.params.id
+			},
+			success : function(res){
+				console.log('用户信息');
+				console.log(res)
+				var types = this.state.Roles,that =this;
+				types.map(function(item){
+					if(types.REAL_Code == res.Data.Role_Type){
+						this.setState({
+							Role_TypeName : item.CODE_NM
+						})
+					}
+				})
+				this.setState({
+					Role_Name : res.Data.Role_Name,
+					Role_Type : res.Data.Role_Type
+				})
+			}.bind(this)
 		})
 		// 读取全菜单树
 		_G.ajax({
 			url : urlMenus,
 			type : 'get',
 			success : function(res){
+				console.log('获取权限');
+				console.log(res)
 				this.setState({
 					menus : res.Data
 				})
@@ -125,13 +182,18 @@ class UserRoleSet extends React.Component{
 		// 获取权限
 		_G.ajax({
 			url : getRoles,
+			type : 'get',
 			data : {
 				Role_Code : this.props.params.id
 			},
-			type : 'get',
 			success : function(res){
-				console.log(res.Data)
-			}
+				var roles = [].concat(res.Data.Roles.split(',')); 
+				this.setState({
+					checkedKeys : res.Data.MenuCode,
+					selectedRole : res.Data.Roles,
+					selectedRoleArray : roles,
+				})
+			}.bind(this)
 		})
 
 	}
@@ -149,21 +211,21 @@ class UserRoleSet extends React.Component{
 	}
 
 	handleSubmit(){
-		// 已读取 选择 内容 ，等待ajax提交 *****************************************************
-		var data = Object.assign({},this.state);
-		// to do ***************************************************
-		_G.ajax({
-			url : saveRoles,
-			data : {
-				Role_Code : this.state.id,
-				selectedRole : this.state.selectedRole,
+		// // 已读取 选择 内容 ，等待ajax提交 *****************************************************
+		// var data = _G.assign({},this.state);
+		// // to do ***************************************************
+		// _G.ajax({
+		// 	url : saveRoles,
+		// 	data : {
+		// 		Role_Code : this.state.id,
+		// 		selectedRole : this.state.selectedRole,
 
-			},
-			type : 'post',
-			success : function(){
+		// 	},
+		// 	type : 'post',
+		// 	success : function(){
 
-			}
-		})
+		// 	}
+		// })
 	}
 	handleReset(){
 		goBack();
@@ -183,9 +245,9 @@ class UserRoleSet extends React.Component{
 	        	<div className="m-form-title">设置操作角色权限</div>
 	        		<div className="m-form-con">
 	        			<Row className="group-set-info">
-	        				<Col span="4">角色名称:企业管理员</Col>
-	        				<Col span="4">角色类型:操作角色</Col>
-	        				<Col span="4">角色编号:A000001</Col>
+	        				<Col span="4">角色名称:{this.state.Role_Name}</Col>
+	        				<Col span="4">角色类型:{this.state.Role_TypeName}</Col>
+	        				<Col span="4">角色编号:{this.state.Role_Code}</Col>
 	        			</Row>
 	        			<div className="group-set-list">
 		        			<Row>

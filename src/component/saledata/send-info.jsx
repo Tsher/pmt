@@ -20,6 +20,10 @@ import '../../entry/config';
 const saledataSendInfo = config.__URL + config.saledata.send.info;
 
 const columns = [{
+  title: '发送序号',
+  dataIndex: 'SMS_Send_Code',
+  key: 'SMS_Send_Code'
+},{
   title: '公用号',
   dataIndex: 'Send_Phone',
   key: 'Send_Phone'
@@ -31,10 +35,6 @@ const columns = [{
   title: '发送状态',
   dataIndex: 'Send_Status',
   key: 'Send_Status'
-},{
-  title: '发送次数',
-  dataIndex: 'SendNum',
-  key: 'SendNum'
 },{
   title: '发送时间',
   dataIndex: 'Send_Time',
@@ -68,7 +68,7 @@ class SaleDataSendInfo extends React.Component{
 
   // 点击分页
   tableChange(pagination, filters, sorter){
-    var opts = Object.assign({},this.state.opts);
+    var opts = _G.assign({},this.state.opts);
     opts.page = pagination.current;
     opts.pageSize = pagination.pageSize;
 
@@ -80,7 +80,7 @@ class SaleDataSendInfo extends React.Component{
   }
   // 每页数据条数变化
   showSizechange(current, pageSize){
-    var opts = Object.assign({},this.state.opts);
+    var opts = _G.assign({},this.state.opts);
     opts.pageSize = pageSize;
     opts.page = current;
     

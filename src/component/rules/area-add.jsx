@@ -1,6 +1,6 @@
 // 积分规则  批次区域管理  添加页面
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = _G.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 import React from 'react';
 
@@ -118,7 +118,7 @@ class SelectForm extends React.Component{
             url : ruleAreaListOne,
             type : 'get',
             data : {
-              LotArea_Code : this.props.params.id
+              LotArea_Code : id
             },
             success:function(res){
 
@@ -170,7 +170,7 @@ class SelectForm extends React.Component{
   // 文本框的值 同步到 state
   setValue(e){
     var name = e.target.id;
-    var data = Object.assign({},this.state);
+    var data = _G.assign({},this.state);
     data.formData[name] = e.target.value;
     this.setState(data);
   }
@@ -207,8 +207,7 @@ class SelectForm extends React.Component{
 
     // 提交数据
       let u = this.props.params.id ? ruleAreaEdit : ruleAreaAdd;
-      var fD = Object.assign({},this.state.formData);
-      console.log(fD)
+      var fD = _G.assign({},this.state.formData);
       var d = {
           Start_Batch_Code:fD.batchNumStart,
           End_Batch_Code:fD.batchNumEnd,
@@ -217,9 +216,8 @@ class SelectForm extends React.Component{
           SalesRegion_Code:fD.SalesRegion_Code,
           LotArea_Code :fD.LotArea_Code,
       };
-      console.log(fD.SalesRegion_Name)
       _G.ajax({
-        url  : u,
+        url  : u+'?LotArea_Code='+fD.LotArea_Code,
         data : {JsonValue:JSON.stringify(d)},
         method : 'post',
         success:function(res){
@@ -244,7 +242,7 @@ class SelectForm extends React.Component{
 
   // datepicker change
   onChange(field,value){
-    var data = Object.assign({},this.state);
+    var data = _G.assign({},this.state);
     if (field == 'SalesRegion_Name') {
       var sD = this.state.selesD;
       var name = '';

@@ -1,6 +1,6 @@
 //  促销管理   促销活动设置 添加活动
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = _G.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 import React from 'react';
 import Form from 'antd/lib/form';
@@ -181,7 +181,7 @@ class SaleDoAdd extends React.Component{
   // 文本框的值 同步到 state
   setValue(e){
     var name = e.target.id;
-    var data = Object.assign({},this.state.formData);
+    var data = _G.assign({},this.state.formData);
     data[name] = e.target.value;
 
     this.setState({
@@ -195,7 +195,7 @@ class SaleDoAdd extends React.Component{
 
   // datepicker change
   onChange(field,value){
-    var data = Object.assign({},this.state.formData);
+    var data = _G.assign({},this.state.formData);
     data[field] = value;
     this.setState({
       formData : data
@@ -259,7 +259,7 @@ class SaleDoAdd extends React.Component{
       }
     }
 
-    var all = Object.assign({},this.state.formData);
+    var all = _G.assign({},this.state.formData);
     // 修改
     if(data.index || data.index == 0 ){
       all.PromotionDetail[type][data.index] = {
@@ -311,7 +311,7 @@ class SaleDoAdd extends React.Component{
   // 删除
   delPrizeTime(type,index){
     console.log(type,index)
-    var all = Object.assign({},this.state.formData);
+    var all = _G.assign({},this.state.formData);
     
     all.PromotionDetail[type].splice(index,1); // 删除data中index = changeId 的值, 
     console.log(all)
@@ -368,7 +368,7 @@ class SaleDoAdd extends React.Component{
   handleSubmit(e) {
     //***********************************等待ajax提交数据 ******** 区分 新增 或者 编辑
     e.preventDefault();
-    var data = Object.assign({},this.state.formData);
+    var data = _G.assign({},this.state.formData);
     var d = [];
     d = d.concat(data.PromotionDetail.time);
     d = d.concat(data.PromotionDetail.area);

@@ -23,120 +23,28 @@ const confirm = Modal.confirm;
 
 const history = createHistory();
 
+import '../../entry/config';
+const groupList = config.__URL + config.user.group.list;
+const groupInfo = config.__URL + config.user.group.info;
+const groupDel = config.__URL + config.user.group.del;
 
-
-// tree data
-var _data = [
-  {
-    title : 'dom1111',
-    key : 'key1',
-    children:[
-      {
-        title : 'dom1-1',
-        key : 'key1-1'
-      },
-      {
-        title : 'dom1-2',
-        key : 'key1-2'
-      }
-    ]
-  },
-  {
-    title : 'dom2',
-    key : 'key2',
-    children:[
-      {
-        title : 'dom2-1',
-        key : 'key2-1'
-      },
-      {
-        title : 'dom2-2',
-        key : 'key2-2'
-      }
-    ]
-  }
-];
-
+var changeTableState;
 
 
 
 const columns = [{
   title: '用户编号',
-  dataIndex: 'userNo',
-  key: 'userNo',
+  dataIndex: 'User_Code',
+  key: 'User_Code',
 }, {
   title: '真实名称',
-  dataIndex: 'userName',
-  key: 'userName'
+  dataIndex: 'User_Name',
+  key: 'User_Name'
 }, {
   title: '登录名',
-  dataIndex: 'loginName',
-  key: 'loginName'
+  dataIndex: 'Login_Name',
+  key: 'Login_Name'
 }];
-// table data
-const data = [{
-  key: '1',
-  userNo: '000001',
-  userName: '真实姓名',
-  loginName: '登录名',
-}, {
-  key: '2',
-  userNo: '000002',
-  userName: '真实姓名',
-  loginName: '登录名',
-}, {
-  key: '3',
-  userNo: '000003',
-  userName: '真实姓名',
-  loginName: '登录名',
-}, {
-  key: '4',
-  userNo: '000004',
-  userName: '真实姓名',
-  loginName: '登录名',
-}, {
-  key: '5',
-  userNo: '000005',
-  userName: '真实姓名',
-  loginName: '登录名',
-}, {
-  key: '6',
-  userNo: '000005',
-  userName: '真实姓名',
-  loginName: '登录名',
-}, {
-  key: '7',
-  userNo: '000005',
-  userName: '真实姓名',
-  loginName: '登录名',
-}, {
-  key: '8',
-  userNo: '000005',
-  userName: '真实姓名',
-  loginName: '登录名',
-}, {
-  key: '9',
-  userNo: '000005',
-  userName: '真实姓名',
-  loginName: '登录名',
-}, {
-  key: '10',
-  userNo: '000010',
-  userName: '真实姓名',
-  loginName: '登录名',
-}, {
-  key: '11',
-  userNo: '000011',
-  userName: '真实姓名',
-  loginName: '登录名',
-}, {
-  key: '12',
-  userNo: '000012',
-  userName: '真实姓名',
-  loginName: '登录名',
-}];
-
-
 
 
 
@@ -161,9 +69,11 @@ class UserGroup extends React.Component{
 	      		}
 	      	]
 	      },
+        DataDetail:[],
 	      showEditBtn : false, // 是否可点 编辑按钮
 	      showDelBtn : false, // 是否可点 删除按钮
-	      editLink : '', // 编辑链接地址
+        editLink : '',// 编辑链接地址
+        addLink : '/user/group/add/,add',// 添加链接地址
 	      showInfo : 'none' , // none 隐藏， block 显示   右侧详细信息
         rightClickMenuStyle:{
           left : '0',
@@ -178,6 +88,7 @@ class UserGroup extends React.Component{
 	    this.handleOk = this.handleOk.bind(this);
 	    this.handleCancel = this.handleCancel.bind(this);
       this.hideRightClickMenu = this.hideRightClickMenu.bind(this);
+      this.renderEdit = this.renderEdit.bind(this);
 	}
 
   hideRightClickMenu(){
@@ -189,30 +100,57 @@ class UserGroup extends React.Component{
       })
   }
   componentDidMount(){
+    _G.ajax({
+      url : groupList,
+      type: "get",
+      success:function(res){
+        var d = res.Data;
+        this.setState({
+          treedata : d
+        });
+      }.bind(this)
+
+    }) 
+
     Event.add(document.body,'click',this.hideRightClickMenu)
-    this.setState({
-      treedata : _data
-    });
+    
 
   }
 
   // 点击树菜单
   checkhandle(info){
-  	console.log('/user/group/edit/'+ info.node.props.eventKey)
-  	// 根据 eventKey 查询 相关信息 展示右侧详细信息
-    this.setState({
-      selectedKeys : [info.node.props.eventKey],
-      editLink : '/user/group/edit/'+ info.node.props.eventKey,
-      showEditBtn : true,
-      showInfo : 'block',
+    var code = info.node.props.eventKey;
+    _G.ajax({
+      url : groupInfo,
+      type: "get",
+      data : {Organization_Code:code},
+      success:function(res){
+        var d = res;
+        this.setState({
+           info:d.Data,
+           DataDetail : d.DataDetail,
+        })
+
+        // 根据 eventKey 查询 相关信息 展示右侧详细信息
+        this.setState({
+          selectedKeys : [info.node.props.eventKey],
+          editLink : '/user/group/edit/'+ info.node.props.eventKey+',edit',
+          addLink : '/user/group/add/'+ info.node.props.eventKey+','+this.state.info.Organization_Name,
+          showEditBtn : true,
+          showInfo : 'block',
+        })
+      }.bind(this)
+
     })
+  	
     // 根据选中的 key ，获取 相关数据 ,更新state，展示再右侧
   }
   // 右键树菜单
   rightClickhandler(info){
   	this.setState({
   		  selectedKeys : [info.node.props.eventKey],
-      	editLink : '/user/group/edit/'+ info.node.props.eventKey,
+      	editLink : '/user/group/edit/'+ info.node.props.eventKey+',edit',
+        addLink : '/user/group/add/'+ info.node.props.eventKey+','+this.state.info.Organization_Name,
       	showEditBtn : true,
       	showInfo : 'block',
         rightClickMenuStyle : {
@@ -220,7 +158,6 @@ class UserGroup extends React.Component{
           top : info.event.pageY + 10,
         }
   	})
-    console.log(info.event.pageX,info.event.pageY,info.node.props.eventKey)
   }
   componentWillUnmount(){
     Event.remove(document.body,'click',this.hideRightClickMenu)
@@ -228,6 +165,7 @@ class UserGroup extends React.Component{
 
   showModal(){
   	// 删除之前 查询此 key 是否有子节点， 如有，不允许删除 ************************
+    if (!this.state.selectedKeys[0]) {return};
     this.setState({
       visible : true,
       ModalText: '你正要删除 "'+ this.state.selectedKeys[0] +'"的部门，是否继续？',
@@ -239,25 +177,70 @@ class UserGroup extends React.Component{
     this.setState({
       confirmLoading:true
     })
-    setTimeout(()=>{
-      this.setState({
-        visible : false
-      })
-    },2000)
+
+
+    
+    _G.ajax({
+      url : groupDel,
+      method : 'get',
+      data : {
+        Organization_Code : this.state.selectedKeys[0]
+      },
+      success:function(res){
+        if(res.ReturnOperateStatus == 'True'){
+          this.setState({
+            visible : false
+          })
+
+          _G.ajax({
+            url : groupList,
+            type: "get",
+            success:function(res){
+              var d = res.Data;
+              this.setState({
+                treedata : d
+              });
+            }.bind(this)
+
+          }) 
+          /*var d = [].concat(this.state.treedata);
+          d.splice(this.state.index,1);
+          this.setState({
+            treedata : d,
+            loading : false
+          })*/
+          //**********************更新table数据****************
+          return
+        }
+        if(res.ReturnOperateStatus == 'False'){
+          console.log('删除失败')
+        }
+      }.bind(this)
+    })
+
   }
   handleCancel(e){
     this.setState({
       visible : false
     })
   }
+
+  renderEdit(){
+    if(this.state.editLink){
+      return (<Link to={this.state.editLink}>
+              <Button type="primary" size="large"><Icon type="edit" /><span>修改</span></Button>
+                </Link>)
+    }
+    return (<Button type="primary" size="large"><Icon type="edit" /><span>修改</span></Button>)
+  }
   
   render(){
-	const loop = (data) => {
+	  const loop = (data) => {
       return data.map( (item) => {
-        if(item.children){
-          return (<TreeNode title={item.title} key={item.key}>{loop(item.children)}</TreeNode>);
+        if(item.Children){
+          return (<TreeNode title={item.Name} key={item.Code}>{loop(item.Children)}</TreeNode>);
         }else{
-          return (<TreeNode title={item.title} key={item.key}></TreeNode>);
+          return (<TreeNode title={item.Name} key={item.Code}></TreeNode>);
         }
       } )
     }
@@ -269,14 +252,12 @@ class UserGroup extends React.Component{
 			<div className="m-list">
 				<Row>
 					<Col span="2">
-				        <Link to='/user/group/add'>
+				        <Link to={this.state.addLink}>
 							<Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
 				        </Link>
 					</Col>
 					<Col span="2">
-				        <Link to={this.state.editLink}>
-							<Button type="primary" size="large"><Icon type="edit" /><span>修改</span></Button>
-				        </Link>
+				        {this.renderEdit()}
 					</Col>
 					<Col span="2">
 				        <Button type="primary" size="large" onClick={this.showModal}><Icon type="edit" /><span>删除</span></Button>
@@ -298,20 +279,20 @@ class UserGroup extends React.Component{
 							<div className="title"> 机构信息 </div>
 							<div className="con">
 								<Form inline >
-									<FormItem id="no" label="部门编号: " labelCol={{span:8}} wrapperCol={{span: 14,offset:1}}>
-										<Input name="no" value={this.state.info.no}  />
+									<FormItem id="Organization_Code" label="部门编号: " labelCol={{span:8}} wrapperCol={{span: 14,offset:1}}>
+										<Input name="Organization_Code" disabled value={this.state.info.Organization_Code}  />
 									</FormItem>
-									<FormItem id="parent" label="上级部门: " labelCol={{span:8}} wrapperCol={{span: 14,offset:1}}>
-										<Input name="parent"  value={this.state.info.parent}  />
+									<FormItem id="ParentOrganization_Name" label="上级部门: " labelCol={{span:8}} wrapperCol={{span: 14,offset:1}}>
+										<Input name="ParentOrganization_Name" disabled value={this.state.info.ParentOrganization_Name}  />
 									</FormItem>
-									<FormItem id="name" label="部门名称: " labelCol={{span:8}} wrapperCol={{span: 14,offset:1}}>
-										<Input name="name" value={this.state.info.name}  />
+									<FormItem id="Organization_Name" label="部门名称: " labelCol={{span:8}} wrapperCol={{span: 14,offset:1}}>
+										<Input name="Organization_Name" disabled value={this.state.info.Organization_Name}  />
 									</FormItem>
-									<FormItem id="desc" label="部门描述: " labelCol={{span:8}} wrapperCol={{span: 14,offset:1}}>
-										<Input name="desc" type="textarea"  value={this.state.info.desc}  />
+									<FormItem id="Description" label="部门描述: " labelCol={{span:8}} wrapperCol={{span: 14,offset:1}}>
+										<Input name="Description" type="textarea" disabled value={this.state.info.Description}  />
 									</FormItem>
 									<FormItem id="admin" label="部门管理员: " labelCol={{span:8}} wrapperCol={{span: 14,offset:1}}>
-										<Input name="admin"  value={this.state.info.admin}  />
+										<Input name="admin" disabled value={this.state.info.admin}  />
 									</FormItem>
 								</Form>
 							</div>
@@ -321,7 +302,7 @@ class UserGroup extends React.Component{
 						<div className="border border-raduis">
 							<div className="title">机构成员</div>
 							<div className="con">
-								<Table columns={columns} pagination={false} dataSource={data} size="small" />
+								<Table columns={columns} pagination={false} dataSource={this.state.DataDetail} size="small" />
 							</div>
 						</div>
 					</Col>
@@ -333,7 +314,7 @@ class UserGroup extends React.Component{
 	          onCancel={this.handleCancel}>
 	          <p>{this.state.ModalText}</p>
 	        </Modal>
-          <div className="layerMenu" style={{left:this.state.rightClickMenuStyle.left,top:this.state.rightClickMenuStyle.top}}><a href="#/user/group/add">新增</a><a href={"#/user/group/edit/"+this.state.selectedKeys[0]}>修改</a></div>
+          <div className="layerMenu" style={{left:this.state.rightClickMenuStyle.left,top:this.state.rightClickMenuStyle.top}}><a href={"#/user/group/add/"+this.state.selectedKeys[0]+','+this.state.info.Organization_Name}>新增</a><a href={"#/user/group/edit/"+this.state.selectedKeys[0]+',edit'}>修改</a></div>
 			</div>
 		)
 	}

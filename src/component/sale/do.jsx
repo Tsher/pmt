@@ -37,6 +37,7 @@ import '../../entry/config';
 const saleDoList = config.__URL + config.sale['do']['list']; // 获取活动列表
 const saleDoPublish = config.__URL + config.sale['do']['publish']; // 发布活动
 const saleDoDel = config.__URL + config.sale['do']['del']; // 删除活动
+const saleDoExcel = config.__URL + config.sale['do']['excel']; // excel
 
 
 class SelectForm extends React.Component{
@@ -48,6 +49,7 @@ class SelectForm extends React.Component{
       MA_Name : '', // 活动名称
       MA_StartTime : '', // 注册开始时间
       MA_EndTime : '', // 注册结束时间
+      excel : 'javascript:;',
     };
     this.setValue = this.setValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -71,10 +73,28 @@ class SelectForm extends React.Component{
 
     e.preventDefault();
 
-    var data = Object.assign({},this.state);
+    var data = _G.assign({},this.state);
     //data.MA_StartTime = 
     this.props.changeTableState(this.state);
     console.log(this.state);
+
+    //excel导出 begin
+    var _this = this;
+    _G.getExcel({
+       url : saleDoExcel,
+       data : {
+          MA_StartTime : _G.timeFormat2( new Date(_this.state.MA_StartTime).getTime() , 'YYYY-MM-DD' ),
+          MA_EndTime : _G.timeFormat2( new Date(_this.state.MA_EndTime).getTime() , 'YYYY-MM-DD' ),
+          MA_Name : _this.state.MA_Name,
+       },
+       callback : function(d){
+           var excel = d.ReturnOperateStatus;
+           _this.setState({
+               excel : excel
+           })
+       }
+    });
+    //excel导出 end
 
   }
 
@@ -135,9 +155,11 @@ class SelectForm extends React.Component{
               </li>
               <li className="fleft">
                 <FormItem>
+                <a href={this.state.excel}>
                   <Button type="primary" size="large">
                     导出excel
                   </Button>
+                  </a>
                 </FormItem>
               </li>
             </ul>
@@ -172,14 +194,6 @@ function showModalPublish(e){
 }
 
 const columns = [{
-  title: '活动编码',
-  dataIndex: 'MA_Code',
-  key: 'MA_Code',
-  // render: function(text,record) {
-  // 	var href= '/sale/do/info/'+text;
-  //   return <Link to={href}>{text}</Link>;
-  // }
-}, {
   title: '活动名称',
   dataIndex: 'MA_Name',
   key: 'MA_Name'
@@ -211,6 +225,9 @@ const columns = [{
   title: '操作',
   key: 'operation',
   render: function(text, record,index) {
+    if(record.MA_RStatus == '已发布'){
+      return <span>已发布</span>
+    }
   	var publish = '/sale/do/publish/'+ record.MA_Code,
       edit = '/sale/do/edit/'+record.MA_Code,
   		del = '/sale/do/del/' + record.MA_Code
@@ -268,7 +285,7 @@ class SaleDo extends React.Component{
 
   // 点击分页
   tableChange(pagination, filters, sorter){
-    var opts = Object.assign({},this.state.opts);
+    var opts = _G.assign({},this.state.opts);
     opts.page = pagination.current;
     opts.pageSize = pagination.pageSize;
 
@@ -282,7 +299,7 @@ class SaleDo extends React.Component{
   }
   // 每页数据条数变化
   showSizechange(current, pageSize){
-    var opts = Object.assign({},this.state.opts);
+    var opts = _G.assign({},this.state.opts);
     opts.pageSize = pageSize;
     opts.page = current;
 
@@ -310,7 +327,8 @@ class SaleDo extends React.Component{
 
     
     var that = this;
-
+    opts.MA_StartTime = _G.timeFormat(opts.MA_StartTime,'YYYY-MM-DD');
+    opts.MA_EndTime = _G.timeFormat(opts.MA_EndTime,'YYYY-MM-DD')
     _G.ajax({
       url : saleDoList,
       type: "get",
@@ -320,8 +338,8 @@ class SaleDo extends React.Component{
         for(var i=0,l=res.Data.length;i<l;i++){
           d[i]=res.Data[i];
           d[i]['key'] = res.Data[i].MA_Code;
-          d[i].MA_EndTime = _G.timeFormat2(d[i].MA_EndTime);
-          d[i].MA_StartTime = _G.timeFormat2(d[i].MA_StartTime);
+          d[i].MA_EndTime = _G.timeFormat2(d[i].MA_EndTime,'YYYY-MM-DD');
+          d[i].MA_StartTime = _G.timeFormat2(d[i].MA_StartTime,'YYYY-MM-DD');
         }
         console.log(d)
         this.setState({

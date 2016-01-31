@@ -63,6 +63,7 @@ class RightBox extends React.Component{
 	  type: "get",
 	  success:function(res){
 	    var d = res.Data;
+	    //_data[0].Children.push(d[0])
 	    _data[0].Children = d;
 	    //setData(d)
 	    this.setState({
@@ -165,6 +166,7 @@ class BaseArea extends React.Component{
 	    this.showModal = this.showModal.bind(this);
 	    this.handleOk = this.handleOk.bind(this);
 	    this.handleCancel = this.handleCancel.bind(this);
+	    this.handleClick  = this.handleClick.bind(this);
 	}
 
 	componentDidMount(){
@@ -184,6 +186,8 @@ class BaseArea extends React.Component{
   	
 
 	handleClick(e){
+		var tar = e.target;
+		if(tar.nodeName == 'A') return;
 		var n;
         for(var i=0;i<this.state.Data.length;i++){
         	var s = this.state.Data[i];
@@ -196,7 +200,7 @@ class BaseArea extends React.Component{
         _G.ajax({
 		  url : salesRegionOneUrl,
 		  type: "get",
-		  data : {SalesRegion_Code:e},
+		  data : {SalesRegion_Code:tar.id},
 		  success:function(res){
 		    var d = res.Data;
 		    var data={
@@ -208,7 +212,7 @@ class BaseArea extends React.Component{
 		    data.desc = d.Region_Description;
 
 		    this.setState({
-	          [e] : 'on',
+	          [tar.id] : 'on',
 	          data : data
 	        })
 		    
@@ -296,7 +300,7 @@ class BaseArea extends React.Component{
 				                        this.state.Data.map(function(d){
 				                          var code = d.SalesRegion_Code;
 				                          var edio = '/base/area/edit/'+code;
-				                           return <li key={code} name={code} className={this.state[code]} onClick={this.handleClick.bind(this,code)}>
+				                           return <li key={code} id={code} name={code} className={this.state[code]} onClick={this.handleClick}>
 				                                 {d.SalesRegion_Name}
 				                                 <em className="btn">
 				                                 <Link to={edio}>修改</Link>

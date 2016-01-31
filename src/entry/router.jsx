@@ -86,7 +86,7 @@ const Router = (
 		<Route path="/base" component={Welcome} ></Route>
 		<Route path="/base/info" component={BaseInfo}></Route>
 		<Route path="/base/product" component={BaseProduct}></Route>
-		<Route path="/base/product/add" component={BaseProductAdd}></Route>
+		<Route path="/base/product/add/:hid" component={BaseProductAdd}></Route>
 		<Route path="/base/product/edit/:id" component={BaseProductAdd}></Route>
 		<Route path="/base/area" component={BaseArea}></Route>
 		<Route path="/base/area/add" component={BaseAreaAdd}></Route>
@@ -96,7 +96,7 @@ const Router = (
 
 		// 用户管理  组织结构管理
 		<Route path="/user/group" component={UserGroup}></Route>
-		<Route path="/user/group/add" component={ UserGroupAdd }></Route>
+		<Route path="/user/group/add/:id" component={ UserGroupAdd }></Route>
 		<Route path="/user/group/edit/:id" component={ UserGroupAdd }></Route>
 
 		// 用户管理 企业角色管理

@@ -8,9 +8,21 @@ const msg_success = function(){
   message.success('数据提交成功，等待后台处理')
 }
 
+
 // 全局方法
 window['_G']={
 	Token : '',
+	assign : function (target) { 
+		for (var i = 1; i < arguments.length; i++) { 
+			var source = arguments[i]; 
+			for (var key in source) { 
+				if (Object.prototype.hasOwnProperty.call(source, key)) { 
+					target[key] = source[key]; 
+				} 
+			} 
+		} 
+		return target; 
+	},
 	// 用户性别
 	userSex : function(n){
 		return n==1?'男':'女'
@@ -66,6 +78,9 @@ window['_G']={
 		h = h < 10 ? '0'+h : h;
 		mm = mm < 10 ? '0'+mm : mm;
 		s = s < 10 ? '0'+s : s;
+		if(f == 'YYYY-MM-DD'){
+			return y + '-' + m + '-' + d 
+		}
 		return y + '-' + m + '-' + d + ' ' + h + ':' + mm + ':' + s;
 	},
 	// ajax
@@ -105,6 +120,21 @@ window['_G']={
 			}
 		})
 	},
+	getExcel:function(opts){
+		var url = opts.url;
+		var data = Object.assign({},opts.data);
+		var callback = opts.callback;
+		var str = '';
+		this.ajax({
+			url:url,
+			type:'get',
+			data : data,
+			success : function(res){
+				callback(res)
+			}
+
+		})
+	},
 	get_data : get_data,
 }
 
@@ -132,7 +162,12 @@ window['config'] = {
 			edit : '/api/SUser/PostUpUser',
 			info : '/api/SUser/GetUser',
 			del : '/api/SUser/DeleteUser',
-			role : '/api/SUser/GetUserRole', //获取用户角色信息
+			role : '/api/SUser/GetUserRole', // 获取用户角色信息
+			nation : '/api/SUser/GetNation', // 民族
+			status : '/api/SUser/GetUserStatus', // 状态
+			part : '/api/SUser/GetOrganization', // 部门
+			all : '/api/SRole/GetAllRoles', // 所有角色信息
+			save : '/api/SUser/SaveUserRole', // 保存角色设置
 		},
 		// 角色管理
 		role : {
@@ -144,19 +179,33 @@ window['config'] = {
 			update : '/api/SRole/PutRole', // 修改角色信息
 			add : '/api/SRole/PostRole', // 新增角色信息
 			saveRole : '/api/SRole/PostSetRole', // 保存角色权限
+
 			getRole : '/api/SRole/GetSetRole', // 获取角色权限
 		},
 		// 组织机构管理
 		group : {
-			list : '/api/SOrganization/GetOrganizations',
+			list : '/api/SOrganization/GetOrganizations',//获取所有组织结构信息
+			info : '/api/SOrganization/GetOrganization',//获取指定组织结构信息
+			del : '/api/SOrganization/DeleteOrganization',//删除组织结构
+			types : '/api/SOrganization/GetOrganizationTypes',//获取部门属性列表
+			add : '/api/SOrganization/AddOrganization',//新增组织结构
+			edit : '/api/SOrganization/UpdateOrganization',//修改组织结构
 		}
 	},
 	// 基础管理
 	base : {
 		// 产品管理
 		product:{
-			list : '/api/',
-			GetProductUnit : '/api/SProduct/GetProductUnit', // 获取行业
+			list : '/api/SProduct/GetProduct', 
+			GetIndustry : '/api/SProduct/GetIndustry', // 获取行业
+			one : '/api/SProduct/GetProduct',
+			dic : '/api/SProduct/GetProductDic', // 有效期类型
+			unit : '/api/SProduct/GetProductUnit', // 计量单位
+			upload : '/api/SProduct/UpProImage', // 上传图片
+			update : '/api/SProduct/PutProduct', // 修改
+			add : '/api/SProduct/PostProduct', // 新增提交
+			edit : '/api/SProduct/PutProduct', // 修改提交
+			del : '/api/SProduct/DeleteProduct', // 删除
 		},
 		info : {
 			list : '/api/SEnterprise/GetEnterprise'
@@ -183,6 +232,7 @@ window['config'] = {
 			one : '/api/SPromotionActivity/GetMarketingActivitie', // 获取指定活动信息
 			del : '/api/SPromotionActivity/DeleteMarketingActivitie', // 删除活动
 			publish : '/api/SPromotionActivity/PublishMarketingActivitie', // 发布活动
+			excel : '/api/SPromotionActivity/ExportExcelActivity',//导出excel
 		},
 		'vip':{
 			list : '/api/SMember/GetMemberBy',	//获取会员列表
@@ -217,14 +267,17 @@ window['config'] = {
 		round : {
 			list : '/api/SReport/GetCustomerDraw_Report', // 消费者抽奖流水
 			info : '/api/SReport/GetAwardList',//点击数量二级页面
+			excel : '/api/SReport/ExportExcel_CustomerDraw_Report',//导出excel
 		},
 		send : {
 			list : '/api/SSendTextMsgs/SendText', // 发送短信流水
 			info : '/api/SSendTextMsgs/GetTextDetails',//点击数量二级页面
+			excel : '/api/SSendTextMsgs/TextMessagesExcel',//导出excel
 		},
 		push : {
 			list : '/api/SRecharge/Recharge', // 话费充值流水
 			info : '/api/SRecharge/GetRechargeDetails',//点击数量二级页面
+			excel : '/api/SRecharge/RechargeToExcel',//导出excel
 		},
 		user : {
 			list : '/api/SReport/GetCusmorJoin_Report', // 消费者参与流水
@@ -241,13 +294,15 @@ window['config'] = {
 			edit : '/api/SIntegralRule/UpdateRule',   // 编辑积分规则
 			editList : '/api/SIntegralRule/GetRule',   // 获取指定积分规则
 			type : '/api/SIntegralRule/GetIntegralRuleTypes',//获取类型
+			del : '/api/SIntegralRule/DeleteRule', // 删除
+			excel : '/api/SIntegralRule/ExportExcelRule',//导出excel
 		},
 		area : {
 			list : '/api/SBatchRegion/GetBatchRegion',//获取指定页的批次区域
 			search : '/api/SBatchRegion/GetBatchRegionList',//按条件查询批次区域
 			add :'/api/SBatchRegion/PostBatchRegion',//添加批次区域
 			edit:'/api/SBatchRegion/PutBatchRegion',//更新批次区域
-			del :'/api/SBatchRegion/PutBatchRegion',//删除批次区域
+			del :'/api/SBatchRegion/DeleteBatchRegion',//删除批次区域
 			excel:'/api/SBatchRegion/BatchRegionToExcel',//导出批次区域到EXCEL
 			seles : '/api/SBatchRegion/GetSalesRegion',//销售区域下拉菜单
 			listOne : '/api/SBatchRegion/GetBatchRegionByCode',//获取单条数据

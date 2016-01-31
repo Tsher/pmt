@@ -1,6 +1,6 @@
 //  用户管理   组织机构管理  新增
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = _G.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 import React from 'react';
 import Form from 'antd/lib/form';
@@ -27,6 +27,16 @@ const FieldMixin = Validation.FieldMixin;
 const History = createHistory();
 
 const goBack = History.goBack;
+
+import '../../entry/config';
+const groupTypes = config.__URL + config.user.group.types;
+const groupInfo = config.__URL + config.user.group.info;
+const groupAdd = config.__URL + config.user.group.add;
+const groupEdit = config.__URL + config.user.group.edit;
+
+
+var changeTableState;
+
 
 function cx(classNames) {
   if (typeof classNames === 'object') {
@@ -55,20 +65,21 @@ class UserGroupAdd extends React.Component{
   	super(props);
   	this.state = {
       status: {
-        name:{}, // 新增部门的名称
+        Organization_Name:{}, // 新增部门的名称
       },
       formData: {
         id : undefined, // 新增 or 编辑 识别
         no : undefined, // 编辑状态 部门编号
         key : undefined, // 选中的部门id
-        parent : undefined, // 选中的部门名称
-        name: undefined, // 新增部门的名称
-        shortName : undefined, // 新增部门的缩写
-        desc : undefined, // 新增部门的描述
-        prototype : undefined, // 新增部门的属性
+        parent : '', // 上级部门名称
+        Organization_Name: '', // 新增部门的名称
+        PY : '', // 新增部门的缩写
+        Description : '', // 新增部门的描述
+        OAttributes : '', // 新增部门的属性
         title : '新增部门',
         show : 'none', // 新增= none  编辑=block
-      }
+      },
+      selesD:[],
     };
     this.setField = FieldMixin.setField.bind(this);
     this.handleValidate = FieldMixin.handleValidate.bind(this);
@@ -76,20 +87,66 @@ class UserGroupAdd extends React.Component{
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleReset = this.handleReset.bind(this);
-
+    this.onChange = this.onChange.bind(this);
     this.checkGroupName = this.checkGroupName.bind(this);
   }
 
   componentDidMount(){
-    // 编辑
-    if(this.props.params.id){
-      // ajax获取当前id的内容，变更state ****************************
-      var state = _extends(this.state,{formData:{ id:this.props.params.id , title : '编辑部门', show : 'block' }});
-      this.setState(state);
 
-    }else{
-      // 新增 *************
-    }
+    var id = this.props.params.id;
+    var isEdit = id.split(',')[1]||'';
+    var code = id.split(',')[0];
+    var name = id.split(',')[1]||'';
+
+    
+
+    _G.ajax({
+      url : groupTypes,
+      type: "get",
+      success:function(res){
+        console.log(res.Data)
+        this.setState({
+          selesD : res.Data
+        })
+        if(isEdit == 'edit'){
+          // 编辑
+          // ajax 请求当前id的数据 ********************************
+
+
+          _G.ajax({
+            url : groupInfo,
+            type: "get",
+            data : {Organization_Code:code},
+            success:function(res){
+              var d = res;
+              console.log(d);
+              var json = d.Data;
+              json.parent = d.Parent_Name;
+              json.PY = '';
+              json.OAttributes = '';
+              this.setState({
+                 formData:json,
+              })
+            }.bind(this)
+
+          })
+          
+        }else{
+
+          var fD = _G.assign({},this.state.formData);
+          if (name != 'add') {
+              fD.parent = name;
+              this.setState({
+                formData : fD
+              })
+          };
+
+        }
+
+      }.bind(this)
+
+    })
+
   }
 
 
@@ -139,7 +196,50 @@ class UserGroupAdd extends React.Component{
         msg_error()
         return;
       } else {
-        console.log('submit');
+
+        var id = this.props.params.id;
+        var isEdit = id.split(',')[1]||'';
+        var code = id.split(',')[0];
+        
+        // 提交数据
+        
+        var fD = _G.assign({},this.state.formData);
+        var Parent_Code = fD.Parent_Code;
+        if (isEdit != 'edit') {
+          Parent_Code = code;
+        };
+        var d = {
+            Organization_Name:fD.Organization_Name,
+            Description:fD.Description,
+            PY:fD.PY,
+            Parent_Code:Parent_Code,
+            Organization_Code:fD.Organization_Code,
+            OAttributes:fD.REAL_Code,
+        };
+
+        //JsonValue:JSON.stringify(d)
+        let u = isEdit == 'edit' ? groupEdit+'?Organization_Code='+fD.Organization_Code : groupAdd;
+        _G.ajax({
+          url  : u,
+          data : d,
+          method : 'post',
+          success:function(res){
+            if(res.ReturnOperateStatus == 'True'){
+              msg_success();
+              // 调转到列表页
+              goBack();
+              return;
+            }
+            if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
+              msg_error(res.Msg);
+              return
+            }
+          },
+          fail:function(res){
+            msg_error();
+          }
+        })
+
       }
       console.log(this.state.formData);
       msg_success();
@@ -152,6 +252,25 @@ class UserGroupAdd extends React.Component{
     } else {
       callback();
     }
+  }
+
+  onChange(field,value){
+    var data = _G.assign({},this.state);
+    if (field == 'CODE_NM') {
+      var sD = this.state.selesD;
+      var name = '';
+      for(var i=0;i<sD.length;i++){
+        if (sD[i].REAL_Code == value) {
+           name = sD[i].CODE_NM;
+        };
+      }
+      data.formData[field] = name;
+      data.formData['REAL_Code'] = value;
+    }else{
+      data.formData[field] = value;
+    }
+    
+    this.setState(data)
   }
 
 
@@ -180,43 +299,49 @@ class UserGroupAdd extends React.Component{
               </FormItem>
               <FormItem
                 label="部门名称："
-                id="name"
+                id="Organization_Name"
                 labelCol={{span: 2}}
                 wrapperCol={{span: 4}}
-                validateStatus={this.renderValidateStyle('name')}
-                help={status.name.errors ? status.name.errors.join(',') : null}
+                validateStatus={this.renderValidateStyle('Organization_Name')}
+                help={status.Organization_Name.errors ? status.Organization_Name.errors.join(',') : null}
                 required>
                   <Validator rules={[{required: true, message: '请输入部门名称'},{validator: this.checkGroupName}]}>
-                    <Input  name="name" value={formData.name} />
+                    <Input  name="Organization_Name" value={formData.Organization_Name} />
                   </Validator>
               </FormItem>
+
               <FormItem
                 label="缩写："
-                id="shortName"
+                id="PY"
                 labelCol={{span: 2}}
                 wrapperCol={{span: 4}}
                 >
-                  <Input  name="shortName" value={formData.shortName} />
+                  <Validator rules={[{required: false, message: ''}]}>
+                      <Input  name="PY" value={formData.PY} />
+                    </Validator>
               </FormItem>
               <FormItem
                 label="描述："
-                id="desc"
+                id="Description"
                 labelCol={{span: 2}}
                 wrapperCol={{span: 4}}
                 >
-                  <Input type="textarea" name="desc" value={formData.desc} />
+                <Validator rules={[{required: false, message: ''}]}>
+                  <Input type="textarea" name="Description" value={formData.Description} />
+                </Validator>
               </FormItem>
               <FormItem
                 label="属性："
-                id="prototype"
+                id="CODE_NM"
                 labelCol={{span: 2}}
                 wrapperCol={{span: 4}}
                 >
-                <Select size="large" placeholder="请选择" style={{width: '100%'}} name="prototype" value={formData.prototype}>
-                  <Option value="type-1">部门</Option>
-                  <Option value="type-2">集团</Option>
-                  <Option value="type-3">公司</Option>
-                  <Option value="type-4">项目组</Option>
+                <Select size="large" placeholder="请选择" style={{width: '100%'}} name="CODE_NM" value={formData.REAL_Code} onChange={this.onChange.bind(this,'CODE_NM')} defaultValue={formData.CODE_NM} >
+                  {
+                     this.state.selesD.map(function(d){
+                        return <Option key={d.REAL_Code} value={d.REAL_Code} >{d.CODE_NM}</Option>
+                     })
+                  }
                 </Select>
               </FormItem>
             </Validation>

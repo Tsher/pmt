@@ -11,6 +11,8 @@ import Form from 'antd/lib/form';
 import message from 'antd/lib/message';
 import Table from 'antd/lib/table';
 import {Link} from 'react-router';
+import Tree from 'antd/lib/tree';
+const TreeNode = Tree.TreeNode;
 import { createHistory } from 'history';
 import Modal from 'antd/lib/modal';
 import Popover from 'antd/lib/popover';
@@ -38,6 +40,8 @@ import '../../entry/config';
 
 const urlUserList = config.__URL + config.user.user.list;
 const urlUserDel  = config.__URL + config.user.user.del;
+const urlUserPart = config.__URL + config.user.user.part;
+
 
 let changeTableState;
 
@@ -54,6 +58,9 @@ class SelectForm extends React.Component{
       User_Status : '',
       Depart_Code : '',
       show : 'none',
+      right:0,
+      top:-1000,
+      width:100,
     };
     this.setValue = this.setValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -61,12 +68,45 @@ class SelectForm extends React.Component{
     this.radioChange = this.radioChange.bind(this);
     this.disabledEndDate = this.disabledEndDate.bind(this);
     this.showMoreSearch = this.showMoreSearch.bind(this);
+    this.departCheck = this.departCheck.bind(this);
+    this.checkhandle = this.checkhandle.bind(this);
   }
 
   showMoreSearch(){
     this.setState({
       show : this.state.show == 'none' ? 'block' : 'none'
     })
+  }
+
+  componentDidMount(){
+
+
+    // 获取部门
+    _G.ajax({
+      url : urlUserPart,
+      type : 'get',
+      success : function(res){
+
+        const loop = (data) => {
+          return data.map( (item) => {
+            if(item.Children){
+              return (<TreeNode title={item.Name} key={item.Code}>{loop(item.Children)}</TreeNode>);
+            }else{
+              return (<TreeNode title={item.Name} key={item.Code}></TreeNode>);
+            }
+          } )
+        }
+        const parseTree = (data) => loop(data);
+        let treeNodes = parseTree(res.Data);
+
+        this.setState({
+          treeNodes : treeNodes
+        })
+      }.bind(this)
+    })
+
+
+
   }
 
 
@@ -82,11 +122,19 @@ class SelectForm extends React.Component{
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
-    var data = Object.assign({},this.state);
-    data.Register_On_S = ''+_G.timeFormat( new Date(data.Register_On_S).getTime() );
-    data.Register_On_E = ''+_G.timeFormat( new Date(data.Register_On_S).getTime() );
-    this.props.changeTableState(data);
-    console.log(data)
+    var data = _G.assign({},this.state);
+
+    data.Register_On_S = _G.timeFormat( new Date(data.Register_On_S).getTime() , 'YYYY-MM-DD' );
+    data.Register_On_E = _G.timeFormat( new Date(data.Register_On_E).getTime() , 'YYYY-MM-DD' );
+    var d = {
+      Register_On_S : data.Register_On_S,
+      Register_On_E : data.Register_On_E,
+      User_Status : data.User_Status,
+      Depart_Code : data.Depart_Code,
+      Login_Name : data.Login_Name
+    }
+    this.props.changeTableState(d);
+    console.log(d)
     
   }
 
@@ -111,9 +159,30 @@ class SelectForm extends React.Component{
     return endValue.getTime() <= this.state.Register_On_S.getTime();
   }
 
+  departCheck(e){
+    var tar = e.target;
+    var size = $(tar).offset();
+    this.setState({
+      right : 10,
+      top : tar.offsetHeight,
+      width : tar.offsetWidth
+    })
+  }
+
+  // 点击树菜单
+  checkhandle(info){
+    // 根据 eventKey 查询 相关信息 展示右侧详细信息
+    console.log(info)
+    var state = _G.assign({},this.state);
+    state.Depart_Code = info.node.props.eventKey;
+    state.Depart_Name = info.node.props.title;
+    state.top = -1000;
+    this.setState(state);
+    // 根据选中的 key ，获取 相关数据 ,更新state，展示再右侧
+  }
+
  
   render() {
-    const content = (<ul><li>组织结构</li><li>组织结构</li><li>组织结构</li><li>组织结构</li><li>组织结构</li><li>组织结构</li></ul>)
     return (
     	<div className="fright">
       <Form inline onSubmit={this.handleSubmit}>
@@ -165,12 +234,15 @@ class SelectForm extends React.Component{
                    
                 </FormItem>
               </li>
-              <li className="fleft">
+              <li className="fleft" style={{"position":"relative"}}>
                 <FormItem id="Depart_Code" label="隶属部门：">
-                  <Popover overlay={content} title="" trigger="focus">
-                    <Input placeholder="" id="Depart_Code" name="Depart_Code" onChange={this.setValue} value={this.state.Depart_Code} />
-                  </Popover>
+                  <Input placeholder="" name="Depart_Name" onClick={this.departCheck} value={this.state.Depart_Name} />
                 </FormItem>
+                <div id="fixedTree" className="fixedTree" style={{right:this.state.right,top:this.state.top,width:this.state.width}}>
+                  <Tree multiple={false} onSelect={this.checkhandle}>
+                      {this.state.treeNodes}
+                  </Tree>
+                </div>
               </li>
               <li className="fleft">
                 <FormItem>
@@ -189,6 +261,7 @@ class SelectForm extends React.Component{
         </Col>
         </Row>
       </Form>
+      
       </div>
     );
   }
@@ -293,7 +366,7 @@ class UserUser extends React.Component{
 
   // 点击分页
   tableChange(pagination, filters, sorter){
-    var opts = Object.assign({},this.state.opts);
+    var opts = _G.assign({},this.state.opts);
     opts.page = pagination.current;
     opts.pageSize = pagination.pageSize;
 
@@ -307,7 +380,7 @@ class UserUser extends React.Component{
   }
   // 每页数据条数变化
   showSizechange(current, pageSize){
-    var opts = Object.assign({},this.state.opts);
+    var opts = _G.assign({},this.state.opts);
     opts.pageSize = pageSize;
     opts.page = current;
 
@@ -446,12 +519,12 @@ class UserUser extends React.Component{
 					</Col>
 				</Row>
 				<Row>
-					<Table onChange={this.tableChange}  onShowSizeChange={this.showSizechange}
+					<Table onChange={this.tableChange}  
             loading={this.state.loading} 
             key={rowKey} 
             columns={columns} 
             dataSource={this.state.data} 
-            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total}}  />
+            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}}  />
 				</Row>
         <Modal title="您正在进行删除操作，请确认！"
           visible={this.state.visible}
