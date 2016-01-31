@@ -85,6 +85,7 @@ class SelectForm extends React.Component{
        data : {
           MA_StartTime : _G.timeFormat2( new Date(_this.state.MA_StartTime).getTime() , 'YYYY-MM-DD' ),
           MA_EndTime : _G.timeFormat2( new Date(_this.state.MA_EndTime).getTime() , 'YYYY-MM-DD' ),
+          MA_Name : _this.state.MA_Name,
        },
        callback : function(d){
            var excel = d.ReturnOperateStatus;
