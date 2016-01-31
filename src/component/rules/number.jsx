@@ -18,6 +18,7 @@ const FormItem = Form.Item;
 import '../../entry/config';
 const ruleNumberList = config.__URL + config.rule.number.list;
 const ruleNumberDel  = config.__URL + config.rule.number.del;
+const ruleNumberExcel  = config.__URL + config.rule.number.excel;
 
 var changeTableState;
 
@@ -72,6 +73,7 @@ class RuleNumber extends React.Component{
           page :1,
           pageSize : 10,
         },
+        excel : 'javascript:;',
       }
     this.showModal = this.showModal.bind(this);
     this.handleOk = this.handleOk.bind(this);
@@ -84,6 +86,20 @@ class RuleNumber extends React.Component{
 
 
   componentDidMount(){
+
+    //excel导出 begin
+    var _this = this;
+    _G.getExcel({
+       url : ruleNumberExcel,
+       data : {},
+       callback : function(d){
+           var excel = d.ReturnOperateStatus;
+           _this.setState({
+               excel : excel
+           })
+       }
+    });
+    //excel导出 end
     
     modalState = this.showModal;
 
@@ -217,9 +233,9 @@ class RuleNumber extends React.Component{
                   </Link>
         </Col>
         <Col span="2">
-            <Link to='/rule/number/exports'>
+            <a href={this.state.excel}>
               <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
-                  </Link>
+                  </a>
           </Col>
         </Row>
         <Table onChange={this.tableChange} columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}} />
