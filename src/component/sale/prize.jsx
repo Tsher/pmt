@@ -240,22 +240,20 @@ class SalePrize extends React.Component{
                 this.setState({
                     confirmLoading: true
                 })
-                setTimeout(() => {
-                    var d = [],_tmp = this.state.data
-                    for(var i=0;i<_tmp.length;i++){
-                      if(_tmp[i].Prize_Code!=opts.Prize_Code){
-                        d.push(_tmp[i])
-                      }
-                    }
-                    this.setState({
-                        data: d,
-                        total: this.state.total,
-                        opts: this.state.opts
-                    })
-                    this.setState({
-                        visible: false
-                    })
-                }, 2000)
+                var d = [],_tmp = this.state.data
+                for(var i=0;i<_tmp.length;i++){
+                  if(_tmp[i].Prize_Code!=opts.Prize_Code){
+                    d.push(_tmp[i])
+                  }
+                }
+                this.setState({
+                    data: d,
+                    total: this.state.total,
+                    opts: this.state.opts
+                })
+                this.setState({
+                    visible: false
+                })
             }.bind(this)
         })
   }
