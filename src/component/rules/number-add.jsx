@@ -1,7 +1,7 @@
 // 营销规则 积分规则
 
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = _G.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 import React from 'react';
 import Form from 'antd/lib/form';
@@ -106,7 +106,7 @@ class RuleNumberAdd extends React.Component{
 
   // datepicker change
   onChange(field,value){
-    var data = Object.assign({},this.state);
+    var data = _G.assign({},this.state);
     if (field == 'SalesRegion_Name') {
       var sD = this.state.selesD;
       var name = '';
@@ -220,7 +220,7 @@ class RuleNumberAdd extends React.Component{
       
       // 提交数据
       let u = this.props.params.id ? ruleNumberEdit : ruleNumberAdd;
-      var fD = Object.assign({},this.state.formData);
+      var fD = _G.assign({},this.state.formData);
       fD.Effective_Time = _G.timeFormat(fD.Effective_Time,'YYYY-MM-DD');
       fD.Failure_Time = _G.timeFormat(fD.Failure_Time,'YYYY-MM-DD');
       fD.REAL_Code = fD.SalesRegion_Code;
@@ -260,7 +260,7 @@ class RuleNumberAdd extends React.Component{
   // 文本框的值 同步到 state
   setValue(e){
     var name = e.target.id || e.target.name;
-    var data = Object.assign({},this.state);
+    var data = _G.assign({},this.state);
     data.formData[name] = e.target.value;
     this.setState(data);
   }

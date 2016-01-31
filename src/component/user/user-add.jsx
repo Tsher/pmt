@@ -1,6 +1,6 @@
 //  用户管理   企业用户管理  新增
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = _G.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 import React from 'react';
 import Form from 'antd/lib/form';
@@ -272,7 +272,7 @@ class UserUserAdd extends React.Component{
       // 提交数据
       let u = this.props.params.id ? urlUserEdit : urlUserAdd;
       let t = this.props.params.id ? 'PUT' : 'POST';
-      var data = Object.assign({},this.state.formData);
+      var data = _G.assign({},this.state.formData);
       data.User_Birthday = _G.timeFormat( new Date(data.User_Birthday), 'YYYY-MM-DD');
       data.Register_On = _G.timeFormat( new Date(data.Register_On), 'YYYY-MM-DD');
       _G.ajax({
@@ -304,7 +304,7 @@ class UserUserAdd extends React.Component{
   checkhandle(info){
     // 根据 eventKey 查询 相关信息 展示右侧详细信息
     console.log(info)
-    var state = Object.assign({},this.state);
+    var state = _G.assign({},this.state);
     state.formData.Depart_Code = info.node.props.eventKey;
     state.formData.Depart_Name = info.node.props.title;
     this.setState({
@@ -328,7 +328,7 @@ class UserUserAdd extends React.Component{
     var name = e.target.id || e.target.name;
     var value = e.target.value;
 
-    var data = Object.assign( {}, this.state.formData );
+    var data = _G.assign( {}, this.state.formData );
 
     data[name] = value;
 
@@ -349,7 +349,7 @@ class UserUserAdd extends React.Component{
 
   // datepicker change
   onChange(field,value){
-   var data = Object.assign({},this.state);
+   var data = _G.assign({},this.state);
     data.formData[field]=value;
     this.setState(data)
   }

@@ -1,6 +1,6 @@
 //  基础管理   产品管理  新增、编辑
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = _G.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 import React from 'react';
 import Form from 'antd/lib/form';
@@ -240,7 +240,7 @@ class BaseProductAdd extends React.Component{
   // 删除表格中某条数据
   modalState(id,index,name){
     console.log(id,index,name)
-    var data = Object.assign({},this.state);
+    var data = _G.assign({},this.state);
     data.formData.DataDetail.splice(index*1,1);
     data.formData.DataDetail.map(function(item,index){
       item.key = index;
@@ -250,7 +250,7 @@ class BaseProductAdd extends React.Component{
   }
 
   uploadSuccess(src){
-    var state = Object.assign({},this.state);
+    var state = _G.assign({},this.state);
     state.formData.DataImage = [{image : src}];
     this.setState(state);
   }
@@ -382,7 +382,7 @@ class BaseProductAdd extends React.Component{
         console.log('submit');
       }
       
-      var formData = Object.assign({},this.state.formData);
+      var formData = _G.assign({},this.state.formData);
       var data = {
         Append_Code : formData.Append_Code,
         Brand : formData.Brand,
@@ -444,7 +444,7 @@ class BaseProductAdd extends React.Component{
     var name = e.target.id || e.target.name;
     var value = e.target.value;
 
-    var data = Object.assign( {}, this.state.formData );
+    var data = _G.assign( {}, this.state.formData );
 
     data[name] = value;
 
@@ -472,7 +472,7 @@ class BaseProductAdd extends React.Component{
     //******************* 读取 this.state.formData.addPacking 提交数据 插入到已选择比例表格中 然后 关闭****************************
     
 
-    var data = Object.assign({},this.state);
+    var data = _G.assign({},this.state);
 
     var addPacking = data.formData.addPacking;
     var state = true,Packing_Proportion=[],Packing_Units=[];
@@ -535,7 +535,7 @@ class BaseProductAdd extends React.Component{
 
   // datepicker change
   onChange(field,value){
-   var data = Object.assign({},this.state);
+   var data = _G.assign({},this.state);
     data.formData[field]=value;
     this.setState(data)
   }
@@ -574,7 +574,7 @@ class BaseProductAdd extends React.Component{
       }
     }
     packing_data.length = value;
-    let state = Object.assign({},this.state);
+    let state = _G.assign({},this.state);
     state.formData.addPacking.Pack_Level = value;
     state.formData.addPacking.Packing_Units = [];
     state.formData.addPacking.Packing_Proportion = [];
@@ -586,13 +586,13 @@ class BaseProductAdd extends React.Component{
   packingUnitChange(e,label,record,type){
     console.log(e,label,record,type)
 
-    let state = Object.assign({},this.state);
+    let state = _G.assign({},this.state);
     state.formData.addPacking.data[record.index][type] = e
     this.setState(state);
   }
   
   packingSizeChange(e){
-    let state = Object.assign({},this.state);
+    let state = _G.assign({},this.state);
     state.formData.addPacking.data[e.index] = e;
     this.setState(state);
   }
@@ -602,7 +602,7 @@ class BaseProductAdd extends React.Component{
         value = e.target.value;
     setTimeout(function(){
       var value = e.target.value;
-      let state = Object.assign({},this.state);
+      let state = _G.assign({},this.state);
       state[name] = value;
       state.formData.Product_Name = (state.formData.Brand||'') + (state.formData.SName||'');
       this.setState(state);

@@ -98,7 +98,7 @@ class ChangePassword extends React.Component{
   }
 
   onChange(e){
-    let formData = Object.assign({},this.state.formData);
+    let formData = _G.assign({},this.state.formData);
     formData[e.target.name]=e.target.value;
     console.log(e.target.name,e.target.value)
     this.setState({
@@ -126,7 +126,7 @@ class ChangePassword extends React.Component{
   
   handleSubmit(e){
     e.preventDefault();
-    var data = Object.assign({},this.state.formData);
+    var data = _G.assign({},this.state.formData);
     data.Token = _G.Token;
     // 修改密码
     _G.ajax({

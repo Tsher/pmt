@@ -1,6 +1,6 @@
 //  用户管理   组织机构管理  新增
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = _G.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 import React from 'react';
 import Form from 'antd/lib/form';
@@ -133,7 +133,7 @@ class UserGroupAdd extends React.Component{
           })
           
         }else{
-          var fD = Object.assign({},this.state.formData);
+          var fD = _G.assign({},this.state.formData);
           fD.parent = name;
           this.setState({
             formData : fD
@@ -200,7 +200,7 @@ class UserGroupAdd extends React.Component{
         
         // 提交数据
         
-        var fD = Object.assign({},this.state.formData);
+        var fD = _G.assign({},this.state.formData);
         var Parent_Code = fD.Parent_Code;
         if (isEdit != 'edit') {
           Parent_Code = code;
@@ -252,7 +252,7 @@ class UserGroupAdd extends React.Component{
   }
 
   onChange(field,value){
-    var data = Object.assign({},this.state);
+    var data = _G.assign({},this.state);
     if (field == 'CODE_NM') {
       var sD = this.state.selesD;
       var name = '';

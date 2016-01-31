@@ -75,7 +75,7 @@ class SelectForm extends React.Component{
 
     console.log(this.state)
 
-    var data = Object.assign({},this.state);
+    var data = _G.assign({},this.state);
     data.Register_On_S = ''+_G.timeFormat2( new Date(data.Register_On_S).getTime() , 'YYYY-MM-DD' );
     data.Register_On_E = ''+_G.timeFormat2( new Date(data.Register_On_E).getTime() , 'YYYY-MM-DD');
     this.props.changeTableState(data);
@@ -294,7 +294,7 @@ class BaseProduct extends React.Component{
   
   // 点击分页
   tableChange(pagination, filters, sorter){
-    var opts = Object.assign({},this.state.opts);
+    var opts = _G.assign({},this.state.opts);
     opts.page = pagination.current;
     opts.pageSize = pagination.pageSize;
 
@@ -308,7 +308,7 @@ class BaseProduct extends React.Component{
   }
   // 每页数据条数变化
   showSizechange(current, pageSize){
-    var opts = Object.assign({},this.state.opts);
+    var opts = _G.assign({},this.state.opts);
     opts.pageSize = pageSize;
     opts.page = current;
 

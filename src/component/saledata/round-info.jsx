@@ -79,7 +79,7 @@ class SaleDataRoundInfo extends React.Component{
 
   // 点击分页
   tableChange(pagination, filters, sorter){
-    var opts = Object.assign({},this.state.opts);
+    var opts = _G.assign({},this.state.opts);
     opts.page = pagination.current;
     opts.pageSize = pagination.pageSize;
 
@@ -91,7 +91,7 @@ class SaleDataRoundInfo extends React.Component{
   }
   // 每页数据条数变化
   showSizechange(current, pageSize){
-    var opts = Object.assign({},this.state.opts);
+    var opts = _G.assign({},this.state.opts);
     opts.pageSize = pageSize;
     opts.page = current;
     
