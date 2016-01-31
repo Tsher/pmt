@@ -50,252 +50,207 @@ const msg_success = function(){
   message.success('数据提交成功，等待后台处理')
 }
 
-
-
-
+var kinds = [];
 
 class SalePrizeEdit extends React.Component{
-
-  //mixins: [Validation.FieldMixin],
-
   constructor(props) {
-  	super(props);
-  	this.state = {
-      status : {
-        prizeName : {},
-        prizeType : {},
-        creatTime : {},
-        productName : {}
-      },
-      formData : {
-        id : '', // 奖品id
-        title : '新增奖品',
-        prizeName : undefined, // 奖品名称
-        unit : undefined, // 单位
-        prizeType  : undefined , // 奖品类别
-        pic : undefined, // 奖品图片
-        productName : undefined, // 品牌
-        creatTime : undefined, // 入网日期
-        size : undefined, // 规格
-      }
-      
-    };
+      super(props);
+      this.state = {
+          status: {
+              Prize_Name: {},
+              Prize_Type: {},
+              RegisterOn: {},
+              Brand: {}
+          },
+          formData: {
+              id: '', // 奖品id
+              title: '奖品信息',
+              Prize_Name: '', // 奖品名称
+              Unit: '', // 单位
+              Prize_Type: '', // 奖品类别
+              Image: [], // 奖品图片
+              Brand: '', // 品牌
+              RegisterOn: '', // 入网日期
+              Spec: '' // 规格
+          }
+      };
 
-    this.handleValidate = FieldMixin.handleValidate.bind(this);
-    this.onValidate = FieldMixin.onValidate.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.renderValidateStyle = this.renderValidateStyle.bind(this);
-    this.uploadCallback = this.uploadCallback.bind(this);
-    this.setValue = this.setValue.bind(this);
-    this.onChange = this.onChange.bind(this);
+      this.handleValidate = FieldMixin.handleValidate.bind(this);
+      this.onValidate = FieldMixin.onValidate.bind(this);
+      this.handleSubmit = this.handleSubmit.bind(this);
+      this.renderValidateStyle = this.renderValidateStyle.bind(this);
+      this.uploadCallback = this.uploadCallback.bind(this);
+      this.setValue = this.setValue.bind(this);
+      this.onChange = this.onChange.bind(this);
+      this.getSource = this.getSource.bind(this);
+      this.handlePrizeType = this.handlePrizeType.bind(this);
   }
 
   // datepicker change
-  onChange(field,value){
-    var data = Object.assign({},this.state);
-    data.formData[field] = value;
-    this.setState(data)
+  onChange(field, value) {
+      var data = Object.assign({}, this.state);
+      data.formData[field] = value;
+      this.setState(data)
   }
 
-  componentDidMount(){
-    var id = this.props.params.id;
+  getSource(){
+    var opts = {
+          Prize_Code: this.props.params.id
+      }
+      _G.ajax({
+          url: config.__URL + config.sale.prize.info,
+          type: "get",
+          data: opts,
+          success: function(res) {
+              this.setState({
+                  formData: Object.assign(res.Data, {
+                      Image: res.Image,
+                      RegisterOn: _G.timeFormat2(res.Data.RegisterOn)
+                  })
+              })
+          }.bind(this)
+      })
+  }
 
-    
-    if(id){
-      // 编辑
-      // ajax 请求当前id的数据 ********************************
-      var state = Object.assign({},this.state);
-      state.formData.id = this.props.params.id;
-      state.formData.title = '编辑奖品信息';
-      this.setState(state);
-      return
-    }
-    
-    
+  componentDidMount() {
+      _G.ajax({
+          url: config.__URL + config.sale.prize.kinds,
+          type: "get",
+          data: {Prize_Name:''},
+          success: function(res) {
+              kinds = res.Data
+              this.getSource()
+          }.bind(this)
+      })
   }
 
 
 
   handleReset(e) {
-    e.preventDefault();
-    goBack();
+      e.preventDefault();
+      goBack();
   }
 
   handleSubmit(e) {
-    //***********************************等待ajax提交数据 ******** 区分 新增 或者 编辑
-    e.preventDefault();
+      //***********************************等待ajax提交数据 ******** 区分 新增 或者 编辑
+      e.preventDefault();
 
-    const validation = this.refs.validation;
-    validation.validate((valid) => {
-      if (!valid) {
-        console.log('error in form');
-        msg_error()
-        return;
-      } else {
-        console.log('submit');
-      }
-      console.log(this.state.formData);
-      msg_success();
-    });
-    
-    
+      const validation = this.refs.validation;
+      validation.validate((valid) => {
+          if (!valid) {
+              console.log('error in form');
+              msg_error()
+              return;
+          } else {
+              console.log('submit');
+          }
+          console.log(this.state.formData);
+          msg_success();
+      });
   }
 
   // 文本框的值 同步到 state
-  setValue(e){
-    var name = e.target.id;
-    var data = Object.assign({},this.state);
-    data.formData[name] = e.target.value;
-    this.setState(data);
+  setValue(e) {
+      var name = e.target.id;
+      var data = Object.assign({}, this.state);
+      data.formData[name] = e.target.value;
+      this.setState(data);
   }
-
 
   // 图片上传回调
-  uploadCallback(info){
-    console.log(info)
+  uploadCallback(info) {
+      console.log(info)
   }
-
 
   renderValidateStyle(item) {
-    const formData = this.state.formData;
-    const status = this.state.status;
+      const formData = this.state.formData;
+      const status = this.state.status;
 
-    const classes = cx({
-      'error': status[item].errors,
-      'validating': status[item].isValidating,
-      'success': formData[item] && !status[item].errors && !status[item].isValidating
-    });
-
-    return classes;
+      const classes = cx({
+          'error': status[item].errors,
+          'validating': status[item].isValidating,
+          'success': formData[item] && !status[item].errors && !status[item].isValidating
+      });
+      return classes;
   }
 
-  renderPic(){
-    if(this.state.formData.pic){
-      return (<img src={this.state.formData.pic} style={{width:'100%'}} />)
-    }
+  handlePrizeType(value) {
+     this.setState({
+         formData: Object.assign(this.state.formData, {
+             Prize_Type: value
+         })
+     })
   }
 
   render() {
-    const formData = this.state.formData;
     const status = this.state.status;
+    var renderPic = this.state.formData.Image.map(function(elem) {
+        return <img src={elem.Image} style={{width: '100%'}} />
+    })
 
+    var renderKinds = kinds.map(function(elem) {
+      return <Option key={elem.Prize_Type}>{elem.Prize_Type}</Option>;
+    })
+    
     return (
-      <div className="m-form">
-        <div className="m-form-title">{formData.title}</div>
-        <div className="m-form-con">
-      <Form horizontal>
-        <Validation ref="validation" onValidate={this.handleValidate}>
-          <Row>
-            <Col span="8">
-                
-                <FormItem
-                  label="单位："
-                  id="unit"
-                  labelCol={{span: 8}}
-                  wrapperCol={{span: 12}}
-                  >
-                    <Input name="unit" id="unit" value={formData.unit} onChange={this.setValue} />
-                </FormItem>
-                <FormItem
-                  label="入网日期："
-                  id="creatTime"
-                  labelCol={{span: 8}}
-                  wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('creatTime')}
-                  help={status.creatTime.errors ? status.creatTime.errors.join(',') : null}
-                  required>
-                    
-                      <DatePicker placeholder="入网日期" value={formData.creatTime} id="creatTime" name="creatTime" onChange={this.onChange.bind(this,'creatTime')} />
-                    
-                </FormItem>
-                <FormItem
-                  label="品牌："
-                  id="productName"
-                  labelCol={{span: 8}}
-                  wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('productName')}
-                  help={status.productName.errors ? status.productName.errors.join(',') : null}
-                  required>
-                    <Validator rules={[{required: true, message: '请输入品牌'}]}>
-                      <Input name="productName" value={formData.productName} />
-                    </Validator>
-                </FormItem>
-                <FormItem
-                  label="规格："
-                  id="size"
-                  labelCol={{span: 8}}
-                  wrapperCol={{span: 12}}
-                  >
-                    <Input id="size" name="size" value={formData.size} onChange={this.setValue} />
-                </FormItem>
-            </Col>
-            <Col span="12">
-                <FormItem
-                  label="奖品名称："
-                  id="prizeName"
-                  labelCol={{span: 8}}
-                  wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('prizeName')}
-                  help={status.prizeName.errors ? status.prizeName.errors.join(',') : null}
-                  required>
-                    <Validator rules={[{required: true, message: '请输入奖品名称'}]}>
-                      <Input name="prizeName" value={formData.prizeName} />
-                    </Validator>
-                </FormItem>
-                <FormItem
-                  label="奖品类别："
-                  id="prizeType"
-                  labelCol={{span: 8}}
-                  wrapperCol={{span: 12}}
-                  validateStatus={this.renderValidateStyle('prizeType')}
-                  help={status.prizeType.errors ? status.prizeType.errors.join(',') : null}
-                  required>
-                    <Validator rules={[{required: true, message: '请选择奖品类别',type:'string'}]}>
-                      <Select name="prizeType" style={{width:'100%'}} value={formData.prizeType}>
-                        <Option value="话费">话费</Option>
-                        <Option value="微信红包">微信红包</Option>
-                        <Option value="实物">实物</Option>
-                        <Option value="视频网站会员">视频网站会员</Option>
-                        <Option value="电影票">电影票</Option>
-                        <Option value="电子券">电子券</Option>
-                      </Select>
-                    </Validator>
-                </FormItem>
-                
-                <FormItem
-                  label="奖品图片："
-                  id="pic"
-                  labelCol={{span: 8}}
-                  wrapperCol={{span: 12}}
-                  >
-                    <Input type="hidden" name="pic" value={formData.pic} />
-                    <Upload name="file" action="/upload.do" onChange={this.uploadCallback.bind(this)} >
-                        <Button type="ghost">
-                          <Icon type="upload" /> 点击上传
-                        </Button>
-                    </Upload>
-                    {this.renderPic()}
-                </FormItem>
-                
-            </Col>
-            
-          </Row>
-          
-        </Validation>
-      </Form>
-      </div>
-      <div className="m-form-btns">
-      <Row>
-        <Col span="8" offset="2">
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <Button type="primary" onClick={this.handleSubmit}>确定</Button>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <Button type="primary" onClick={this.handleReset}>取消</Button>
-        </Col>
-      </Row>
-        
-      </div>
-      </div>
+        <div className="m-form">
+            <div className="m-form-title">{this.state.formData.title}</div>
+            <div className="m-form-con">
+                <Form horizontal>
+                    <Validation ref="validation" onValidate={this.handleValidate}>
+                        <Row>
+                            <Col span="8">
+                                <FormItem label="单位：" id="Unit" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                    <Input name="Unit" id="Unit" value={this.state.formData.Unit} onChange={this.setValue} />
+                                </FormItem>
+                                <FormItem label="入网日期：" id="RegisterOn" labelCol={{span: 8}} wrapperCol={{span: 12}} validateStatus={this.renderValidateStyle( 'RegisterOn')} help={status.RegisterOn.errors ? status.RegisterOn.errors.join( ',') : null} required>
+                                    <DatePicker placeholder="入网日期" value={this.state.formData.RegisterOn} id="RegisterOn" name="RegisterOn" onChange={this.onChange.bind(this, 'RegisterOn')} />
+                                </FormItem>
+                                <FormItem label="品牌：" id="Brand" labelCol={{span: 8}} wrapperCol={{span: 12}} validateStatus={this.renderValidateStyle( 'Brand')} help={status.Brand.errors ? status.Brand.errors.join( ',') : null} required>
+                                    <Validator rules={[{required: true, message: '请输入品牌'}]}>
+                                        <Input name="Brand" value={this.state.formData.Brand} />
+                                    </Validator>
+                                </FormItem>
+                                <FormItem label="规格：" id="Spec" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                    <Input id="Spec" name="Spec" value={this.state.formData.Spec} onChange={this.setValue} />
+                                </FormItem>
+                            </Col>
+                            <Col span="12">
+                                <FormItem label="奖品名称：" id="Prize_Name" labelCol={{span: 8}} wrapperCol={{span: 12}} validateStatus={this.renderValidateStyle( 'Prize_Name')} help={status.Prize_Name.errors ? status.Prize_Name.errors.join( ',') : null} required>
+                                    <Validator rules={[{required: true, message: '请输入奖品名称'}]}>
+                                        <Input name="Prize_Name" value={this.state.formData.Prize_Name} />
+                                    </Validator>
+                                </FormItem>
+                                <FormItem label="奖品类别：" id="Prize_Type" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                    <Select name="Prize_Type" style={{width: '100%'}} value={this.state.formData.Prize_Type} onChange={this.handlePrizeType}>
+                                        {renderKinds}
+                                    </Select>
+                                </FormItem>
+                                <FormItem label="奖品图片：" id="pic" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                    <Input type="hidden" name="pic" value={this.state.formData.Image} />
+                                    <Upload name="file" action="/upload.do" onChange={this.uploadCallback.bind(this)}>
+                                        <Button type="ghost">
+                                            <Icon type="upload" /> 点击上传
+                                        </Button>
+                                    </Upload>
+                                    {renderPic}
+                                </FormItem>
+                            </Col>
+                        </Row>
+                    </Validation>
+                </Form>
+            </div>
+            <div className="m-form-btns">
+                <Row>
+                    <Col span="8" offset="2">
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <Button type="primary" onClick={this.handleSubmit}>确定</Button>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <Button type="primary" onClick={this.handleReset}>取消</Button>
+                    </Col>
+                </Row>
+            </div>
+        </div>
     );
   }
 };
