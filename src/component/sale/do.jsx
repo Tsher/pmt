@@ -37,6 +37,7 @@ import '../../entry/config';
 const saleDoList = config.__URL + config.sale['do']['list']; // 获取活动列表
 const saleDoPublish = config.__URL + config.sale['do']['publish']; // 发布活动
 const saleDoDel = config.__URL + config.sale['do']['del']; // 删除活动
+const saleDoExcel = config.__URL + config.sale['do']['excel']; // excel
 
 
 class SelectForm extends React.Component{
@@ -48,6 +49,7 @@ class SelectForm extends React.Component{
       MA_Name : '', // 活动名称
       MA_StartTime : '', // 注册开始时间
       MA_EndTime : '', // 注册结束时间
+      excel : 'javascript:;',
     };
     this.setValue = this.setValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -75,6 +77,24 @@ class SelectForm extends React.Component{
     //data.MA_StartTime = 
     this.props.changeTableState(this.state);
     console.log(this.state);
+
+    //excel导出 begin
+    var _this = this;
+    _G.getExcel({
+       url : saleDoExcel,
+       data : {
+          MA_StartTime : _G.timeFormat2( new Date(_this.state.MA_StartTime).getTime() , 'YYYY-MM-DD' ),
+          MA_EndTime : _G.timeFormat2( new Date(_this.state.MA_EndTime).getTime() , 'YYYY-MM-DD' ),
+          MA_Name : _this.state.MA_Name,
+       },
+       callback : function(d){
+           var excel = d.ReturnOperateStatus;
+           _this.setState({
+               excel : excel
+           })
+       }
+    });
+    //excel导出 end
 
   }
 
@@ -135,9 +155,11 @@ class SelectForm extends React.Component{
               </li>
               <li className="fleft">
                 <FormItem>
+                <a href={this.state.excel}>
                   <Button type="primary" size="large">
                     导出excel
                   </Button>
+                  </a>
                 </FormItem>
               </li>
             </ul>
