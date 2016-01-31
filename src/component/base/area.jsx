@@ -63,6 +63,7 @@ class RightBox extends React.Component{
 	  type: "get",
 	  success:function(res){
 	    var d = res.Data;
+	    //_data[0].Children.push(d[0])
 	    _data[0].Children = d;
 	    //setData(d)
 	    this.setState({

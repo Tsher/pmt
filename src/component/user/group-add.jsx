@@ -108,7 +108,6 @@ class UserGroupAdd extends React.Component{
         this.setState({
           selesD : res.Data
         })
-
         if(isEdit == 'edit'){
           // 编辑
           // ajax 请求当前id的数据 ********************************
@@ -133,11 +132,15 @@ class UserGroupAdd extends React.Component{
           })
           
         }else{
+
           var fD = _G.assign({},this.state.formData);
-          fD.parent = name;
-          this.setState({
-            formData : fD
-          })
+          if (name != 'add') {
+              fD.parent = name;
+              this.setState({
+                formData : fD
+              })
+          };
+
         }
 
       }.bind(this)

@@ -15,6 +15,7 @@ const FormItem = Form.Item;
 
 import '../../entry/config';
 const saledataRoundList = config.__URL + config.saledata.round.list;
+const saledataRoundExcel = config.__URL + config.saledata.round.excel;
 
 
 const columns = [{
@@ -68,6 +69,7 @@ class DateRange extends React.Component{
 		this.state =  {
       MA_StartTime : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
       MA_EndTime : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
+      excel : 'javascript:;',
     };
 	    this.handleSubmit = this.handleSubmit.bind(this);
 	    this.onChange = this.onChange.bind(this);
@@ -94,6 +96,23 @@ class DateRange extends React.Component{
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
+
+    //excel导出 begin
+    var _this = this;
+    _G.getExcel({
+       url : saledataRoundExcel,
+       data : {
+          MA_StartTime : _G.timeFormat2( new Date(_this.state.MA_StartTime).getTime() , 'YYYY-MM-DD' ),
+          MA_EndTime : _G.timeFormat2( new Date(_this.state.MA_EndTime).getTime() , 'YYYY-MM-DD' ),
+       },
+       callback : function(d){
+           var excel = d.ReturnOperateStatus;
+           _this.setState({
+               excel : excel
+           })
+       }
+    });
+    //excel导出 end
     
     this.props.changeTableState(this.state);
 
@@ -123,9 +142,9 @@ class DateRange extends React.Component{
         </Col>
         <Col span="3">
         <FormItem>
-          <Link to='/saledata/send/exports'>
-            <Button type="primary" size="large"  htmlType="submit" style={{marginLeft:10}}><Icon type="download" /><span>导出报表</span></Button>            
-          </Link>
+          <a href={this.state.excel}>
+          <Button type="primary" size="large"  style={{marginLeft:10}}><Icon type="download" /><span>导出报表</span></Button>
+          </a>
         </FormItem>
         </Col>
       </Form>
@@ -200,14 +219,15 @@ class SaleDataRound extends React.Component{
     
     //opts.EntityCode = 'DEFAULT';
     var that = this;
+    var optsD = Object.assign({},opts);
 
-    opts.MA_StartTime = ''+_G.timeFormat( new Date(opts.MA_StartTime).getTime(),'YYYY-MM-DD');
-    opts.MA_EndTime = ''+_G.timeFormat( new Date(opts.MA_EndTime).getTime(),'YYYY-MM-DD');
+    optsD.MA_StartTime = ''+_G.timeFormat( new Date(opts.MA_StartTime).getTime(),'YYYY-MM-DD');
+    optsD.MA_EndTime = ''+_G.timeFormat( new Date(opts.MA_EndTime).getTime(),'YYYY-MM-DD');
 
     _G.ajax({
       url : saledataRoundList,
       type: "get",
-      data : opts,
+      data : optsD,
       success:function(res){
         var d = [];
         for(var i=0,l=res.Data.length;i<l;i++){

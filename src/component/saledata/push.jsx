@@ -14,6 +14,7 @@ const FormItem = Form.Item;
 
 import '../../entry/config';
 const saledataPushList = config.__URL + config.saledata.push.list;
+const saledataPushExcel = config.__URL + config.saledata.push.excel;
 
 var changeTableState;
 var rTimes={
@@ -63,13 +64,15 @@ class DateRange extends React.Component{
 	constructor() {
 		super();
 		this.state =  {
-	      Recharge_Time_S : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
-        Recharge_Time_E : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
+	      Recharge_Time_S : new Date(),
+        Recharge_Time_E : new Date(),
+        excel : 'javascript:;',
 	    };
 	    this.handleSubmit = this.handleSubmit.bind(this);
 	    this.onChange = this.onChange.bind(this);
 	    this.disabledEndDate = this.disabledEndDate.bind(this);
 	}
+
   disabledEndDate(endValue) {
     if (!endValue || !this.state.Recharge_Time_S) {
       return false;
@@ -85,7 +88,24 @@ class DateRange extends React.Component{
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
-    console.log(this.state)
+
+    //excel导出 begin
+    var _this = this;
+    _G.getExcel({
+       url : saledataPushExcel,
+       data : {
+          Recharge_Time_S : _G.timeFormat2( new Date(_this.state.Recharge_Time_S).getTime() , 'YYYY-MM-DD' ),
+          Recharge_Time_E : _G.timeFormat2( new Date(_this.state.Recharge_Time_E).getTime() , 'YYYY-MM-DD' ),
+       },
+       callback : function(d){
+           var excel = d.ReturnOperateStatus;
+           _this.setState({
+               excel : excel
+           })
+       }
+    });
+    //excel导出 end
+
     this.props.changeTableState(this.state);
   }
   render() {
@@ -113,9 +133,9 @@ class DateRange extends React.Component{
         </Col>
         <Col span="3">
         <FormItem>
-          <Link to='/saledata/send/exports'>
-            <Button type="primary" size="large"  htmlType="submit" style={{marginLeft:10}}><Icon type="download" /><span>导出报表</span></Button>
-          </Link>
+          <a href={this.state.excel}>
+          <Button type="primary" size="large"  style={{marginLeft:10}}><Icon type="download" /><span>导出报表</span></Button>
+          </a>
         </FormItem>
         </Col>
       </Form>
@@ -198,16 +218,17 @@ class SaleDataPush extends React.Component{
     
     //opts.EntityCode = 'DEFAULT';
     var that = this;
+    var optsD = Object.assign({},opts);
 
-    opts.Recharge_Time_S = ''+_G.timeFormat2( new Date(opts.Recharge_Time_S).getTime() , 'YYYY-MM-DD' );
-    opts.Recharge_Time_E = ''+_G.timeFormat2( new Date(opts.Recharge_Time_E).getTime() , 'YYYY-MM-DD' );
+    optsD.Recharge_Time_S = ''+_G.timeFormat2( new Date(opts.Recharge_Time_S).getTime() , 'YYYY-MM-DD' );
+    optsD.Recharge_Time_E = ''+_G.timeFormat2( new Date(opts.Recharge_Time_E).getTime() , 'YYYY-MM-DD' );
 
     console.log(opts.Recharge_Time_S)
 
     _G.ajax({
       url : saledataPushList,
       method: "get",
-      data : opts,
+      data : optsD,
       success:function(res){
         var d = [];
         for(var i=0,l=res.Data.length;i<l;i++){
