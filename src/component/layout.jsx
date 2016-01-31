@@ -90,9 +90,10 @@ class Layout extends React.Component{
 	}
 	// 一级菜单变更
 	topMenuChange(info){
-		var menu = this.state.menus.find(function(item){
+		var menu
+		this.state.menus.map(function(item){
 			if(item.key == info.key){
-				return item
+				menu = item;
 			}
 		})
 		if(!menu) return;
@@ -106,10 +107,24 @@ class Layout extends React.Component{
 	// 二级菜单变更
 	secMenuChange(info){
 		let tags = [].concat(this.state.tags);
-		let item = tags.find( (n)=> n.key == info );
+		let item;
+		tags.map(function(n){
+			if(n.key == info){
+				item = n
+			}
+		} );
 		if(!item){
-			item = this.state.menus.find( (n)=> n.key == this.state.openKeys );
-			item = item.children.find( (n)=> n.key == info );
+			var that = this;
+			this.state.menus.map(function(n){
+				if(n.key == that.state.openKeys){
+					item = n;
+				}
+			});
+			item.children.map(function(n){
+				if(n.key == info){
+					item = n;
+				}
+			});
 			tags.push(item);
 			this.setState({
 				tags : tags,

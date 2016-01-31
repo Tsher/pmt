@@ -212,7 +212,7 @@ class SaleDataSend extends React.Component{
     rPages = opts;
     //opts.EntityCode = 'DEFAULT';
     var that = this;
-    var optsD = Object.assign({},opts);
+    var optsD = _G.assign({},opts);
 
     optsD.Send_Time_S = ''+_G.timeFormat2( new Date(opts.Send_Time_S).getTime() ,'YYYY-MM-DD');
     optsD.Send_Time_E = ''+_G.timeFormat2( new Date(opts.Send_Time_E).getTime() ,'YYYY-MM-DD');
