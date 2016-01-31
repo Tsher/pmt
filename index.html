@@ -14,9 +14,9 @@
 </head>
 <body>
 <div id="react-content"></div>
-<div id="uploads"></div>
 <div class="upload" style="display:none">
 	<input type="file" name="upImage" id="demo1" />
+	<input type="file" name="upImage" id="demo2" />
 </div>
 </body>
 <!--script src="./common.js"></script>
@@ -41,8 +41,30 @@
 	        	console.log(filename,response)
 	        	// {"Data":"~//images//DEFAULT//Productsass.png"}
 	        	// 调用组件方法，回填图片url地址
-	        	uploadSuccess('https://os.alipayobjects.com/rmsportal/NDbkJhpzmLxtPhB.png')
-	        	//uploadSuccess(response.Data);
+	        	//uploadSuccess('https://os.alipayobjects.com/rmsportal/NDbkJhpzmLxtPhB.png')
+	        	uploadSuccess(response.Data);
+	        }
+	      });
+	});
+
+	var uploadSuccess2 = function(){}
+	function fireUplpad2(state){
+		var ev = new MouseEvent('click', {
+	      'view': window,
+	      'bubbles': true,
+	      'cancelable': true
+	    });
+	    document.getElementById('demo2').dispatchEvent(ev);
+	}
+	$(document).ready(function() {
+		$("#demo2").AjaxFileUpload({
+			action : config.__URL + config.sale.prize.upload + '?Token=' + _G.Token,
+	        onComplete: function(filename, response) {
+	        	console.log(filename,response)
+	        	// {"Data":"~//images//DEFAULT//Productsass.png"}
+	        	// 调用组件方法，回填图片url地址
+	        	//uploadSuccess2('https://os.alipayobjects.com/rmsportal/NDbkJhpzmLxtPhB.png')
+	        	uploadSuccess2(response.Data);
 	        }
 	      });
 	})

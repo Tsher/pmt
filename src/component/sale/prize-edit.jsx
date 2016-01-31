@@ -42,6 +42,9 @@ function cx(classNames) {
   }
 }
 
+let uploadSuccess;
+window['uploadSuccess2'] = uploadSuccess;
+
 
 const msg_error = function(){
   message.error('数据验证错误,请检查后提交')
@@ -84,6 +87,27 @@ class SalePrizeEdit extends React.Component{
       this.onChange = this.onChange.bind(this);
       this.getSource = this.getSource.bind(this);
       this.handlePrizeType = this.handlePrizeType.bind(this);
+      this.uploadSuccess = this.uploadSuccess.bind(this);
+      this.fireUploadEvent = this.fireUploadEvent.bind(this);
+      this.renderImage = this.renderImage.bind(this);
+  }
+
+
+  fireUploadEvent(e){
+    fireUplpad2();
+  }
+  // 上传成功回调
+  uploadSuccess(src){
+    var state = _G.assign({},this.state);
+    state.formData.Image = [{image : src}];
+    this.setState(state);
+  }
+
+  renderImage(){
+    if(this.state.formData.Image[0]&&this.state.formData.Image[0].image){
+      return (<img src={this.state.formData.Image[0].image} />)
+    }
+    return (<span></span>)
   }
 
   // datepicker change
@@ -113,6 +137,8 @@ class SalePrizeEdit extends React.Component{
   }
 
   componentDidMount() {
+    uploadSuccess2 = this.uploadSuccess;
+
       _G.ajax({
           url: config.__URL + config.sale.prize.kinds,
           type: "get",
@@ -182,14 +208,16 @@ class SalePrizeEdit extends React.Component{
      })
   }
 
+  
+
   render() {
     const status = this.state.status;
-    var renderPic = this.state.formData.Image.map(function(elem) {
-        return <img src={elem.Image} style={{width: '100%'}} />
+    var renderPic = this.state.formData.Image.map(function(elem,index) {
+        return <img key={index} src={elem.Image} style={{width: '100%'}} />
     })
 
-    var renderKinds = kinds.map(function(elem) {
-      return <Option key={elem.Prize_Type}>{elem.Prize_Type}</Option>;
+    var renderKinds = kinds.map(function(elem,index) {
+      return <Option key={index} value={elem.Prize_Type}>{elem.Prize_Type}</Option>;
     })
     
     return (
@@ -227,13 +255,14 @@ class SalePrizeEdit extends React.Component{
                                     </Select>
                                 </FormItem>
                                 <FormItem label="奖品图片：" id="pic" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                    <Input type="hidden" name="pic" value={this.state.formData.Image} />
-                                    <Upload name="file" action="/upload.do" onChange={this.uploadCallback.bind(this)}>
-                                        <Button type="ghost">
-                                            <Icon type="upload" /> 点击上传
-                                        </Button>
-                                    </Upload>
-                                    {renderPic}
+                                    <div style={{height:100}}>
+                                      <div onClick={this.fireUploadEvent} style={{width:100,height:100,border:"1px dashed #e3e3e3",cursor:'pointer'}}>
+                                        <div  style={{width:12,height:12,margin:"38px auto 0",cursor:'pointer'}}>
+                                          <Icon type="plus" />
+                                        </div>
+                                      </div>
+                                    </div>
+                                    { this.renderImage() }
                                 </FormItem>
                             </Col>
                         </Row>
