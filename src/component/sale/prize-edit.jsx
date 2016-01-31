@@ -71,7 +71,7 @@ class SalePrizeEdit extends React.Component{
               Prize_Name: '', // 奖品名称
               Unit: '', // 单位
               Prize_Type: '', // 奖品类别
-              Image: [], // 奖品图片
+              ImageDetail: [], // 奖品图片
               Brand: '', // 品牌
               RegisterOn: '', // 入网日期
               Spec: '' // 规格
@@ -82,7 +82,6 @@ class SalePrizeEdit extends React.Component{
       this.onValidate = FieldMixin.onValidate.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
       this.renderValidateStyle = this.renderValidateStyle.bind(this);
-      this.uploadCallback = this.uploadCallback.bind(this);
       this.setValue = this.setValue.bind(this);
       this.onChange = this.onChange.bind(this);
       this.getSource = this.getSource.bind(this);
@@ -99,15 +98,14 @@ class SalePrizeEdit extends React.Component{
   // 上传成功回调
   uploadSuccess(src){
     var state = _G.assign({},this.state);
-    state.formData.Image = [{image : src}];
+    state.formData.Image.push({"Image" : src});
     this.setState(state);
   }
 
   renderImage(){
-    if(this.state.formData.Image[0]&&this.state.formData.Image[0].image){
-      return (<img src={this.state.formData.Image[0].image} />)
-    }
-    return (<span></span>)
+    return this.state.formData.ImageDetail.map(function(elem,index) {
+        return <img key={index} src={elem.Image} style={{width: '100%'}} />
+    })
   }
 
   // datepicker change
@@ -126,10 +124,14 @@ class SalePrizeEdit extends React.Component{
           type: "get",
           data: opts,
           success: function(res) {
+              var img = []
+              res.Image.forEach(function(el) {
+                img.push({"Image":el.Image})
+              });
               this.setState({
                   formData: Object.assign(res.Data, {
-                      Image: res.Image,
-                      RegisterOn: _G.timeFormat2(res.Data.RegisterOn)
+                      ImageDetail: img,
+                      RegisterOn: _G.timeFormat2(res.Data.RegisterOn,"YYYY-MM-DD")
                   })
               })
           }.bind(this)
@@ -138,7 +140,6 @@ class SalePrizeEdit extends React.Component{
 
   componentDidMount() {
     uploadSuccess2 = this.uploadSuccess;
-
       _G.ajax({
           url: config.__URL + config.sale.prize.kinds,
           type: "get",
@@ -160,6 +161,15 @@ class SalePrizeEdit extends React.Component{
   handleSubmit(e) {
       //***********************************等待ajax提交数据 ******** 区分 新增 或者 编辑
       e.preventDefault();
+      var data={
+        "Prize_Name":this.state.formData.Prize_Name,
+        "Unit":this.state.formData.Unit,
+        "Prize_Type":this.state.formData.Prize_Type,
+        "RegisterOn":this.state.formData.RegisterOn,
+        "Brand":this.state.formData.Brand,
+        "Spec":this.state.formData.Spec,
+        "ImageDetail":this.state.formData.ImageDetail
+      }
 
       const validation = this.refs.validation;
       validation.validate((valid) => {
@@ -168,10 +178,18 @@ class SalePrizeEdit extends React.Component{
               msg_error()
               return;
           } else {
-              console.log('submit');
+              _G.ajax({
+                 url: config.__URL + config.sale.prize.edit+'?Prize_Code=' + this.state.formData.Prize_Code,
+                 type: "post",
+                 data: {JsonValue: JSON.stringify(data)},
+                 success: function(res) {
+                    console.log(res)
+                    msg_success();
+                    setTimeout(goBack,2000)
+                 }.bind(this)
+             })
           }
-          console.log(this.state.formData);
-          msg_success();
+          //msg_success();
       });
   }
 
@@ -181,11 +199,6 @@ class SalePrizeEdit extends React.Component{
       var data = Object.assign({}, this.state);
       data.formData[name] = e.target.value;
       this.setState(data);
-  }
-
-  // 图片上传回调
-  uploadCallback(info) {
-      console.log(info)
   }
 
   renderValidateStyle(item) {
@@ -212,9 +225,6 @@ class SalePrizeEdit extends React.Component{
 
   render() {
     const status = this.state.status;
-    var renderPic = this.state.formData.Image.map(function(elem,index) {
-        return <img key={index} src={elem.Image} style={{width: '100%'}} />
-    })
 
     var renderKinds = kinds.map(function(elem,index) {
       return <Option key={index} value={elem.Prize_Type}>{elem.Prize_Type}</Option>;

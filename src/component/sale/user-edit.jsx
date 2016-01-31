@@ -188,12 +188,8 @@ class SaleUserEdit extends React.Component {
          })
      }
 
-     componentWillMount() {
-         this.getProvince()
-     }
-
      componentDidMount() {
-                var opts = {
+        var opts = {
           SalesPerson_Code: this.props.params.id
         }
         _G.ajax({
@@ -220,6 +216,7 @@ class SaleUserEdit extends React.Component {
               state.formData.Area = data.Area
               state.formData.SalesPerson_Address = data.SalesPerson_Address
               this.setState(state)
+              this.getProvince()
             }.bind(this)
         })
      }
