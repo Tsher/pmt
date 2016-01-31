@@ -146,8 +146,6 @@ class BaseProductAdd extends React.Component{
       status : {
         
         SName : {}, // 产品简称
-        Product_Description : {}, // 描述
-        Pack_Unit : {}, // 规格
         
       },
       formData: {
@@ -157,7 +155,7 @@ class BaseProductAdd extends React.Component{
         SName : undefined, // 产品简称
         Brand : undefined, // 品牌
         Product_Description : undefined, // 描述
-        Pack_Unit : undefined, // 规格
+        Package_Spec : undefined, // 规格
         Validity : undefined, // 有效期
         Validity_Unit:'', // 有效期单位
         Validity_Units : '', // 所有有效期类别
@@ -299,7 +297,7 @@ class BaseProductAdd extends React.Component{
                 SName : _res.Data.SName, // 产品简称
                 Brand : _res.Data.Brand, // 品牌
                 Product_Description : _res.Data.Product_Description, // 描述
-                Pack_Unit : _res.Data.Pack_Unit, // 规格
+                Package_Spec : _res.Data.Package_Spec, // 规格
                 Validity : _res.Data.Validity, // 有效期
                 Validity_Unit:_res.Data.Validity_Unit, // 有效期单位
                 Append_Code : _res.Data.Append_Code, // 行业编码 商品码
@@ -395,7 +393,7 @@ class BaseProductAdd extends React.Component{
         Validity : formData.Validity,
         Validity_Unit : formData.Validity_Unit
       };
-
+      console.log(data)
       // 提交数据
       let u = this.props.params.id ? baseProductEdit : baseProductAdd;
       if(this.props.params.id){
@@ -410,13 +408,13 @@ class BaseProductAdd extends React.Component{
         },
         method : 'post',
         success:function(res){
-          if(res == 'True'){
+          if(res.ReturnOperateStatus == 'True'){
             msg_success();
             // 调转到列表页
             goBack();
             return;
           }
-          if(res == 'False' || res == 'NULL'){
+          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
             msg_error();
             return
           }
@@ -724,10 +722,10 @@ class BaseProductAdd extends React.Component{
                 </FormItem>
                 <FormItem
                   label="规格："
-                  id="Unit"
+                  id="Package_Spec"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}} >
-                    <Input name="Unit" value={formData.Unit} onChange={this.setValue} />
+                    <Input name="Package_Spec" value={formData.Package_Spec} onChange={this.setValue} />
                 </FormItem>
             </Col>
             <Col span="24">

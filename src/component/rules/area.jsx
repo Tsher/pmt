@@ -83,11 +83,11 @@ class SelectForm extends React.Component{
     // ********************************************************** ajax提交数据，获取table的data值
     e.preventDefault();
     var subD = {};
-    subD.Start_Batch_Code_S = this.state.batchNumStart;
-    subD.End_Batch_Code_E = this.state.batchNumEnd;
-    subD.Start_Box_Code_S = this.state.boxNumStart;
-    subD.End_Box_Code_E = this.state.boxNumEnd;
-    subD.SalesRegion_Code = this.state.saleRegion;
+    subD.Start_Batch_Code_S = this.state.batchNumStart || '';
+    subD.End_Batch_Code_E = this.state.batchNumEnd || '';
+    subD.Start_Box_Code_S = this.state.boxNumStart || '';
+    subD.End_Box_Code_E = this.state.boxNumEnd || '';
+    subD.SalesRegion_Code = this.state.saleRegion || '';
 
     this.props.changeTableState(subD);
 

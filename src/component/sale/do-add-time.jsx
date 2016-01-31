@@ -206,7 +206,7 @@ class SelectForm extends React.Component{
     if (!endValue || !this.state.SActivityTime ) {
       return false;
     }
-    return endValue.getTime() <= this.state.SActivityTime.getTime() ;
+    return endValue.getTime() <= new Date(this.state.SActivityTime).getTime() ;
   }
 
 
