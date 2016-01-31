@@ -108,6 +108,7 @@ class UserRoleSet extends React.Component{
 			Role_Type : '',
 			Role_Code : '',
 			Roles : [],
+			treedata : [],
 		}
 		this.onChange = this.onChange.bind(this);
 		this.handleSubmit = this.handleSubmit.bind(this);
@@ -187,11 +188,8 @@ class UserRoleSet extends React.Component{
 				Role_Code : this.props.params.id
 			},
 			success : function(res){
-				var roles = [].concat(res.Data.Roles.split(',')); 
 				this.setState({
-					checkedKeys : res.Data.MenuCode,
-					selectedRole : res.Data.Roles,
-					selectedRoleArray : roles,
+					treedata : res.Data
 				})
 			}.bind(this)
 		})
@@ -236,7 +234,37 @@ class UserRoleSet extends React.Component{
 	    this.setState({
 	      checkedKeys : info.checkedKeys
 	    })
-	  }
+	}
+
+	renderMenu(){
+		const values = {
+			"1" : '查询',
+			"2" : '新增',
+			"3" : '修改',
+			"4" : '删除'
+		};
+		const loopLis = (data) => {
+			return ["1","2","3","4"].map( (item) => {
+				if(data.indexOf(item)>-1){
+					return (<li><Checkbox key={item} defaultChecked={true} onChange={onChange} />{values[item]}</li>)
+				}else{
+					return (<li><Checkbox key={item} defaultChecked={false} onChange={onChange} />{values[item]}</li>)
+				}
+			} )
+		}
+		const loop = (data) => {
+	      return data.map( (item) => {
+	        if(item.Children){
+	          return (<div key={item.Code}><h2>{item.Name}</h2>{loop(item.Children)}</div>);
+	        }else{
+	          return (<dl><dt>{item.Name}</dt><dd><ul>{loopLis(Fun_Code)}</ul></dd></dl>);
+	        }
+	      } )
+	    }
+	    const parseTree = (data) => loop(data);
+	    let treeNodes = parseTree(this.state.treedata);
+	    return treeNodes
+	}
 	
 	render(){
 
@@ -250,25 +278,7 @@ class UserRoleSet extends React.Component{
 	        				<Col span="4">角色编号:{this.state.Role_Code}</Col>
 	        			</Row>
 	        			<div className="group-set-list">
-		        			<Row>
-		        				<Col span="6">
-		        					<div className="group-set-tree">
-		        						<div className="group-set-title">菜单树</div>
-		        						<TreeView checkhandle={this.checkhandle} treedata={this.state.menus} checkedKeys={this.state.checkedKeys} />
-		        					</div>
-		        				</Col>
-		        				<Col span="6" offset="1">
-		        					<div className="group-set-tree">
-		        						<div className="group-set-title">赋予角色权限</div>
-		        						<ul>
-		        							<li><Checkbox key="search" value="1" defaultChecked={false} onChange={this.onChange} />查询</li>
-		        							<li><Checkbox key="add" value="2" defaultChecked={false} onChange={this.onChange} />新增</li>
-		        							<li><Checkbox key="edit" value="3" defaultChecked={false} onChange={this.onChange} />修改</li>
-		        							<li><Checkbox key="del" value="4" defaultChecked={false} onChange={this.onChange} />删除</li>
-		        						</ul>
-		        					</div>
-		        				</Col>
-		        			</Row>
+		        			{this.renderMenu()}
 	        			</div>
 	        		</div>
 	        	<div className="m-form-btns">
