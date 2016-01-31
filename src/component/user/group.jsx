@@ -165,6 +165,7 @@ class UserGroup extends React.Component{
 
   showModal(){
   	// 删除之前 查询此 key 是否有子节点， 如有，不允许删除 ************************
+    if (!this.state.selectedKeys[0]) {return};
     this.setState({
       visible : true,
       ModalText: '你正要删除 "'+ this.state.selectedKeys[0] +'"的部门，是否继续？',
