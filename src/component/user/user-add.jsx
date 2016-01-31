@@ -189,13 +189,14 @@ class UserUserAdd extends React.Component{
             return;
           }
           res = res.Data;
+          console.log(res)
           var d = {
               User_Code : this.props.params.id,
               title : '编辑用户',
               Login_Name : res.Login_Name, // 登录名
-              User_Birthday : _G.timeFormat(res.User_Birthday), // 生日
+              User_Birthday : res.User_Birthday.indexOf('-NaN-') > -1 ? '' :  _G.timeFormat2(res.User_Birthday, 'YYYY-MM-DD'), // 生日
               Depart_Code : res.Depart_Code, // 隶属部门
-              Register_On : _G.timeFormat(res.Register_On), //加入日期
+              Register_On : res.Register_On.indexOf('-NaN-') > -1 ? '' :  _G.timeFormat2(res.Register_On,'YYYY-MM-DD'), //加入日期
               User_Name : res.User_Name, // 姓名
               User_Hometown : res.User_Hometown, // 籍贯
               Email : res.Email, // 电子邮件
@@ -206,7 +207,8 @@ class UserUserAdd extends React.Component{
               User_IDCard : res.User_IDCard , // 身份证号
               Home_Phone : res.Home_Phone // 家庭电话
             };
-            console.log(d)
+
+            console.log('d',d)
           this.setState({
             formData:d
           })
@@ -412,14 +414,14 @@ class UserUserAdd extends React.Component{
                 </FormItem>
                 <FormItem
                   label="状态："
-                  id="state"
+                  id="User_Status"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
                   validateStatus={this.renderValidateStyle('User_Status')}
                   help={status.User_Status.errors ? status.User_Status.errors.join(',') : null}
                   required>
-                    <Validator rules={[{required: true, message: '请选择状态'},{validator: this.checkUserState}]}>
-                      <Select size="large" placeholder="请选择状态" style={{width: '100%'}} name="User_Status" value={formData.User_Status}>
+                    <Validator rules={[{required: true, message: '请选择状态'}]}>
+                      <Select size="large"  placeholder="请选择状态" style={{width: '100%'}} name="User_Status" value={formData.User_Status}>
                         {this.state.user_status}
                       </Select>
                     </Validator>
