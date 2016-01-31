@@ -218,7 +218,7 @@ class SaleDataPush extends React.Component{
     
     //opts.EntityCode = 'DEFAULT';
     var that = this;
-    var optsD = Object.assign({},opts);
+    var optsD = _G.assign({},opts);
 
     optsD.Recharge_Time_S = ''+_G.timeFormat2( new Date(opts.Recharge_Time_S).getTime() , 'YYYY-MM-DD' );
     optsD.Recharge_Time_E = ''+_G.timeFormat2( new Date(opts.Recharge_Time_E).getTime() , 'YYYY-MM-DD' );
