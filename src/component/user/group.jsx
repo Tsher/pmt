@@ -234,7 +234,7 @@ class UserGroup extends React.Component{
   }
   
   render(){
-	const loop = (data) => {
+	  const loop = (data) => {
       return data.map( (item) => {
         if(item.Children){
           return (<TreeNode title={item.Name} key={item.Code}>{loop(item.Children)}</TreeNode>);

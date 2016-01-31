@@ -19,6 +19,7 @@ class Layout extends React.Component{
 			menuWidth:200, // left menu width
 			selectedKeys : '', // 当前选中的菜单
 			openKeys : '', //当前展开的菜单
+			username : '', // 用户名
 			menus :[
 				{
 					key : "1", 
@@ -180,6 +181,10 @@ class Layout extends React.Component{
 		size();
 		$(window).on('resize',size);
 
+		var username = Cookie.read('userName');
+		this.setState({
+			username : username
+		})
 		
 	}
 	logout(){
@@ -191,7 +196,7 @@ class Layout extends React.Component{
 		//用户信息
 		return (
 			<ul>
-				<li className="username">当前用户:tiger</li>
+				<li className="username">当前用户:{this.state.username}</li>
 				<li>
 					<Link to='/change-password' className="setting">设置</Link>
 				</li>

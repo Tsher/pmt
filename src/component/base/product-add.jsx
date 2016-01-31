@@ -47,11 +47,11 @@ function cx(classNames) {
 }
 
 
-const msg_error = function(){
-  message.error('数据错误,请检查后重新提交')
+const msg_error = function(text){
+  message.error(text ||'数据错误,请检查后重新提交')
 }
-const msg_success = function(){
-  message.success('数据提交成功，等待后台处理')
+const msg_success = function(text){
+  message.success(text ||'数据提交成功，等待后台处理')
 }
 
 
@@ -70,22 +70,23 @@ const baseProductOne = config.__URL + config.base.product.one;
 const baseProductEdit = config.__URL + config.base.product.edit;
 const baseProductInfo = config.__URL + config.base.product.info;
 let baseProductUpload = config.__URL + config.base.product.upload;
+const baseProductUpdate = config.__URL + config.base.product.update;
 
 
 // 图片上传参数定义
 const upload_props = {
-  name: 'file',
+  name: 'upImage',
   showUploadList: true,
-  action: baseProductUpload
+  action: baseProductUpload + '?Token='+ Cookie.read('Token')
 };
 
-
-
+let uploadSuccess
+window['uploadSuccess'] = uploadSuccess;
 
 const columns = [{
   title: '序号',
-  dataIndex: 'Product_PPR_Code',
-  key: 'Product_PPR_Code',
+  dataIndex: 'index',
+  key: 'index',
   // render: function(text,record) {
   //  var href= '/sale/do/info/'+text;
   //   return <Link to={href}>{text}</Link>;
@@ -100,8 +101,8 @@ const columns = [{
   key: 'Packing_Proportion'
 }, {
   title: '包装单位',
-  dataIndex: 'Unit',
-  key: 'Unit'
+  dataIndex: 'Packing_Units',
+  key: 'Packing_Units'
 },{
   title: '操作',
   key: 'operation',
@@ -123,47 +124,7 @@ function showModal(e){
 
 
 let packing_data=[];
-const packing_cloumns = [
-  {
-    title: '包装级数',
-    dataIndex: 'Level',
-    key: 'Level',
-    index:'Level'
-  },
-  {
-    title: '计量单位',
-    dataIndex: 'Unit',
-    key: 'Unit',
-    index : 'Unit',
-    render:function(text,record,index){
-      return (
-        <Select onChange={function(value,label){
-          packingUnitChange(value,label,record,'Unit')
-        }} style={{width:'60px'}}>
-          <Option value="箱">箱</Option>
-          <Option value="包">包</Option>
-          <Option value="支">支</Option>
-        </Select>
-      )
-    }
-  },
-  {
-    title: '下级包装数量',
-    dataIndex: 'Lower_PackageQTY',
-    key: 'Lower_PackageQTY',
-    index : 'Lower_PackageQTY',
-    render : function(text,record,index){
-      if(packing_data==0 || index==packing_data.length-1){
-        return (<span></span>)
-      }
-      return (
-        <InputNumber min={1} onChange={function(value,label){
-          packingUnitChange(value,label,record,'Lower_PackageQTY')
-        }} />
-      )
-    }
-  }
-];
+
 
 
 
@@ -201,18 +162,13 @@ class BaseProductAdd extends React.Component{
         Validity_Unit:'', // 有效期单位
         Validity_Units : '', // 所有有效期类别
         Units:'', // 所有计量单位
-        Industry_Code : undefined, // 行业编码
+        Append_Code : undefined, // 行业编码
         DataImage : [], // 图片
         DataDetail : [], // 比例
-        addPacking : []
-      },
-      upload_props : {
-        name: 'file',
-        showUploadList: true,
-        data : {
-          Token : _G.Token
-        },
-        action: baseProductUpload
+        addPacking : {
+          Pack_Level : 0,
+          data : []
+        }, // 某一比例详细信息
       },
       packing_cloumns : [
         {
@@ -228,13 +184,13 @@ class BaseProductAdd extends React.Component{
           index : 'Unit',
           render:function(text,record,index){
             return (
-              <Select onChange={function(value,label){
+              <Select value={this.state.formData.addPacking.data[index].Unit} onChange={function(value,label){
                 packingUnitChange(value,label,record,'Unit')
               }} style={{width:'60px'}}>
                 {this.state.formData.Units}
               </Select>
             )
-          }
+          }.bind(this)
         },
         {
           title: '下级包装数量',
@@ -246,11 +202,11 @@ class BaseProductAdd extends React.Component{
               return (<span></span>)
             }
             return (
-              <InputNumber min={1} onChange={function(value,label){
+              <InputNumber value={this.state.formData.addPacking.data[index].Lower_PackageQTY} min={1} onChange={function(value,label){
                 packingUnitChange(value,label,record,'Lower_PackageQTY')
               }} />
             )
-          }
+          }.bind(this)
         }
       ]
     };
@@ -276,27 +232,34 @@ class BaseProductAdd extends React.Component{
     this.packingSizeChange = this.packingSizeChange.bind(this);
 
     this.modalState = this.modalState.bind(this);
+    this.productNameChange = this.productNameChange.bind(this);
+    this.fireUploadEvent = this.fireUploadEvent.bind(this);
+    this.uploadSuccess = this.uploadSuccess.bind(this);
   }
 
   // 删除表格中某条数据
   modalState(id,index,name){
     console.log(id,index,name)
-    // var data = Object.assign({},this.state);
-    // data.formData.addPacking.splice(index,1);
+    var data = Object.assign({},this.state);
+    data.formData.DataDetail.splice(index*1,1);
+    data.formData.DataDetail.map(function(item,index){
+      item.key = index;
+      item.index = index*1+1;
+    })
+    this.setState(data);
+  }
 
-    // this.setState(data);
+  uploadSuccess(src){
+    var state = Object.assign({},this.state);
+    state.formData.DataImage = [{image : src}];
+    this.setState(state);
   }
 
   componentDidMount(){
     packingUnitChange = this.packingUnitChange;
     modalState = this.modalState;
 
-    //baseProductUpload += '?Token='+_G.Token;
-    var upload_props = Object.assign({},this.state.upload_props);
-    upload_props.Token = _G.Token;
-    this.setState({
-      upload_props : upload_props
-    })
+    uploadSuccess = this.uploadSuccess;
 
     // 获取有效期
     var that = this;
@@ -317,51 +280,56 @@ class BaseProductAdd extends React.Component{
       const doms = res.Data.map( (item,index)=>{
         return <Option key={index} value={item['CODE_NM']}>{item['CODE_NM']}</Option>
       } )
-      that.setState({
-        Units : doms
-      })
+
+      // 修改
+      if(that.props.params.id){
+        // ajax获取当前id的内容，变更state ****************************
+        _G.ajax({
+          url : baseProductOne,
+          type : 'get',
+          data : {
+            Product_Code : that.props.params.id
+          },
+          success:function(_res){
+            
+            var d = {
+                Product_Code : that.props.params.id,
+                title : '编辑产品',
+                Product_Name : _res.Data.Product_Name, // 产品名称
+                SName : _res.Data.SName, // 产品简称
+                Brand : _res.Data.Brand, // 品牌
+                Product_Description : _res.Data.Product_Description, // 描述
+                Pack_Unit : _res.Data.Pack_Unit, // 规格
+                Validity : _res.Data.Validity, // 有效期
+                Validity_Unit:_res.Data.Validity_Unit, // 有效期单位
+                Append_Code : _res.Data.Append_Code, // 行业编码 商品码
+                DataImage : _res.DataImage, // 图片
+                DataDetail : _res.DataDetail, // 比例
+                addPacking : {
+                  Pack_Level : 0
+                }, // 当前修改的某一比例
+                Units : doms
+              };
+            that.setState({
+              formData:d
+            })
+
+          }
+        })
+      }else{
+        // 新增，获取行业编码 hid;
+        let state = that.state;
+        state.formData.Industry_Code = that.props.params.hid;
+        state.formData.Units = doms;
+        that.setState(state);
+      }
+
+
     }); 
 
 
-    // 编辑
-    if(this.props.params.id){
-      // ajax获取当前id的内容，变更state ****************************
-      _G.ajax({
-        url : baseProductOne,
-        type : 'get',
-        data : {
-          Product_Code : this.props.params.id
-        },
-        success:function(res){
-          console.log(res)
-          
-          var d = {
-              Product_Code : this.props.params.id,
-              title : '编辑产品',
-              Product_Name : res.Data.Product_Name, // 产品名称
-              SName : res.Data.SName, // 产品简称
-              Brand : res.Data.Brand, // 品牌
-              Product_Description : res.Data.Product_Description, // 描述
-              Pack_Unit : res.Data.Pack_Unit, // 规格
-              Validity : res.Data.Validity, // 有效期
-              Validity_Unit:res.Data.Validity_Unit, // 有效期单位
-              Validity_year : undefined, // 有效期年份
-              Validity_month : undefined, // 有效期月份
-              Industry_Code : res.Data.Industry_Code, // 行业编码 商品码
-              DataImage : res.DataImage, // 图片
-              DataDetail : [], // 比例
-              addPacking : res.DataDetail
-            };
-          console.log(d,res)
-          this.setState({
-            formData:d
-          })
 
-        }.bind(this)
-      })
-    }else{
-      // 新增 *************
-    }
+    
   }
 
 
@@ -414,29 +382,49 @@ class BaseProductAdd extends React.Component{
         console.log('submit');
       }
       
+      var formData = Object.assign({},this.state.formData);
+      var data = {
+        Append_Code : formData.Append_Code,
+        Brand : formData.Brand,
+        DataDetail : formData.DataDetail,
+        DataImage : formData.DataImage.length ==0 ? [{}] : formData.DataImage,
+        Product_Description : formData.Product_Description,
+        Product_Name : formData.Product_Name,
+        SName : formData.SName,
+        Unit : formData.Unit,
+        Validity : formData.Validity,
+        Validity_Unit : formData.Validity_Unit
+      };
 
-      // // 提交数据
-      // let u = this.props.params.id ? urlUserEdit : urlUserAdd;
-      // let t = this.props.params.id ? 'PUT' : 'POST';
-      // $.ajax({
-      //   url  : u,
-      //   data : this.state.formData,
-      //   method : 'post',
-      //   success:function(res){
-      //     if(res == 'True'){
-      //       msg_success();
-      //       // 调转到列表页
-      //       return;
-      //     }
-      //     if(res == 'False' || res == 'NULL'){
-      //       msg_error();
-      //       return
-      //     }
-      //   },
-      //   fail:function(res){
-      //     msg_error();
-      //   }
-      // })
+      // 提交数据
+      let u = this.props.params.id ? baseProductEdit : baseProductAdd;
+      if(this.props.params.id){
+         u += '?Product_Code='+formData.Product_Code
+      }else{
+        data.Industry_Code = this.props.params.hid;
+      }
+      _G.ajax({
+        url  : u,
+        data : {
+          JsonValue : JSON.stringify(data)
+        },
+        method : 'post',
+        success:function(res){
+          if(res == 'True'){
+            msg_success();
+            // 调转到列表页
+            goBack();
+            return;
+          }
+          if(res == 'False' || res == 'NULL'){
+            msg_error();
+            return
+          }
+        },
+        fail:function(res){
+          msg_error();
+        }
+      })
 
 
     });
@@ -479,18 +467,60 @@ class BaseProductAdd extends React.Component{
     }
   }
 
+  // 新增比例
   handleOk(){
     //******************* 读取 this.state.formData.addPacking 提交数据 插入到已选择比例表格中 然后 关闭****************************
-    console.log(this.state)
+    
+
+    var data = Object.assign({},this.state);
+
+    var addPacking = data.formData.addPacking;
+    var state = true,Packing_Proportion=[],Packing_Units=[];
+    addPacking.data.map(function(item,index){
+      if(index == addPacking.data.length-1){
+        addPacking.data[index].Lower_PackageQTY = 1;
+      }
+      console.log(item.Lower_PackageQTY,item.Unit)
+      if(!item.Lower_PackageQTY || !item.Unit){
+        state = false;
+      }
+      Packing_Proportion.push(item.Lower_PackageQTY);
+      Packing_Units.push(item.Unit);
+    })
+    if(!state){
+      msg_error('比例不能为空');
+      return;
+    }
+    // 新增一条比例
+    data.formData.DataDetail.push({
+      key : data.formData.DataDetail.length,
+      index : data.formData.DataDetail.length*1+1,
+      Pack_Level : addPacking.Pack_Level,
+      Packing_Proportion : Packing_Proportion.join(':'),
+      Packing_Units : Packing_Units.join(':'),
+      DataPPRDetail : addPacking.data
+    })
+    data.formData.addPacking = {
+      Pack_Level : 0,
+      Packing_Proportion : '',
+      Packing_Units : '',
+      data : []
+    }
+
+    this.setState(data);
+
     this.setState({
       confirmLoading:true
     })
+
     setTimeout(()=>{
       this.setState({
         visible : false
-      })
-    },2000)
+      });
+      console.log('新增比例')
+    },300)
   }
+
   handleCancel(e){
     this.setState({
       visible : false
@@ -531,41 +561,56 @@ class BaseProductAdd extends React.Component{
   // }
 
   onInputNumberChange(value){
+    console.log(value)
+    value = value*1;
     let i=0,d=[];
     for(;i<value;i++){
       d[i]={
         key : i,
         index : i,
-        Level : i,
+        Level : i+1,
         Lower_PackageQTY:'',
-        Pack_Level:value-i,
-        Unit : undefined,
-        Packing_Proportion:undefined
+        Unit : ''
       }
     }
     packing_data.length = value;
     let state = Object.assign({},this.state);
-    //state.formData.addPacking.level = value;
-    state.formData.addPacking = d;
+    state.formData.addPacking.Pack_Level = value;
+    state.formData.addPacking.Packing_Units = [];
+    state.formData.addPacking.Packing_Proportion = [];
+    state.formData.addPacking.data = d;
     this.setState(state);
   }
 
   // 新增比例 单位 // 新增比例 数量
   packingUnitChange(e,label,record,type){
-    console.log(e,label)
+    console.log(e,label,record,type)
+
     let state = Object.assign({},this.state);
-    state.formData.addPacking[record.index][type] = e;
+    state.formData.addPacking.data[record.index][type] = e
     this.setState(state);
   }
   
   packingSizeChange(e){
     let state = Object.assign({},this.state);
-    state.formData.addPacking[e.index] = e;
+    state.formData.addPacking.data[e.index] = e;
     this.setState(state);
   }
 
+  productNameChange(e){
+    var name = e.target.name,
+        value = e.target.value;
+    setTimeout(function(){
+      var value = e.target.value;
+      let state = Object.assign({},this.state);
+      state[name] = value;
+      state.formData.Product_Name = (state.formData.Brand||'') + (state.formData.SName||'');
+      this.setState(state);
+    }.bind(this),200)
+  }
+
   renderPackage(){
-    let data = this.state.formData.addPacking;
+    let data = this.state.formData.addPacking.data;
     
     return (
       <Row>
@@ -573,7 +618,7 @@ class BaseProductAdd extends React.Component{
           <label><span style={{color:'#f00'}}>*</span>包装级数</label>
         </Col>
         <Col span="6">
-          <InputNumber min={1}  onChange={this.onInputNumberChange}  />
+          <InputNumber min={1} value={this.state.formData.addPacking.Pack_Level}  onChange={this.onInputNumberChange}  />
         </Col>
         <Col span="12">
           <Alert message="1级为最小包装" type="warn" showIcon />
@@ -582,10 +627,21 @@ class BaseProductAdd extends React.Component{
           <label><span style={{color:'#f00'}}>*</span>包装比例</label>
         </Col>
         <Col span="18">
-          <Table dataSource={data} columns={packing_cloumns} pagination={false} size='small' />
+          <Table dataSource={data} columns={this.state.packing_cloumns} pagination={false} size='small' />
         </Col>
       </Row>
     )
+  }
+
+  fireUploadEvent(e){
+    fireUplpad();
+  }
+
+  renderImage(){
+    if(this.state.formData.DataImage[0]&&this.state.formData.DataImage[0].image){
+      return (<img src={this.state.formData.DataImage[0].image} />)
+    }
+    return (<span></span>)
   }
 
   render() {
@@ -619,7 +675,7 @@ class BaseProductAdd extends React.Component{
                   help={status.SName.errors ? status.SName.errors.join(',') : null}
                   required>
                     <Validator rules={[{required: true, message: '请输入产品简称',type:"string"}]}>
-                      <Input name="SName" value={formData.SName} />
+                      <Input name="SName" value={formData.SName} onChange={this.productNameChange} />
                     </Validator>
                 </FormItem>
                 <FormItem
@@ -628,7 +684,9 @@ class BaseProductAdd extends React.Component{
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
                   >
-                    <Input name="Brand" value={formData.Brand} />
+                    <Validator rules={[{required: false, message: '请输入产品简称',type:"string"}]}>
+                      <Input name="Brand" value={formData.Brand} onChange={this.productNameChange} />
+                    </Validator>
                 </FormItem>
                 <FormItem
                   label="描述："
@@ -636,7 +694,7 @@ class BaseProductAdd extends React.Component{
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}}
                   >
-                    <Input type="textarea" name="Product_Description" value={formData.Product_Description} />
+                    <Input type="textarea" name="Product_Description" onChange={this.setValue} value={formData.Product_Description} />
                     
                 </FormItem>
             </Col>
@@ -659,10 +717,10 @@ class BaseProductAdd extends React.Component{
                 </FormItem>
                 <FormItem
                   label="商品码："
-                  id="barcode"
+                  id="Append_Code"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}} >
-                    <Input name="barcode" value={formData.barcode} onChange={this.setValue} />
+                    <Input name="Append_Code" value={formData.Append_Code} onChange={this.setValue} />
                 </FormItem>
                 <FormItem
                   label="规格："
@@ -681,7 +739,7 @@ class BaseProductAdd extends React.Component{
                   <Button type="primary" onClick={this.showModal} style={{'float':'right'}}>新增包装比例</Button>
                 </Col>
                 <Col span="24">
-                    <Table  columns={columns} dataSource={formData.addPacking} pagination={false} size='small'  />
+                    <Table  columns={columns} dataSource={formData.DataDetail} pagination={false} size='small'  />
                 </Col>
               </Row>
               
@@ -695,10 +753,13 @@ class BaseProductAdd extends React.Component{
                   labelCol={{span: 4}}
                   wrapperCol={{span: 12}} >
                     <div style={{height:100}}>
-                      <Dragger  {...this.upload_props} onChange={this.uploadChange} style={{height:100}}>
-                        <Icon type="plus" />
-                      </Dragger>
+                      <div onClick={this.fireUploadEvent} style={{width:100,height:100,border:"1px dashed #e3e3e3",cursor:'pointer'}}>
+                        <div  style={{width:12,height:12,margin:"38px auto 0",cursor:'pointer'}}>
+                          <Icon type="plus" />
+                        </div>
+                      </div>
                     </div>
+                    { this.renderImage() }
                 </FormItem>
             </Col>
           </Row>

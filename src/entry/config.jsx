@@ -66,6 +66,9 @@ window['_G']={
 		h = h < 10 ? '0'+h : h;
 		mm = mm < 10 ? '0'+mm : mm;
 		s = s < 10 ? '0'+s : s;
+		if(f == 'YYYY-MM-DD'){
+			return y + '-' + m + '-' + d 
+		}
 		return y + '-' + m + '-' + d + ' ' + h + ':' + mm + ':' + s;
 	},
 	// ajax
@@ -147,7 +150,12 @@ window['config'] = {
 			edit : '/api/SUser/PostUpUser',
 			info : '/api/SUser/GetUser',
 			del : '/api/SUser/DeleteUser',
-			role : '/api/SUser/GetUserRole', //获取用户角色信息
+			role : '/api/SUser/GetUserRole', // 获取用户角色信息
+			nation : '/api/SUser/GetNation', // 民族
+			status : '/api/SUser/GetUserStatus', // 状态
+			part : '/api/SUser/GetOrganization', // 部门
+			all : '/api/SRole/GetAllRoles', // 所有角色信息
+			save : '/api/SUser/SaveUserRole', // 保存角色设置
 		},
 		// 角色管理
 		role : {
@@ -159,6 +167,7 @@ window['config'] = {
 			update : '/api/SRole/PutRole', // 修改角色信息
 			add : '/api/SRole/PostRole', // 新增角色信息
 			saveRole : '/api/SRole/PostSetRole', // 保存角色权限
+
 			getRole : '/api/SRole/GetSetRole', // 获取角色权限
 		},
 		// 组织机构管理
@@ -181,6 +190,10 @@ window['config'] = {
 			dic : '/api/SProduct/GetProductDic', // 有效期类型
 			unit : '/api/SProduct/GetProductUnit', // 计量单位
 			upload : '/api/SProduct/UpProImage', // 上传图片
+			update : '/api/SProduct/PutProduct', // 修改
+			add : '/api/SProduct/PostProduct', // 新增提交
+			edit : '/api/SProduct/PutProduct', // 修改提交
+			del : '/api/SProduct/DeleteProduct', // 删除
 		},
 		info : {
 			list : '/api/SEnterprise/GetEnterprise'
