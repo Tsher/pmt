@@ -50,17 +50,84 @@ var provinceData = []
 var cityData = {}
 var areaData = {}
 
+
 class SaleUserAdd extends React.Component {
 
      constructor(props) {
          super(props);
          this.state = {
-             status: {
-                 name: {},
-                 mobile: {},
-                 email: {},
-                 sfz: {}
-             },
+              check : {
+                  SalesPerson_Name: {
+                    reg : /[\w\W]+/,
+                    error : '名称不正确'
+                  },
+                  Card_Code: {
+                    reg : function(cardNumber) {
+                            var Wi = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2, 1] // 加权因子;
+                            var ValideCode = [1, 0, 10, 9, 8, 7, 6, 5, 4, 3, 2] // 身份证验证位值，10代表X;
+
+                            if (cardNumber.length == 15) {
+                              return isValidityBrithBy15IdCard(cardNumber)
+                            } else if (cardNumber.length == 18) {
+                              var a_idCard = cardNumber.split("") // 得到身份证数组   
+                              if (isValidityBrithBy18IdCard(cardNumber) && isTrueValidateCodeBy18IdCard(a_idCard)) {
+                                return true
+                              }
+                              return false
+                            }
+                            return false
+
+                            function isTrueValidateCodeBy18IdCard(a_idCard) {
+                              var sum = 0; // 声明加权求和变量   
+                              if (a_idCard[17].toLowerCase() == 'x') {
+                                a_idCard[17] = 10 // 将最后位为x的验证码替换为10方便后续操作   
+                              }
+                              for (var i = 0; i < 17; i++) {
+                                sum += Wi[i] * a_idCard[i] // 加权求和   
+                              }
+                              if (a_idCard[17] == ValideCode[sum % 11]) {
+                                return true
+                              }
+                              return false
+                            }
+
+                            function isValidityBrithBy18IdCard(idCard18) {
+                              var year = idCard18.substring(6, 10)
+                              var month = idCard18.substring(10, 12)
+                              var day = idCard18.substring(12, 14)
+                              var temp_date = new Date(year, parseFloat(month) - 1, parseFloat(day))
+                                // 这里用getFullYear()获取年份，避免千年虫问题   
+                              if (temp_date.getFullYear() != parseFloat(year) || temp_date.getMonth() != parseFloat(month) - 1 || temp_date.getDate() != parseFloat(day)) {
+                                return false
+                              }
+                              return true
+                            }
+
+                            function isValidityBrithBy15IdCard(idCard15) {
+                              var year = idCard15.substring(6, 8)
+                              var month = idCard15.substring(8, 10)
+                              var day = idCard15.substring(10, 12)
+                              var temp_date = new Date(year, parseFloat(month) - 1, parseFloat(day))
+                                // 对于老身份证中的你年龄则不需考虑千年虫问题而使用getYear()方法   
+                              if (temp_date.getYear() != parseFloat(year) || temp_date.getMonth() != parseFloat(month) - 1 || temp_date.getDate() != parseFloat(day)) {
+                                return false
+                              }
+                              return true
+                            }
+
+                          },
+                    error : '身份证号不正确'
+                  },
+                  Phone: {
+                    reg : /^1[3|4|5|7|8][0-9]{9}$/,
+                    error : '手机不正确'
+                  }, // 手机
+                  Email: {
+                    reg : /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
+                    error : '邮箱不正确'
+                  }, // Email
+              },
+
              formData: {
                  title: '添加促销人员',
                  SalesPerson_Name: '', // 姓名
@@ -86,12 +153,13 @@ class SaleUserAdd extends React.Component {
          this.handleProvinceChange = this.handleProvinceChange.bind(this);
          this.handleCityChange = this.handleCityChange.bind(this);
          this.handleAreaChange = this.handleAreaChange.bind(this);
-         this.renderValidateStyle = this.renderValidateStyle.bind(this);
          this.getProvince = this.getProvince.bind(this);
          this.getCity = this.getCity.bind(this);
          this.getArea = this.getArea.bind(this);
          this.onChange = this.onChange.bind(this);
          this.setValue = this.setValue.bind(this);
+         this.chekValue = this.chekValue.bind(this);
+         this.handleBlur = this.handleBlur.bind(this);
      }
 
      onChange(e) {
@@ -192,10 +260,6 @@ class SaleUserAdd extends React.Component {
          this.getProvince()
      }
 
-     componentDidMount() {
-
-     }
-
      handleProvinceChange(value, name) {
          this.setState({
              formData: _G.assign(this.state.formData, {
@@ -235,43 +299,58 @@ class SaleUserAdd extends React.Component {
      handleSubmit(e) {
          //***********************************等待ajax提交数据 ******** 区分 新增 或者 编辑
          e.preventDefault();
-
-         const validation = this.refs.validation;
-         validation.validate((valid) => {
-             if (!valid) {
-                 console.log('error in form');
-                 msg_error()
-                 return;
-             } else {
-                 console.log('submit');
-             }
-             _G.ajax({
-                 url: config.__URL + config.sale.user.add,
-                 type: "post",
-                 data: this.state.formData,
-                 success: function(res) {
-                     msg_success();
-                     setTimeout(goBack,2000)
-                 }.bind(this)
-             })
-         });
-
-
+         console.log(this.state)
+         var _isok = true;
+         var data = this.state;
+         for(var key in data.formData){
+            if(!this.chekValue(key)&&_isok){
+              _isok = false;
+            }
+         }
+         console.log(_isok)
+         if(_isok){
+            _G.ajax({
+               url: config.__URL + config.sale.user.add,
+               type: "post",
+               data: this.state.formData,
+               success: function(res) {
+                   msg_success();
+                   setTimeout(goBack,2000)
+               }.bind(this)
+            })
+        }
      }
 
-     renderValidateStyle(item) {
-         const formData = this.state.formData;
-         const status = this.state.status;
-
-         const classes = cx({
-             'error': status[item].errors,
-             'validating': status[item].isValidating,
-             'success': formData[item] && !status[item].errors && !status[item].isValidating
-         });
-
-         return classes;
+     handleBlur(e){
+      this.chekValue(e.target.name)
      }
 
+     chekValue(key){
+        var item = this.state.check[key]
+        var isok = true
+        if(item){
+          var reg = item.reg
+          var result
+          var status = ''
+          var help = ''
+          var state = _G.assign({},this.state)
+          if(typeof(reg) =='function'){
+            result = reg(this.state.formData[key])
+          }else{
+            result = reg.test(this.state.formData[key])
+          }
+
+          if(!result){
+            status = 'error'
+            help =  item.error
+            isok = false
+          }
+          state.check[key+'_status'] = status
+          state.check[key+'_help'] = help
+          this.setState(state);
+        }
+        return isok
+     }
 
     render() {
         const status = this.state.status;
@@ -296,40 +375,40 @@ class SaleUserAdd extends React.Component {
                       <Validation ref="validation" onValidate={this.handleValidate}>
                           <Row>
                               <Col span="8">
-                                  <FormItem label="名称：" id="SalesPerson_Name" labelCol={{span: 8}} wrapperCol={{span: 12}} validateStatus={this.renderValidateStyle( 'name')} help={status.name.errors ? status.name.errors.join( ',') : null} required>
-                                      <Validator rules={[{required: true, message: '请输入名称'}]}>
-                                          <Input name="SalesPerson_Name" value={this.state.formData.SalesPerson_Name} />
-                                      </Validator>
+                                  <FormItem label="名称：" labelCol={{span: 8}} wrapperCol={{span: 12}} 
+                                    validateStatus={this.state.check.SalesPerson_Name_status}
+                                    help={this.state.check.SalesPerson_Name_help} required>
+                                      <Input name="SalesPerson_Name" value={this.state.formData.SalesPerson_Name} onChange={this.setValue} onBlur={this.handleBlur}/>
                                   </FormItem>
-                                  <FormItem label="昵称：" id="SalesPerson_SName" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                  <FormItem label="昵称：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                                       <Input name="SalesPerson_SName" value={this.state.formData.SalesPerson_SName} onChange={this.setValue} />
                                   </FormItem>
-                                  <FormItem label="身份证号：" id="Card_Code" labelCol={{span: 8}} wrapperCol={{span: 12}} validateStatus={this.renderValidateStyle( 'sfz')} help={status.sfz.errors ? status.sfz.errors.join( ',') : null} required>
-                                      <Validator rules={[{required: true, message: '请输入身份证',type: 'string',min:18,max:18}]}>
-                                          <Input name="Card_Code" value={this.state.formData.Card_Code} />
-                                      </Validator>
+                                  <FormItem label="身份证号：" labelCol={{span: 8}} wrapperCol={{span: 12}}  
+                                    validateStatus={this.state.check.Card_Code_status}
+                                    help={this.state.check.Card_Code_help}  required>
+                                      <Input name="Card_Code" value={this.state.formData.Card_Code} onChange={this.setValue}  onBlur={this.handleBlur} />
                                   </FormItem>
-                                  <FormItem label="性别：" id="SalesPerson_Sex" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                  <FormItem label="性别：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                                       <RadioGroup name="SalesPerson_Sex" value={this.state.formData.SalesPerson_Sex} onChange={this.onChange} >
                                           <Radio value="男">男</Radio>
                                           <Radio value="女">女</Radio>
                                           <Radio value="神秘">神秘</Radio>
                                       </RadioGroup>
                                   </FormItem>
-                                  <FormItem label="手机：" id="Phone" labelCol={{span: 8}} wrapperCol={{span: 12}} validateStatus={this.renderValidateStyle( 'mobile')} help={status.mobile.errors ? status.mobile.errors.join( ',') : null} required>
-                                      <Validator rules={[{required: true, message: '请输入电话号码',type: 'string',pattern:/^1\d{10}/}]}>
-                                          <Input name="Phone" value={this.state.formData.Phone} />
-                                      </Validator>
+                                  <FormItem label="手机：" labelCol={{span: 8}} wrapperCol={{span: 12}}   
+                                    validateStatus={this.state.check.Phone_status}
+                                    help={this.state.check.Phone_help}  required>
+                                        <Input name="Phone" value={this.state.formData.Phone} onChange={this.setValue} onBlur={this.handleBlur}/>
                                   </FormItem>
                               </Col>
                               <Col span="12">
-                                  <FormItem label="注册日期：" id="RegisterTime" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                  <FormItem label="注册日期：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                                       <Input name="RegisterTime" value={this.state.formData.RegisterTime} disabled />
                                   </FormItem>
-                                  <FormItem label="电子邮箱：" id="Email" labelCol={{span: 8}} wrapperCol={{span: 12}} validateStatus={this.renderValidateStyle( 'email')} help={status.email.errors ? status.email.errors.join( ',') : null} required>
-                                      <Validator rules={[{required: true, message: '请输入电子邮箱',type: 'email'}]}>
-                                          <Input name="Email" value={this.state.formData.Email} />
-                                      </Validator>
+                                  <FormItem label="电子邮箱：" labelCol={{span: 8}} wrapperCol={{span: 12}}   
+                                    validateStatus={this.state.check.Email_status}
+                                    help={this.state.check.Email_help}  required>
+                                          <Input name="Email" value={this.state.formData.Email} onChange={this.setValue} onBlur={this.handleBlur} />
                                   </FormItem>
                                   <FormItem label="行政区域："  labelCol={{span: 8}} wrapperCol={{span: 12}}>
                                       <Select value={this.state.formData.Province_Name} style={{width:"33%"}} onChange={this.handleProvinceChange}>
@@ -342,7 +421,7 @@ class SaleUserAdd extends React.Component {
                                           {areaOptions}
                                       </Select>
                                   </FormItem>
-                                  <FormItem label="地址：" id="SalesPerson_Address" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                  <FormItem label="地址：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                                       <Input name="SalesPerson_Address" value={this.state.formData.SalesPerson_Address} onChange={this.setValue} />
                                   </FormItem>
                               </Col>
