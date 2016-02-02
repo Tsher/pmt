@@ -166,10 +166,16 @@ class RightBox extends React.Component{
 
   // 点击树菜单
   handleCheck(info){
-    console.log(info.checkedKeys);
-    var arr = info.checkedKeys;
+    console.log(this.state.checkedKeys, info);
+    var arr = info.checkedKeys.join(',');
+    if(arr.indexOf(info.node.props.eventKey)>-1){
+    	var reg = new RegExp(info.node.props.eventKey + ',?|,'+info.node.props.eventKey+'$')
+    	arr = arr.replace(reg,'');
+    }else{
+    	arr += ',' + info.node.props.eventKey;
+    }
+    arr = arr.split(',');
     this.setState({
-      selectedKeys : [info.node.props.eventKey],
       editLink : '/base/area/add/'+ info.node.props.eventKey,
       showEditBtn : true,
       showInfo : 'block',
@@ -336,7 +342,7 @@ class RightBox extends React.Component{
 						<div className="border border-raduis">
 							<div className="title">区域树</div>
 							<div className="con">
-								<Tree checkable={true} defaultCheckedKeys={this.state.defaultCheckedKeys} onCheck={this.handleCheck} >
+								<Tree checkable={true} multiple={true} checkedKeys={this.state.checkedKeys} defaultCheckedKeys={this.state.defaultCheckedKeys} onCheck={this.handleCheck} >
 					          		{treeNodes}
 					        	</Tree>
 							</div>
