@@ -114,12 +114,7 @@ class SaleDataPrize extends React.Component{
           data : optsD,
           success:function(res){
             var d = [];
-            optionData = [
-               {
-                "name":"长沙市",
-                "value":"100"
-               }
-            ];
+            optionData = [];
 
             for(var i=0,l=res.Data.length;i<l;i++){
               var json = {}
