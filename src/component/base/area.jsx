@@ -107,14 +107,15 @@ class RightBox extends React.Component{
 	const loop = (data) => {
       return data.map( (item) => {
         if(item.Children){
-          return (<TreeNode disabled title={item.Name} key={item.Code}>{loop(item.Children)}</TreeNode>);
+          return (<TreeNode disableCheckbox title={item.Name} key={item.Code}>{loop(item.Children)}</TreeNode>);
         }else{
-          return (<TreeNode disabled title={item.Name} key={item.Code}></TreeNode>);
+          return (<TreeNode disableCheckbox title={item.Name} key={item.Code}></TreeNode>);
         }
       } )
     }
     const parseTree = (data) => loop(data);
     let treeNodes = parseTree(this.state.treedata);
+    console.log(adata.keys)
 	return(
 			<div>
 				<Col span="8" style={{ display : adata.showInfo }} >
@@ -137,7 +138,7 @@ class RightBox extends React.Component{
 						<div className="border border-raduis">
 							<div className="title">区域树</div>
 							<div className="con">
-								<Tree checkable defaultExpandAll checkedKeys={adata.keys}>
+								<Tree checkable multiple={true}  checkedKeys={adata.keys}>
 					          		{treeNodes}
 					        	</Tree>
 							</div>
@@ -188,13 +189,16 @@ class BaseArea extends React.Component{
 	handleClick(e){
 		var tar = e.target;
 		if(tar.nodeName == 'A') return;
-		var n;
-        for(var i=0;i<this.state.Data.length;i++){
-        	var s = this.state.Data[i];
-            this.setState({
-              [s.SalesRegion_Code] : ''
-            })
-        }
+
+		// var n,d=[];
+  //       for(var i=0;i<this.state.Data.length;i++){
+  //       	var s = this.state.Data[i];
+  //       	d[i] = s;
+  //       	d[i]['SalesRegion_Code'] = '';
+  //       }
+  //       this.setState({
+  //       	Data : []
+  //       })
         
 
         _G.ajax({
@@ -206,7 +210,7 @@ class BaseArea extends React.Component{
 		    var data={
 		    	keys : []
 		    };
-		    data.keys = d.RegionNos.split(',');
+		    data.keys = d.RegionNos ? d.RegionNos.split(',') : [];
 		    data.name = d.SalesRegion_Name;
 		    data.no = d.SalesRegion_Code;
 		    data.desc = d.Region_Description;
