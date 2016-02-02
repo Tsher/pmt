@@ -114,9 +114,9 @@ class RightBox extends React.Component{
       type : 'get',
       success : function(res){
         var arr = [];
-        arr.push(res.Data[0])
-        arr.push(res.Data[1])
-        //arr = res.Data;
+        //arr.push(res.Data[0])
+        //arr.push(res.Data[1])
+        arr = res.Data;
 
         if (id) {
 	  		_G.ajax({
@@ -205,48 +205,48 @@ class RightBox extends React.Component{
         console.log('submit');
       }
       //console.log(this.state.formData);
-      msg_success();
+      //msg_success();
+
+	    // 提交数据
+	      let u = this.state.formData.id ? baseAreaEdit+'?SalesRegion_Code='+this.state.formData.id : baseAreaAdd;
+	      var keys = this.state.checkedKeys;
+	      var arr = [];
+	      console.log(this.state.checkedKeys)
+	      for(var i=0;i<keys.length;i++){
+	      	var json = {};
+	      	json.Region_Code = keys[i];
+	      	arr.push(json);
+	      }
+	      var fD = {
+	      	SalesRegion_Name : this.state.formData.name,
+	      	Region_Description : this.state.formData.desc,
+	      	SalesRegion_Code : this.state.formData.id,
+	      	Detail:arr,
+	      }
+
+	      _G.ajax({
+	        url  : u,
+	        data : {JsonValue:JSON.stringify(fD)},
+	        method : 'post',
+	        success:function(res){
+	          if(res.ReturnOperateStatus == 'True'){
+	            msg_success();
+	            // 调转到列表页
+	            goBack();
+	            return;
+	          }
+	          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
+	            msg_error(res.Msg);
+	            return
+	          }
+	        },
+	        fail:function(res){
+	          msg_error();
+	        }
+	      })
+
+
     });
-
-    
-
-    // 提交数据
-      let u = this.state.formData.id ? baseAreaEdit+'?SalesRegion_Code='+this.state.formData.id : baseAreaAdd;
-      var keys = this.state.checkedKeys;
-      var arr = [];
-      console.log(this.state.checkedKeys)
-      for(var i=0;i<keys.length;i++){
-      	var json = {};
-      	json.Region_Code = keys[i];
-      	arr.push(json);
-      }
-      var fD = {
-      	SalesRegion_Name : this.state.formData.name,
-      	Region_Description : this.state.formData.desc,
-      	SalesRegion_Code : this.state.formData.id,
-      	Detail:arr,
-      }
-
-      _G.ajax({
-        url  : u,
-        data : {JsonValue:JSON.stringify(fD)},
-        method : 'post',
-        success:function(res){
-          if(res.ReturnOperateStatus == 'True'){
-            msg_success();
-            // 调转到列表页
-            goBack();
-            return;
-          }
-          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
-            msg_error(res.Msg);
-            return
-          }
-        },
-        fail:function(res){
-          msg_error();
-        }
-      })
 
   }
 

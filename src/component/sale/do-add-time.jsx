@@ -121,6 +121,18 @@ class SelectForm extends React.Component{
   changeState(index){
     var d = this.props.data[index];
     d.index = index;
+    console.log(d)
+    this.state.sale_all_prizeName.map( function(item){
+      if(item.props.value == d.Prize_Code){
+        d.Prize_Name = item.props.children
+      }
+    });
+    this.state.sale_all_prizeLevel.map( function(item){
+      if(item.props.value == d.Prize_Level){
+        d.Prize_Level_Name = item.props.children
+      }
+    });
+    console.log(d)
     this.setState(d);
   }
 
@@ -218,7 +230,7 @@ class SelectForm extends React.Component{
       <ul className="clearfix do-add-time">
         <li span="8" className="fleft" style={{width:'30%'}}>
           <label className="do-add-time-title">奖品名称：</label>
-          <Select size="large" placeholder="请选择奖品" style={{width: 140}} name="Prize_Code"  value={this.state.Prize_Code} onChange={this.onChange.bind(this,'Prize_Code')}>
+          <Select size="large" placeholder="请选择奖品" style={{width: 140}} name="Prize_Code" value={this.state.Prize_Code} onChange={this.onChange.bind(this,'Prize_Code')}>
             {this.state.sale_all_prizeName}
           </Select>
         </li>
