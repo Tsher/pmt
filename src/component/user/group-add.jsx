@@ -305,7 +305,7 @@ class UserGroupAdd extends React.Component{
                 validateStatus={this.renderValidateStyle('Organization_Name')}
                 help={status.Organization_Name.errors ? status.Organization_Name.errors.join(',') : null}
                 required>
-                  <Validator rules={[{required: true, message: '请输入部门名称'},{validator: this.checkGroupName}]}>
+                  <Validator rules={[{required: true, message: '请输入部门名称'}]}>
                     <Input  name="Organization_Name" value={formData.Organization_Name} />
                   </Validator>
               </FormItem>
