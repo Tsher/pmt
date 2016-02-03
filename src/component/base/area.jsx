@@ -67,7 +67,7 @@ class RightBox extends React.Component{
 	    _data[0].Children = d;
 	    //setData(d)
 	    this.setState({
-	      treedata : _data
+	      treedata : d
 	    });	    
 	  }.bind(this)
 
@@ -115,7 +115,6 @@ class RightBox extends React.Component{
     }
     const parseTree = (data) => loop(data);
     let treeNodes = parseTree(this.state.treedata);
-    console.log(adata.keys)
 	return(
 			<div>
 				<Col span="8" style={{ display : adata.showInfo }} >
@@ -163,6 +162,7 @@ class BaseArea extends React.Component{
        }*/
 	    this.state = {
 	    	Data : [],
+	    	oldId : '',
 	    };
 	    this.showModal = this.showModal.bind(this);
 	    this.handleOk = this.handleOk.bind(this);
@@ -210,6 +210,7 @@ class BaseArea extends React.Component{
 		    var data={
 		    	keys : []
 		    };
+		    var oldId = this.state.oldId;
 		    data.keys = d.RegionNos ? d.RegionNos.split(',') : [];
 		    data.name = d.SalesRegion_Name;
 		    data.no = d.SalesRegion_Code;
@@ -217,7 +218,9 @@ class BaseArea extends React.Component{
 
 		    this.setState({
 	          [tar.id] : 'on',
-	          data : data
+	          data : data,
+	          [oldId]:'',
+	          oldId : tar.id,
 	        })
 		    
 		  }.bind(this)
@@ -232,7 +235,6 @@ class BaseArea extends React.Component{
 	    this.setState({
 	      confirmLoading:true
 	    })
-	    console.log(this.state.changeId)
 	    var code = this.state.changeId;
 
 	    _G.ajax({
