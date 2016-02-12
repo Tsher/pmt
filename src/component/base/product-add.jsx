@@ -102,7 +102,14 @@ const columns = [{
 }, {
   title: '包装单位',
   dataIndex: 'Packing_Units',
-  key: 'Packing_Units'
+  key: 'Packing_Units',
+  render:function(text,record,index){
+      var DataPPRDetail = record.DataPPRDetail;
+      var str=[];
+      DataPPRDetail.map( (item)=> str.push(item.Unit) )
+      str = str.join(':');
+      return <span>{str}</span>
+  }
 },{
   title: '操作',
   key: 'operation',
@@ -389,11 +396,23 @@ class BaseProductAdd extends React.Component{
         Product_Description : formData.Product_Description,
         Product_Name : formData.Product_Name,
         SName : formData.SName,
+        Package_Spec : formData.Package_Spec,
         Unit : formData.Unit,
-        Validity : formData.Validity,
+        Validity : parseInt(formData.Validity),
         Validity_Unit : formData.Validity_Unit
       };
       console.log(data)
+      
+      // 数据验证
+      if(data.Validity <= 0){
+          msg_error('有效期不能为0或负数');
+          return;
+      }
+      if(!data.DataDetail || data.DataDetail.length==0){
+          msg_error('请填写包装比例');
+          return;
+      }
+      
       // 提交数据
       let u = this.props.params.id ? baseProductEdit : baseProductAdd;
       if(this.props.params.id){

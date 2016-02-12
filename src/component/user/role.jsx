@@ -208,6 +208,7 @@ class UserRole extends React.Component{
           d[i]=res.Data[i];
           d[i]['key'] = i;
         }
+        opts.page = opts.page*1+1;
         this.setState({
           data : d,
           total : res.TotalCount,
@@ -245,8 +246,9 @@ class UserRole extends React.Component{
           })
           console.log('删除成功');
           var d = [].concat(this.state.data);
-          d.splice(d[this.state.index],1);
-          console.log(this.state.index)
+          console.log(d)
+          d.splice(this.state.index,1);
+          console.log(d,this.state.index)
           this.setState({
             data : d,
             loading : false

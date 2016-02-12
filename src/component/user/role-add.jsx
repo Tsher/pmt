@@ -115,6 +115,7 @@ class UserRoleAdd extends React.Component{
             return;
           }
           res = res.Data;
+          console.log(res)
           formData.Role_Type = res.Role_Type;
           formData.Role_Name = res.Role_Name;
           formData.Role_Description = res.Role_Description;

@@ -126,14 +126,14 @@ class SelectForm extends React.Component{
 	            	<FormItem
 		            label="产品名称："
 		            id="Product_Name">
-		              <Input placeholder="" id="Product_Name" name="Product_Name" onChange={this.setValue} value={this.state.Product_Name} />
+		              <Input placeholder="" style={{width:80}} id="Product_Name" name="Product_Name" onChange={this.setValue} value={this.state.Product_Name} />
 		          </FormItem>
             	</li>
             	<li className="fleft">
 	            	<FormItem
 		            label="品牌："
 		            id="Brand">
-		              <Input placeholder="" id="Brand" name="Brand" onChange={this.setValue} value={this.state.Brand} />
+		              <Input placeholder="" style={{width:80}} id="Brand" name="Brand" onChange={this.setValue} value={this.state.Brand} />
 		          </FormItem>
             	</li>
               <li className="fleft date-picker">
@@ -470,15 +470,14 @@ class BaseProduct extends React.Component{
 		return(
 			<div className="m-list">
 				<Row>
-					<Col span="2">
+					<Col span="5">
 						{this.renderButton()}
-					</Col>
-					<Col span="2">
-						<Link to='/base/product/exports'>
+                        <Link to='/base/product/exports'>
 							<Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
 	          			</Link>
 					</Col>
-					<Col span="20">
+					
+					<Col span="19">
 						<SelectForm changeTableState={this.changeTableState} addBtnStatus={this.state.addBtnStatus} />
 					</Col>
 				</Row>

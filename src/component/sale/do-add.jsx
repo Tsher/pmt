@@ -127,8 +127,8 @@ class SaleDoAdd extends React.Component{
               MA_Name : res.Data.MA_Name , // 活动名称
               MA_BrochureURL : res.Data.MA_BrochureURL, // 活动url
               MA_InitialDraw : res.Data.MA_InitialDraw, // 初始首次抽奖次数
-              MA_StartTime : _G.timeFormat2(res.Data.MA_StartTime,'YYYY-MM-DD'), // 活动开始时间
-              MA_EndTime : _G.timeFormat2(res.Data.MA_EndTime,'YYYY-MM-DD'), // 活动结束时间
+              MA_StartTime : _G.timeFormat2(res.Data.MA_StartTime,'YYYY-MM-DD hh:mm:ss'), // 活动开始时间
+              MA_EndTime : _G.timeFormat2(res.Data.MA_EndTime,'YYYY-MM-DD hh:mm:ss'), // 活动结束时间
               
               PromotionDetail : {
                 time : [],
@@ -140,7 +140,7 @@ class SaleDoAdd extends React.Component{
             ar.map(function(item){
               item.SActivityTime = _G.timeFormat2(item.SActivityTime);
               item.EActivityTime = _G.timeFormat2(item.EActivityTime);
-              if(item.MarketingType == 'area'){
+              if(item.MarketingType == '区域类型'){
                 // 获取销售区域
                 _G.get_data(config['sale']['do']['sale_area'],'sale_area',{
                   SalesRegion_Name : ''
@@ -155,12 +155,12 @@ class SaleDoAdd extends React.Component{
                 }); 
                 return;
               }
-              if(item.MarketingType == 'time'){
+              if(item.MarketingType == '时间类型'){
                 item.key = data.PromotionDetail.time.length;
                 data.PromotionDetail.time.push(item);
                 return
               }
-              if(item.MarketingType == 'product'){
+              if(item.MarketingType == '产品类型'){
                 item.key = data.PromotionDetail.product.length;
                 data.PromotionDetail.product.push(item);
                 return
@@ -219,6 +219,12 @@ class SaleDoAdd extends React.Component{
     function t(s){
       return new Date(s).getTime();
     }
+    
+    var types = {
+        time : '时间类型',
+        area : '区域类型',
+        product : '产品类型'
+    }
 
     // 新增，需要判断时间重叠
     if(!data.index && data.index != 0){
@@ -274,7 +280,7 @@ class SaleDoAdd extends React.Component{
         SalesRegion_Code : data.SalesRegion_Code, // 销售区域编码
         SalesRegion_Name : data.SalesRegion_Name, // 销售区域名称
         WinningPlaces : data.WinningPlaces, // 次数
-        MarketingType : type, // 活动类型
+        MarketingType : types[type], // 活动类型
         NFirstWinningRate :  data.NFirstWinningRate, // 非首次中奖率
         SActivityTime : _G.timeFormat(data.SActivityTime), // 中奖时间
         EActivityTime : _G.timeFormat(data.EActivityTime), // 中奖时间
@@ -293,7 +299,7 @@ class SaleDoAdd extends React.Component{
         WinningPlaces : data.WinningPlaces, // 次数
         Prize_Level_Name : data.Prize_Level_Name, // 奖品级别
         FirstWinningRate : data.FirstWinningRate, // 首次中奖率
-        MarketingType : type, // 活动类型
+        MarketingType : types[type], // 活动类型
         NFirstWinningRate :  data.NFirstWinningRate, // 非首次中奖率
         SActivityTime : _G.timeFormat(data.SActivityTime), // 中奖时间
         EActivityTime : _G.timeFormat(data.EActivityTime), // 中奖时间
@@ -374,6 +380,8 @@ class SaleDoAdd extends React.Component{
     d = d.concat(data.PromotionDetail.area);
     d = d.concat(data.PromotionDetail.product);
     data.PromotionDetail = d;
+    console.log('新增，修改促销活动数据如下：');
+    console.log(data)
     var url = this.props.params.id ? saleDoEdit+'?MA_Code='+ this.props.params.id : saleDoAdd;
     _G.ajax({
       url : url,

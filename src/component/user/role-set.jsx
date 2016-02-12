@@ -22,71 +22,7 @@ const TreeNode = Tree.TreeNode;
 * @params id
 * 查询此id的内容，及权限
 * @return tree id 及 tree id对应的权限
-* 
-
-**    等待实现功能
-*
-**/
-
-var treeChecked; // 已选择的tree 节点
-function readChecked(){
-
-}
-
-
-class TreeView  extends React.Component{
-  
-  handler(e){
-    e.preventDeafult();
-  }
-  constructor(){
-    super();
-    this.state = {
-      treedata : [],
-      checkedKeys : [],
-      selectedKeys : []
-    }
-    this.readChecked = this.readChecked.bind(this);
-  }
-  componentWillMount(){
-    readChecked = this.readChecked;
-  }
-  change(d){
-    this.setState({
-      treedata : d
-    })
-  }
-  componentWillUnmount(){
-    
-  }
-  addChild(e){
-    return false;
-  }
-  
-  readChecked(){
-  	return this.state.checkedKeys
-  }
-  render(){
-    const loop = (data) => {
-      return data.map( (item) => {
-        if(item.Children){
-          return (<TreeNode title={item.Name} key={item.Code}>{loop(item.Children)}</TreeNode>);
-        }else{
-          return (<TreeNode title={item.Name} key={item.Code}></TreeNode>);
-        }
-      } )
-    }
-    const parseTree = (data) => loop(data);
-    let treeNodes = parseTree(this.props.treedata);
-    return (
-    	<div>
-        	<Tree defaultExpandAll={true} treedata={this.props.treedata} multiple={false} defaultCheckedKeys={this.props.checkedKeys} checkable={true} onCheck={this.props.checkhandle} >
-          	{treeNodes}
-        	</Tree>
-      	</div>
-      	)
-  }
-}
+*/ 
 
 
 const urlMenus = config.__URL + config.menu;
@@ -102,7 +38,6 @@ class UserRoleSet extends React.Component{
 			menus : [],
 			selectedRole : '',
 			selectedRoleArray : [],
-			checkedKeys : [],
 			id : '', // 如果是编辑状态
 			Role_Name : '',
 			Role_Type : '',
@@ -157,7 +92,7 @@ class UserRoleSet extends React.Component{
 				var types = this.state.Roles,that =this;
 				types.map(function(item){
 					if(types.REAL_Code == res.Data.Role_Type){
-						this.setState({
+						that.setState({
 							Role_TypeName : item.CODE_NM
 						})
 					}
@@ -197,15 +132,15 @@ class UserRoleSet extends React.Component{
 	}
 	
 	onChange(e){
-		var roles = this.state.selectedRole;
-		if(e.target.checked){
-			roles+=','+e.target.value
-		}else{
-			roles = roles.replace(','+e.target.value,'')
-		}
-		this.setState({
-			selectedRole : roles
-		})
+		// var roles = this.state.selectedRole;
+		// if(e.target.checked){
+		// 	roles+=','+e.target.value
+		// }else{
+		// 	roles = roles.replace(','+e.target.value,'')
+		// }
+		// this.setState({
+		// 	selectedRole : roles
+		// })
 	}
 
 	handleSubmit(){
@@ -230,13 +165,13 @@ class UserRoleSet extends React.Component{
 	}
 
 	checkhandle(info){
-		console.log(info.checkedKeys)
 	    this.setState({
 	      checkedKeys : info.checkedKeys
 	    })
 	}
 
 	renderMenu(){
+        var that = this;
 		const values = {
 			"1" : '查询',
 			"2" : '新增',
@@ -246,23 +181,23 @@ class UserRoleSet extends React.Component{
 		const loopLis = (data) => {
 			return ["1","2","3","4"].map( (item) => {
 				if(data.indexOf(item)>-1){
-					return (<li><Checkbox key={item} defaultChecked={true} onChange={onChange} />{values[item]}</li>)
+					return (<li><Checkbox key={item} defaultChecked={true}  onChange={that.onChange} />{values[item]}</li>)
 				}else{
-					return (<li><Checkbox key={item} defaultChecked={false} onChange={onChange} />{values[item]}</li>)
+					return (<li><Checkbox key={item} defaultChecked={false} onChange={that.onChange} />{values[item]}</li>)
 				}
 			} )
 		}
 		const loop = (data) => {
 	      return data.map( (item) => {
-	        if(item.Children){
+	        if(item.Children && item.Children.length){
 	          return (<div key={item.Code}><h2>{item.Name}</h2>{loop(item.Children)}</div>);
 	        }else{
-	          return (<dl><dt>{item.Name}</dt><dd><ul>{loopLis(Fun_Code)}</ul></dd></dl>);
+	          return (<dl key={item.Code} className="roles_set"><dt>{item.Name}</dt><dd><ul>{loopLis(item.Fun_Code||'')}</ul></dd></dl>);
 	        }
 	      } )
 	    }
 	    const parseTree = (data) => loop(data);
-	    let treeNodes = parseTree(this.state.treedata);
+	    let treeNodes = parseTree(this.state.menus);
 	    return treeNodes
 	}
 	

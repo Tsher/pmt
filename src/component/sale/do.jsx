@@ -270,6 +270,7 @@ class SaleDo extends React.Component{
     this.handleCancel = this.handleCancel.bind(this);
     this.showModalPublish = this.showModalPublish.bind(this);
     this.changeTableState = this.changeTableState.bind(this);
+    this.tableChange = this.tableChange.bind(this);
 	}
 
   componentDidMount(){
@@ -463,7 +464,14 @@ class SaleDo extends React.Component{
 					</Col>
 				</Row>
 				<Row>
-					<Table onChange={this.tableChange}  columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.pageSize,current:this.state.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}}  />
+					<Table onChange={this.tableChange}  columns={columns} dataSource={this.state.data} 
+                        pagination={{
+                            showQuickJumper:true,
+                            pageSize:this.state.opts.pageSize,
+                            current:this.state.opts.page,
+                            showSizeChanger:true,
+                            total:this.state.total,
+                            onShowSizeChange:this.showSizechange}}  />
 				</Row>
         <Modal 
           visible={this.state.visible}

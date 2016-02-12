@@ -1,6 +1,16 @@
 //  用户管理   企业用户管理  新增
 
-var _extends = _G.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = _G.assign || function (target) { 
+  for (var i = 1; i < arguments.length; i++) { 
+    var source = arguments[i]; 
+    for (var key in source) { 
+      if (Object.prototype.hasOwnProperty.call(source, key)) { 
+        target[key] = source[key]; 
+       } 
+     } 
+   } 
+   return target; 
+ };
 
 import React from 'react';
 import Form from 'antd/lib/form';
@@ -93,12 +103,14 @@ class UserUserAdd extends React.Component{
         Login_Name : undefined, // 登录名
         User_Birthday : undefined, // 生日
         Depart_Code : undefined, // 隶属部门
+        Organization_Name : undefined, // 部门名称
         Register_On : undefined, //加入日期
         User_Name : undefined, // 姓名
         User_Hometown : undefined, // 籍贯
         Email : undefined, // 电子邮件
         Phone_Code : undefined, // 手机
-        User_Nation : undefined , // 民族
+        User_Nation : undefined , // 民族编码
+        NationName : undefined, // 民族名称
         Marital_Status : undefined, // 婚姻
         User_Status : undefined, // 状态
         User_IDCard : undefined , // 身份证号
@@ -123,12 +135,11 @@ class UserUserAdd extends React.Component{
 
   // 插入到dom之后执行
   componentDidMount(){
-    console.log(this.props.params.id)
     var that = this;
 
     // 获取民族
     _G.get_data(config['user']['user']['nation'],'user_nation',{},function(res){
-      const doms = res.Data.map( (item,index)=>{
+      const doms = res.Data.map( (item,index) => {
         return <Option key={index} value={item['REAL_Code']}>{item['CODE_NM']}</Option>
       } )
       that.setState({
@@ -196,6 +207,7 @@ class UserUserAdd extends React.Component{
               Login_Name : res.Login_Name, // 登录名
               User_Birthday : res.User_Birthday.indexOf('-NaN-') > -1 ? '' :  _G.timeFormat2(res.User_Birthday, 'YYYY-MM-DD'), // 生日
               Depart_Code : res.Depart_Code, // 隶属部门
+              Depart_Name : res.Organization_Name, // 隶属部门名称
               Register_On : res.Register_On.indexOf('-NaN-') > -1 ? '' :  _G.timeFormat2(res.Register_On,'YYYY-MM-DD'), //加入日期
               User_Name : res.User_Name, // 姓名
               User_Hometown : res.User_Hometown, // 籍贯
@@ -235,7 +247,7 @@ class UserUserAdd extends React.Component{
   }
 
   handleReset(e) {
-    // 返回***********************************
+    // 返回 ***********************************
     goBack();
 
     // this.refs.validation.reset();
@@ -255,7 +267,7 @@ class UserUserAdd extends React.Component{
   }
 
   handleSubmit(e) {
-    //***********************************等待ajax提交数据 ******** 区分 新增 或者 编辑
+    // ***********************************等待ajax提交数据 ******** 区分 新增 或者 编辑
     e.preventDefault();
     // this.setState({
     //   isEmailOver: true
