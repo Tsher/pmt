@@ -66,6 +66,8 @@ class UserGroupAdd extends React.Component{
   	this.state = {
       status: {
         Organization_Name:{}, // 新增部门的名称
+        CODE_NM : {},
+        REAL_Code :{},
       },
       formData: {
         id : undefined, // 新增 or 编辑 识别
@@ -78,6 +80,8 @@ class UserGroupAdd extends React.Component{
         OAttributes : '', // 新增部门的属性
         title : '新增部门',
         show : 'none', // 新增= none  编辑=block
+        CODE_NM : '',
+        REAL_Code :'',
       },
       selesD:[],
     };
@@ -119,11 +123,20 @@ class UserGroupAdd extends React.Component{
             data : {Organization_Code:code},
             success:function(res){
               var d = res;
-              console.log(d);
+              console.log(d.Data);
               var json = d.Data;
+              var sD = this.state.selesD;
+              var code = '';
+              for(var i=0;i<sD.length;i++){
+                if (sD[i].REAL_Code == d.Data.OAttributes) {
+                   code = sD[i].CODE_NM;
+                };
+              }
               json.parent = d.Parent_Name;
-              json.PY = '';
-              json.OAttributes = '';
+              json.REAL_Code = d.Data.OAttributes;
+              json.CODE_NM = code;
+              //json.PY = '';
+              //json.OAttributes = '';
               this.setState({
                  formData:json,
               })
