@@ -1,7 +1,6 @@
 import React from 'react';
 import { Route, Redirect, IndexRoute,} from 'react-router';
 
-
 import { Welcome } from '../component/welcome';
 
 import { UserGroup } from '../component/user/group';
@@ -58,6 +57,7 @@ import { SaleDataRoundInfo } from '../component/saledata/round-info';
 import {Layout} from '../component/layout';
 
 
+
 function validate(nextState, transition) {
 	
 	let token = Cookie.read('Token');
@@ -77,7 +77,7 @@ function validate(nextState, transition) {
 }
 
 const Router = (
-	<Route path="/" component={Layout} onEnter={validate}>
+	<Route path="/" component={Layout} onEnter={validate} >
 		<Route path="/login" component={Login}></Route>
 		
 		<Route path="/change-password" component={ChangePassword}></Route>

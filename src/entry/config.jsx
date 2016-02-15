@@ -1,5 +1,5 @@
 import moment from 'moment';
-
+import { createHistory } from 'history';
 import message from 'antd/lib/message';
 const msg_error = function(text){
   message.error(text||'数据验证错误,请检查后提交')
@@ -7,7 +7,7 @@ const msg_error = function(text){
 const msg_success = function(){
   message.success('数据提交成功，等待后台处理')
 }
-
+const history = createHistory();
 
 // 全局方法
 window['_G']={

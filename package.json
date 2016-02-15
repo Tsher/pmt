@@ -5,7 +5,7 @@
     "index": "./src/entry/index.jsx"
   },
   "dependencies": {
-    "antd": "^0.11.0-beta5",
+    "antd": "^0.11.3",
     "atool-build": "0.4.x",
     "babel-plugin-antd": "^0.1.2",
     "es3ify-loader": "^0.1.0",

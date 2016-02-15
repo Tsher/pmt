@@ -58,7 +58,9 @@ class SelectForm extends React.Component{
         return <Option key={index} value={item['REAL_Code']}>{item['CODE_NM']}</Option>
       } )
       that.setState({
-        role_all_type : doms
+        role_all_type : doms,
+        Role_Name : this.props.query.Role_Name,
+        Role_Type : this.props.query.Role_Type
       })
     }); 
   }
@@ -83,7 +85,9 @@ class SelectForm extends React.Component{
     e.preventDefault();
     var data = {
       Role_Name : this.state.Role_Name,
-      Role_Type : this.state.Role_Type
+      Role_Type : this.state.Role_Type,
+      page : this.props.query.page,
+      pageSize : this.props.query.pageSize
     }
     this.props.changeTableState(data);
     console.log(this.state);
@@ -175,7 +179,7 @@ class UserRole extends React.Component{
       data:[],
       opts:{
         page:1,
-        pagesize:10
+        pageSize:10
       }
     }
     this.showModal = this.showModal.bind(this);
@@ -193,8 +197,8 @@ class UserRole extends React.Component{
   changeTableState(opts){
     console.log(opts)
     var opts = opts || {};
-    opts.page = this.state.opts.page*1-1;
-    opts.pagesize = this.state.opts.pagesize;
+    opts.page = opts.page || this.state.opts.page;
+    opts.pageSize = opts.pageSize || this.state.opts.pageSize;
     //opts.EntityCode = 'DEFAULT';
     var that = this;
 
@@ -203,12 +207,14 @@ class UserRole extends React.Component{
       method: "get",
       data : opts,
       success:function(res){
+        
+        this.props.history.pushState(opts,this.props.location.pathname,opts);
+        
         var d = [];
         for(var i=0,l=res.Data.length;i<l;i++){
           d[i]=res.Data[i];
           d[i]['key'] = i;
         }
-        opts.page = opts.page*1+1;
         this.setState({
           data : d,
           total : res.TotalCount,
@@ -315,13 +321,13 @@ class UserRole extends React.Component{
           </Link>
 					</Col>
 					<Col span="20">
-						<SelectForm changeTableState={this.changeTableState} />
+						<SelectForm query={this.props.location} changeTableState={this.changeTableState} />
 					</Col>
 				</Row>
 				<Row>
 					<Table onChange={this.tableChange}  onShowSizeChange={this.showSizechange}
             columns={columns} dataSource={this.state.data} 
-            pagination={{showQuickJumper:true,pageSize:this.state.opts.pagesize,current:1,showSizeChanger:true,total:this.state.total}}  />
+            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:1,showSizeChanger:true,total:this.state.total}}  />
 				</Row>
         <Modal title="您正在进行删除操作，请确认！"
           visible={this.state.visible}

@@ -98,10 +98,24 @@ class SelectForm extends React.Component{
         }
         const parseTree = (data) => loop(data);
         let treeNodes = parseTree(res.Data);
-
         this.setState({
-          treeNodes : treeNodes
+          treeNodes : treeNodes,
+          Login_Name: this.props.query.Login_Name || '',
+          Register_On_S : this.props.query.Register_On_S || '',
+          Register_On_E : this.props.query.Register_On_E || '',
+          User_Status : this.props.query.User_Status || '',
+          Depart_Code : this.props.query.Depart_Code || '',
+          page : this.props.query.page,
+          pageSize : this.props.query.pageSize
         })
+        
+        
+        // 页面打开后，请求第一个列表数据
+        setTimeout(function(){
+            this.handleSubmit();
+        }.bind(this),200)
+        
+        
       }.bind(this)
     })
 
@@ -121,20 +135,24 @@ class SelectForm extends React.Component{
 
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
-    e.preventDefault();
+    e&&e.preventDefault();
     var data = _G.assign({},this.state);
-
+    console.log(data.Register_On_S)
     data.Register_On_S = _G.timeFormat( new Date(data.Register_On_S).getTime() , 'YYYY-MM-DD' );
     data.Register_On_E = _G.timeFormat( new Date(data.Register_On_E).getTime() , 'YYYY-MM-DD' );
+    console.log(data.Register_On_S)
     var d = {
       Register_On_S : data.Register_On_S,
       Register_On_E : data.Register_On_E,
       User_Status : data.User_Status,
       Depart_Code : data.Depart_Code,
-      Login_Name : data.Login_Name
+      Login_Name : data.Login_Name,
+      page : data.page,
+      pageSize : data.pageSize
     }
-    this.props.changeTableState(d);
+    console.log('first time')
     console.log(d)
+    this.props.changeTableState(d);
     
   }
 
@@ -352,7 +370,7 @@ class UserUser extends React.Component{
       data : [],
       loading:false,
       opts : {
-        page :1,
+        page : 1,
         pageSize : 10,
       },
     }
@@ -399,9 +417,9 @@ class UserUser extends React.Component{
   changeTableState(opts){
 
     var opts = opts || {};
+    
     opts.page = opts.page || this.state.opts.page;
     opts.pageSize = opts.pageSize ||  this.state.opts.pageSize;
-
     this.setState({
       opts : opts
     })
@@ -414,7 +432,9 @@ class UserUser extends React.Component{
       type: "get",
       data : opts,
       success:function(res){
-        console.log(res.Data)
+        console.log(res.Data);
+        this.props.history.pushState(opts,this.props.location.pathname,opts);
+        
         var d = [];
         for(var i=0,l=res.Data.length;i<l;i++){
           d[i]=res.Data[i];
@@ -515,7 +535,7 @@ class UserUser extends React.Component{
           </Link>
 					</Col>
 					<Col span="22">
-						<SelectForm changeTableState={this.changeTableState} />
+						<SelectForm query={this.props.location} changeTableState={this.changeTableState} />
 					</Col>
 				</Row>
 				<Row>
