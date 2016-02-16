@@ -71,12 +71,11 @@ class SelectForm extends React.Component{
     // ********************************************************** ajax提交数据，获取table的data值
 
 
-    e.preventDefault();
+    e&&e.preventDefault();
 
     var data = _G.assign({},this.state);
     //data.MA_StartTime = 
     this.props.changeTableState(this.state);
-    console.log(this.state);
 
     //excel导出 begin
     var _this = this;
@@ -96,6 +95,10 @@ class SelectForm extends React.Component{
     });
     //excel导出 end
 
+  }
+
+  componentDidMount() {
+      this.handleSubmit()
   }
 
   // datepicker change
