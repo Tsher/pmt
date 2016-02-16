@@ -162,8 +162,8 @@ class RuleNumberAdd extends React.Component{
                 IntegralRule_Name : res.IntegralRule_Name,
                 Description : res.Description,
                 Bas_Integral : res.Bas_Integral,
-                Effective_Time : _G.timeFormat2(res.Effective_Time,'YYYY-MM-DD'),
-                Failure_Time : _G.timeFormat2(res.Failure_Time,'YYYY-MM-DD'),
+                Effective_Time : new Date(_G.timeFormat2(res.Effective_Time,'YYYY-MM-DD')) ,
+                Failure_Time : new Date(_G.timeFormat2(res.Failure_Time,'YYYY-MM-DD')) ,
             };
             var t = res.IntegralRule_Type;
             this.state.selesD.map(function(item){
