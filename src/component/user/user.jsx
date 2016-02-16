@@ -433,7 +433,7 @@ class UserUser extends React.Component{
       data : opts,
       success:function(res){
         console.log(res.Data);
-        this.props.history.pushState(opts,this.props.location.pathname,opts);
+        //this.props.history.pushState(opts,this.props.location.pathname,opts);
         
         var d = [];
         for(var i=0,l=res.Data.length;i<l;i++){

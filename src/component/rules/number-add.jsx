@@ -121,7 +121,6 @@ class RuleNumberAdd extends React.Component{
       data.formData[field] = value;
     }
     
-    
     this.setState(data)
   }
 

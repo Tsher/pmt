@@ -59,10 +59,9 @@ class SelectForm extends React.Component{
       } )
       that.setState({
         role_all_type : doms,
-        Role_Name : this.props.query.Role_Name,
-        Role_Type : this.props.query.Role_Type
       })
     }); 
+    this.handleSubmit();
   }
 
   
@@ -82,12 +81,10 @@ class SelectForm extends React.Component{
 
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
-    e.preventDefault();
+    e&&e.preventDefault();
     var data = {
       Role_Name : this.state.Role_Name,
       Role_Type : this.state.Role_Type,
-      page : this.props.query.page,
-      pageSize : this.props.query.pageSize
     }
     this.props.changeTableState(data);
     console.log(this.state);
@@ -208,7 +205,7 @@ class UserRole extends React.Component{
       data : opts,
       success:function(res){
         
-        this.props.history.pushState(opts,this.props.location.pathname,opts);
+        //this.props.history.pushState(opts,this.props.location.pathname,opts);
         
         var d = [];
         for(var i=0,l=res.Data.length;i<l;i++){

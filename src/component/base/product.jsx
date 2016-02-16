@@ -58,6 +58,10 @@ class SelectForm extends React.Component{
     this.onChange = this.onChange.bind(this);
     this.disabledEndDate = this.disabledEndDate.bind(this);
   }
+  
+  componentDidMount(){
+      this.handleSubmit();
+  }
 
   
   // 文本框的值 同步到 state
@@ -71,7 +75,7 @@ class SelectForm extends React.Component{
 
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
-    e.preventDefault();
+    e&&e.preventDefault();
 
     console.log(this.state)
 
