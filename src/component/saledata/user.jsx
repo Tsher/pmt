@@ -26,6 +26,9 @@ class DateRange extends React.Component{
       this.onChange = this.onChange.bind(this);
       this.disabledEndDate = this.disabledEndDate.bind(this);
   }
+  componentDidMount(){
+    this.handleSubmit();
+  }
   disabledEndDate(endValue) {
     if (!endValue || !this.state.MA_StartTime) {
       return false;
@@ -39,7 +42,7 @@ class DateRange extends React.Component{
   }
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
-    e.preventDefault();
+    e&&e.preventDefault();
 
     this.props.changeTableState(this.state);
   }

@@ -106,7 +106,6 @@ class RuleNumberAdd extends React.Component{
 
   // datepicker change
   onChange(field,value){
-    console.log(value)
     var data = _G.assign({},this.state);
     if (field == 'SalesRegion_Name') {
       var sD = this.state.selesD;
@@ -132,7 +131,6 @@ class RuleNumberAdd extends React.Component{
       url : ruleNumberType,
       type: "get",
       success:function(res){
-        console.log(res.Data)
         this.setState({
           selesD : res.Data
         })
@@ -183,18 +181,10 @@ class RuleNumberAdd extends React.Component{
         console.log('add')
       }
 
-
-
-
-
-
       }.bind(this)
     })
 
-    
-    
-    
-    
+        
   }
 
 
@@ -249,11 +239,7 @@ class RuleNumberAdd extends React.Component{
 
       msg_success();
     });
-
-    
-
-    
-    
+ 
     
   }
 
@@ -371,7 +357,10 @@ class RuleNumberAdd extends React.Component{
                   help={status.Bas_Integral.errors ? status.Bas_Integral.errors.join(',') : null}
                   required
                   >
-                  <Input type="number" min="0" onChange={this.setValue} name="Bas_Integral" id="Bas_Integral" value={formData.Bas_Integral} />
+                  
+                  <Validator rules={[{required: true, message: '请添加积分',type : 'number'}]}>
+                  <InputNumber min={0} name="Bas_Integral" id="Bas_Integral" value={formData.Bas_Integral} />
+                  </Validator>
                   
                 </FormItem>
 
