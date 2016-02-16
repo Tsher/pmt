@@ -106,6 +106,7 @@ class RuleNumberAdd extends React.Component{
 
   // datepicker change
   onChange(field,value){
+    console.log(value)
     var data = _G.assign({},this.state);
     if (field == 'SalesRegion_Name') {
       var sD = this.state.selesD;
@@ -384,7 +385,9 @@ class RuleNumberAdd extends React.Component{
                   help={status.Effective_Time.errors ? status.Effective_Time.errors.join(',') : null}
                   required
                   >
-                 <DatePicker placeholder="" value={formData.Effective_Time} name="Effective_Time" onChange={this.onChange.bind(this,'Effective_Time')}  />
+                  <Validator rules={[{required: true, message: '请选择时间',type : 'date'}]}>
+                     <DatePicker placeholder="" value={formData.Effective_Time} name="Effective_Time" onChange={this.onChange.bind(this,'Effective_Time')}  />
+                  </Validator>
                 </FormItem>
 
                 <FormItem
@@ -396,7 +399,9 @@ class RuleNumberAdd extends React.Component{
                   help={status.Failure_Time.errors ? status.Failure_Time.errors.join(',') : null}
                   required
                   >
-                  <DatePicker disabledDate={this.disabledEndDate} placeholder="" value={formData.Failure_Time} id="Failure_Time" name="Failure_Time" onChange={this.onChange.bind(this,'Failure_Time')} />
+                  <Validator rules={[{required: true, message: '请选择时间',type : 'date'}]}>
+                    <DatePicker disabledDate={this.disabledEndDate} placeholder="" value={formData.Failure_Time} id="Failure_Time" name="Failure_Time" onChange={this.onChange.bind(this,'Failure_Time')} />
+                  </Validator>
                 </FormItem>
             </Col>
             
