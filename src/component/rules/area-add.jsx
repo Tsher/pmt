@@ -200,42 +200,43 @@ class SelectForm extends React.Component{
         msg_error()
         return;
       } else {
-        console.log('submit');
+        // 提交数据
+        let u = this.props.params.id ? ruleAreaEdit : ruleAreaAdd;
+        var fD = _G.assign({},this.state.formData);
+        var d = {
+            Start_Batch_Code:fD.batchNumStart,
+            End_Batch_Code:fD.batchNumEnd,
+            Start_Box_Code:fD.boxNumStart,
+            End_Box_Code:fD.boxNumEnd,
+            SalesRegion_Code:fD.SalesRegion_Code,
+            LotArea_Code :fD.LotArea_Code,
+        };
+        _G.ajax({
+          url  : u+'?LotArea_Code='+fD.LotArea_Code,
+          data : {JsonValue:JSON.stringify(d)},
+          method : 'post',
+          success:function(res){
+            if(res.ReturnOperateStatus == 'True'){
+              msg_success();
+              // 调转到列表页
+              goBack();
+              return;
+            }
+            if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
+              msg_error(res.Msg);
+              return
+            }
+          },
+          fail:function(res){
+            msg_error();
+          }
+        })
+        msg_success();
       }
-      msg_success();
+      
     });
 
-    // 提交数据
-      let u = this.props.params.id ? ruleAreaEdit : ruleAreaAdd;
-      var fD = _G.assign({},this.state.formData);
-      var d = {
-          Start_Batch_Code:fD.batchNumStart,
-          End_Batch_Code:fD.batchNumEnd,
-          Start_Box_Code:fD.boxNumStart,
-          End_Box_Code:fD.boxNumEnd,
-          SalesRegion_Code:fD.SalesRegion_Code,
-          LotArea_Code :fD.LotArea_Code,
-      };
-      _G.ajax({
-        url  : u+'?LotArea_Code='+fD.LotArea_Code,
-        data : {JsonValue:JSON.stringify(d)},
-        method : 'post',
-        success:function(res){
-          if(res.ReturnOperateStatus == 'True'){
-            msg_success();
-            // 调转到列表页
-            goBack();
-            return;
-          }
-          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
-            msg_error(res.Msg);
-            return
-          }
-        },
-        fail:function(res){
-          msg_error();
-        }
-      })
+
     
     
   }
@@ -325,7 +326,7 @@ class SelectForm extends React.Component{
                                 id="boxNumStart"
                                 validateStatus={this.renderValidateStyle('boxNumStart')}
                                 help={status.boxNumStart.errors ? status.boxNumStart.errors.join(',') : null}
-                                required>
+                                required >
                                   <Validator rules={[{required: true, message: '请输入起始箱号'}]}>
                                     <Input placeholder="" id="boxNumStart" name="boxNumStart" onChange={this.setValue} value={formData.boxNumStart} />
                                   </Validator>

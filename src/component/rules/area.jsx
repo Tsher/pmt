@@ -64,9 +64,12 @@ class SelectForm extends React.Component{
           selesD : res.Data
         })
 
+        this.handleSubmit();
+
       }.bind(this)
 
     })
+
   }
 
   
@@ -81,7 +84,7 @@ class SelectForm extends React.Component{
 
   handleSubmit(e) {
     // ********************************************************** ajax提交数据，获取table的data值
-    e.preventDefault();
+    e&&e.preventDefault();
     var subD = {};
     subD.Start_Batch_Code_S = this.state.batchNumStart || '';
     subD.End_Batch_Code_E = this.state.batchNumEnd || '';
