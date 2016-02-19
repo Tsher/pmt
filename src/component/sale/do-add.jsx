@@ -126,7 +126,7 @@ class SaleDoAdd extends React.Component{
               title : '编辑促销活动',
               MA_Name : res.Data.MA_Name , // 活动名称
               MA_BrochureURL : res.Data.MA_BrochureURL, // 活动url
-              MA_InitialDraw : res.Data.MA_InitialDraw, // 初始首次抽奖次数
+              MA_InitialDraw : res.Data.MA_InitialDraw+'', // 初始首次抽奖次数
               MA_StartTime : _G.timeFormat2(res.Data.MA_StartTime,'YYYY-MM-DD hh:mm:ss'), // 活动开始时间
               MA_EndTime : _G.timeFormat2(res.Data.MA_EndTime,'YYYY-MM-DD hh:mm:ss'), // 活动结束时间
               
@@ -140,7 +140,7 @@ class SaleDoAdd extends React.Component{
             ar.map(function(item){
               item.SActivityTime = _G.timeFormat2(item.SActivityTime);
               item.EActivityTime = _G.timeFormat2(item.EActivityTime);
-              if(item.MarketingType == '区域类型'){
+              if(item.MarketingType == '区域抽奖'){
                 // 获取销售区域
                 _G.get_data(config['sale']['do']['sale_area'],'sale_area',{
                   SalesRegion_Name : ''
@@ -155,12 +155,12 @@ class SaleDoAdd extends React.Component{
                 }); 
                 return;
               }
-              if(item.MarketingType == '时间类型'){
+              if(item.MarketingType == '时间抽奖'){
                 item.key = data.PromotionDetail.time.length;
                 data.PromotionDetail.time.push(item);
                 return
               }
-              if(item.MarketingType == '产品类型'){
+              if(item.MarketingType == '产品抽奖'){
                 item.key = data.PromotionDetail.product.length;
                 data.PromotionDetail.product.push(item);
                 return
@@ -182,7 +182,12 @@ class SaleDoAdd extends React.Component{
   setValue(e){
     var name = e.target.id;
     var data = _G.assign({},this.state.formData);
-    data[name] = e.target.value;
+    if(name == 'MA_InitialDraw'){
+        data[name] = ''+e.target.value;
+    }else{
+        data[name] = e.target.value;
+    }
+    
 
     this.setState({
       formData : data
@@ -221,9 +226,9 @@ class SaleDoAdd extends React.Component{
     }
     
     var types = {
-        time : '时间类型',
-        area : '区域类型',
-        product : '产品类型'
+        time : '时间抽奖',
+        area : '区域抽奖',
+        product : '产品抽奖'
     }
 
     // 新增，需要判断时间重叠
