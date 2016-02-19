@@ -108,7 +108,6 @@ class UserGroupAdd extends React.Component{
       url : groupTypes,
       type: "get",
       success:function(res){
-        console.log(res.Data)
         this.setState({
           selesD : res.Data
         })
@@ -123,7 +122,6 @@ class UserGroupAdd extends React.Component{
             data : {Organization_Code:code},
             success:function(res){
               var d = res;
-              console.log(d.Data);
               var json = d.Data;
               var sD = this.state.selesD;
               var code = '';
@@ -132,7 +130,7 @@ class UserGroupAdd extends React.Component{
                    code = sD[i].CODE_NM;
                 };
               }
-              json.parent = d.Parent_Name;
+              json.parent = d.Parent_Name == 'NULL' ? '' : d.Parent_Name;
               json.REAL_Code = d.Data.OAttributes;
               json.CODE_NM = code;
               //json.PY = '';
