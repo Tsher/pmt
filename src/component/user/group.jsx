@@ -33,10 +33,6 @@ var changeTableState;
 
 
 const columns = [{
-  title: '用户编号',
-  dataIndex: 'User_Code',
-  key: 'User_Code',
-}, {
   title: '真实名称',
   dataIndex: 'User_Name',
   key: 'User_Name'
@@ -126,9 +122,13 @@ class UserGroup extends React.Component{
       data : {Organization_Code:code},
       success:function(res){
         var d = res;
+        var dD = d.DataDetail;
+        for(var i=0;i<dD.length;i++){
+          dD[i].key = dD[i].User_Code;
+        }
         this.setState({
            info:d.Data,
-           DataDetail : d.DataDetail,
+           DataDetail : dD,
         })
 
         // 根据 eventKey 查询 相关信息 展示右侧详细信息
