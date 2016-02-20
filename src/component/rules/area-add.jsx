@@ -137,7 +137,7 @@ class SelectForm extends React.Component{
               }
               console.log(code)
               var d = {
-                  title : '新增批次区域',
+                  title : '编辑批次区域',
                   batchNumStart : res.Start_Batch_Code,
                   batchNumEnd : res.End_Batch_Code,
                   boxNumStart : res.Start_Box_Code,

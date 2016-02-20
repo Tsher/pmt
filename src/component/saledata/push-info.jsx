@@ -28,10 +28,6 @@ const columns = [{
   dataIndex: 'Recharge_Account',
   key: 'Recharge_Account'
 },{
-  title: '企业编号',
-  dataIndex: 'Entity_Code',
-  key: 'Entity_Code'
-},{
   title: '接收手机号',
   dataIndex: 'Recharge_Phone',
   key: 'Recharge_Phone'
@@ -39,10 +35,6 @@ const columns = [{
   title: '发送状态',
   dataIndex: 'Recharge_Status',
   key: 'Recharge_Status',
-},{
-  title: '次数',
-  dataIndex: 'RechargeNum',
-  key: 'RechargeNum'
 },{
   title: '发送时间',
   dataIndex: 'Recharge_Time',

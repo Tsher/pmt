@@ -322,7 +322,7 @@ class RuleNumberAdd extends React.Component{
                   help={status.SalesRegion_Name.errors ? status.SalesRegion_Name.errors.join(',') : null}
                   required
                   >
-                    <Validator rules={[{required: true, message: '选择销售区域',type:'string'}]}>
+                    <Validator rules={[{required: true, message: '选择规则类型',type:'string'}]}>
                       <Select defaultValue={formData.SalesRegion_Name} name="SalesRegion_Name" style={{width:156}} value={formData.SalesRegion_Code}  onChange={this.onChange.bind(this,'SalesRegion_Name')}>
                         {
                            this.state.selesD.map(function(d){
@@ -359,7 +359,7 @@ class RuleNumberAdd extends React.Component{
                   >
                   
                   <Validator rules={[{required: true, message: '请添加积分',type : 'number'}]}>
-                  <InputNumber min={0} name="Bas_Integral" id="Bas_Integral" value={formData.Bas_Integral} />
+                  <InputNumber style={{width:156}} min={0} name="Bas_Integral" id="Bas_Integral" value={formData.Bas_Integral} />
                   </Validator>
                   
                 </FormItem>
