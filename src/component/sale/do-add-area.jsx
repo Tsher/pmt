@@ -59,7 +59,7 @@ class SelectForm extends React.Component{
       SActivityTime : undefined, // 中奖开始时间
       EActivityTime : undefined, // 中奖结束时间
       WinningPlaces : undefined, // 中奖名额
-      prize_type : 2, // 抽奖模式  1 = 时间区间  2=区域  3 = 产品
+      prize_type : 'area', // 抽奖模式  1 = 时间区间  2=区域  3 = 产品
       sale_all_prizeName : <Option value="1">1</Option>, // 所有奖品
       sale_all_prizeLevel : <Option value="1">1</Option>, // 所有奖品级别
       sale_all_areaName : <Option value="1">1</Option>, // 所有区域级别
@@ -313,19 +313,14 @@ const columns = [
   title: '销售区域',
   dataIndex: 'SalesRegion_Name',
   key: 'SalesRegion_Name'
-},
-{
-  title: '奖品编号',
-  dataIndex: 'Prize_Code',
-  key: 'Prize_Code'
 }, {
   title: '奖品名称',
   dataIndex: 'Prize_Name',
   key: 'Prize_Name'
 }, {
   title: '奖品级别',
-  dataIndex: 'Prize_Level',
-  key: 'Prize_Level'
+  dataIndex: 'Prize_Level_Name',
+  key: 'Prize_Level_Name'
 }, {
   title: '首次中奖率',
   dataIndex: 'FirstWinningRate',

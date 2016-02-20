@@ -166,6 +166,8 @@ class SaleDoAdd extends React.Component{
                 return
               }
             })
+            console.log('当前奖品数据：')
+            console.log(data);
             this.setState({
               formData : data
             })
@@ -218,7 +220,7 @@ class SaleDoAdd extends React.Component{
   }
 
   // 更新 中奖率
-  addPrizeTime(type,data){
+  addPrizeTime(type,data,cb){
     // type 类型
     // data 子节点传进来的数据，this.state
     function t(s){
@@ -242,25 +244,27 @@ class SaleDoAdd extends React.Component{
       }
       var s = true;
       var d = [];
-      if(data.prize_type == 1){
-        d= d.concat(this.state.formData.PromotionDetail.area);
-        d= d.concat(this.state.formData.PromotionDetail.product);
-      }
-      if(data.prize_type == 2){
-        d= d.concat(this.state.formData.PromotionDetail.time);
-        d= d.concat(this.state.formData.PromotionDetail.product);
-      }
-      if(data.prize_type == 3){
-        d= d.concat(this.state.formData.PromotionDetail.area);
-        d= d.concat(this.state.formData.PromotionDetail.product);
-      }
-
+      
+      d= d.concat(this.state.formData.PromotionDetail.area);
+      d= d.concat(this.state.formData.PromotionDetail.product);
+      d = d.concat(this.state.formData.PromotionDetail.time);
+      
+      
+      // 时间重叠判断,1、时间不允许重复，2、如果出现，必须是同一类别抽奖和不同的商品
+      console.log(startTime,endTime)
+      console.log(d,data)
       for(var i =0,l=d.length; i<l; i++){
         if( startTime >= t(d[i].SActivityTime) && startTime <= t(d[i].EActivityTime) || endTime <= t(d[i].EActivityTime) && endTime >= t(d[i].SActivityTime) ){
-          s = false;
+          s = false; 
         }
         if(startTime == t(d[i].SActivityTime) || endTime == t(d[i].EActivityTime) ){
           s = false;
+        }
+        // 允许重叠的情况
+        console.log(types[data.prize_type],d[i].MarketingType);
+        console.log(data.Prize_Code,d[i].Prize_Code)
+        if( types[data.prize_type] == d[i].MarketingType && data.Prize_Code != d[i].Prize_Code){
+            s = true;
         }
       }
       
@@ -310,12 +314,13 @@ class SaleDoAdd extends React.Component{
         EActivityTime : _G.timeFormat(data.EActivityTime), // 中奖时间
       }
     }
-
+	 
     this.setState({
       formData : all
     });
+    cb&&cb();
     console.log('更新 中奖率');
-    console.log(this.state);
+    console.log(this.all);
 
   }
 
@@ -386,7 +391,11 @@ class SaleDoAdd extends React.Component{
     d = d.concat(data.PromotionDetail.product);
     data.PromotionDetail = d;
     console.log('新增，修改促销活动数据如下：');
-    console.log(data)
+    console.log(data);
+    if( !data.MA_EndTime || !data.MA_InitialDraw || !data.MA_Name || !data.MA_StartTime || !data.PromotionDetail.length){
+        msg_error('内容不完整，请填写相应内容');
+        return;
+    }
     var url = this.props.params.id ? saleDoEdit+'?MA_Code='+ this.props.params.id : saleDoAdd;
     _G.ajax({
       url : url,

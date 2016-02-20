@@ -70,6 +70,7 @@ class SelectForm extends React.Component{
     this.showMoreSearch = this.showMoreSearch.bind(this);
     this.departCheck = this.departCheck.bind(this);
     this.checkhandle = this.checkhandle.bind(this);
+    this.fixedTreeClick = this.fixedTreeClick.bind(this);
   }
 
   showMoreSearch(){
@@ -186,6 +187,9 @@ class SelectForm extends React.Component{
       width : tar.offsetWidth
     })
   }
+  departChange(e){
+      
+  }
 
   // 点击树菜单
   checkhandle(info){
@@ -197,6 +201,15 @@ class SelectForm extends React.Component{
     state.top = -1000;
     this.setState(state);
     // 根据选中的 key ，获取 相关数据 ,更新state，展示再右侧
+  }
+  
+  fixedTreeClick(e){
+    //  console.log(e)
+    // var state = _G.assign({},this.state);
+    // state.Depart_Code = '';
+    // state.Depart_Name = '';
+    // state.top = -1000;
+    // this.setState(state);
   }
 
  
@@ -254,9 +267,9 @@ class SelectForm extends React.Component{
               </li>
               <li className="fleft" style={{"position":"relative"}}>
                 <FormItem id="Depart_Code" label="隶属部门：">
-                  <Input placeholder="" name="Depart_Name" onClick={this.departCheck} value={this.state.Depart_Name} />
+                  <Input placeholder="" name="Depart_Name" onClick={this.departCheck} onChange={this.departChange} value={this.state.Depart_Name} />
                 </FormItem>
-                <div id="fixedTree" className="fixedTree" style={{right:this.state.right,top:this.state.top,width:this.state.width}}>
+                <div id="fixedTree" onClick={this.fixedTreeClick} className="fixedTree" style={{right:this.state.right,top:this.state.top,width:this.state.width}}>
                   <Tree multiple={false} onSelect={this.checkhandle}>
                       {this.state.treeNodes}
                   </Tree>

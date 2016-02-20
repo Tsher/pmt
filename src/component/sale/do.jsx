@@ -113,6 +113,7 @@ class SelectForm extends React.Component{
     if (!endValue || !this.state.MA_StartTime) {
       return false;
     }
+    console.log(this.state.MA_StartTime.getTime)
     return endValue.getTime() <= this.state.MA_StartTime.getTime();
   }
 

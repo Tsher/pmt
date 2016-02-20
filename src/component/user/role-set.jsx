@@ -171,9 +171,9 @@ class UserRoleSet extends React.Component{
         console.log(LineJson)
 		// to do ***************************************************
 		_G.ajax({
-			url : saveRoles + '?Role_Code='+ this.state.Role_Code + '&LineJson={"Data":'+ JSON.stringify(LineJson) +'}' ,
+			url : saveRoles + '?Role_Code='+ this.state.Role_Code ,
 			data : {
-				LineJson : JSON.stringify({DATA:LineJson})
+				JsonValue : JSON.stringify({Data:LineJson})
 			},
 			type : 'post',
 			success : function(res){
@@ -221,7 +221,7 @@ class UserRoleSet extends React.Component{
 	      } )
 	    }
 	    const parseTree = (data) => loop(data);
-	    let treeNodes = parseTree(this.state.menus);
+	    let treeNodes = parseTree(this.state.treedata);
 	    return treeNodes
 	}
 	

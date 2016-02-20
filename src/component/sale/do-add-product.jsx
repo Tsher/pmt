@@ -60,7 +60,7 @@ class SelectForm extends React.Component{
       SActivityTime : undefined, // 中奖开始时间
       EActivityTime : undefined, // 中奖结束时间
       WinningPlaces : undefined, // 中奖名额
-      prize_type : 3, // 抽奖模式  1 = 时间区间  2=区域  3 = 产品
+      prize_type : 'product', // 抽奖模式  1 = 时间区间  2=区域  3 = 产品
       sale_all_prizeName : <Option value="1">1</Option>, // 所有奖品
       sale_all_prizeLevel : <Option value="1">1</Option>, // 所有奖品级别
       sale_all_areaName : <Option value="1">1</Option>, // 所有区域级别
@@ -148,10 +148,8 @@ class SelectForm extends React.Component{
       Product_Name : undefined, // 产品名称
       FirstWinningRate:undefined, // 首次中奖率
       NFirstWinningRate : undefined, // 非首次中奖率
-      SActivityTime : undefined, // 中奖时间
       WinningPlaces:undefined, // 中奖名额
-      EActivityTime : undefined, // 中奖时间
-      prize_type : 3, // 抽奖模式  1 = 时间区间  2=区域  3 = 产品
+      prize_type : 'product', // 抽奖模式  1 = 时间区间  2=区域  3 = 产品
     })
   }
   
@@ -164,13 +162,13 @@ class SelectForm extends React.Component{
 
     // 修改已有数据
     if(this.state.index){
-      updateTableData(this.state); // 调用父节点的更新方法
+      updateTableData(this.state,this.clean); // 调用父节点的更新方法
     }else{
-      updateTableData(this.state);
+      updateTableData(this.state,this.clean);
     }
 
 
-    this.clean();
+    //this.clean();
 
     
   }
@@ -313,11 +311,6 @@ let updateTableData;
 
 const columns = [
 {
-  title: '产品编码',
-  dataIndex: 'Product_Code',
-  key: 'Product_Code'
-},
-{
   title: '产品名称',
   dataIndex: 'Product_Name',
   key: 'Product_Name'
@@ -327,8 +320,8 @@ const columns = [
   key: 'Prize_Name'
 }, {
   title: '奖品级别',
-  dataIndex: 'Prize_Level',
-  key: 'Prize_Level'
+  dataIndex: 'Prize_Level_Name',
+  key: 'Prize_Level_Name'
 }, {
   title: '首次中奖率',
   dataIndex: 'FirstWinningRate',
@@ -350,7 +343,7 @@ const columns = [
   dataIndex: 'prize_type',
   key: 'prize_type',
   render:function(){
-    return <span>区域抽奖</span>
+    return <span>产品抽奖</span>
   }
 }, {
   title: '操作',
@@ -404,11 +397,12 @@ class SaleADDProduct extends React.Component{
   }
 
   // update table data
-  updateTableData(opts){
+  updateTableData(opts,cb){
     
     console.log(opts);
     
     if(!opts.Product_Code || !opts.Prize_Code || !opts.Prize_Level  || !opts.SActivityTime || !opts.EActivityTime ){
+      console.log(opts)
       msg_error('请填写内容');
       return;
     }
@@ -423,7 +417,7 @@ class SaleADDProduct extends React.Component{
     }
 
 
-    this.props.addPrizeTime('product',opts); // 同步到父页面
+    this.props.addPrizeTime('product',opts,cb); // 同步到父页面
   }
 
   

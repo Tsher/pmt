@@ -553,6 +553,11 @@ class BaseProductAdd extends React.Component{
   // datepicker change
   onChange(field,value){
    var data = _G.assign({},this.state);
+   if(field == 'Validity'){
+       if(value <=0){
+           value = 1;
+       }
+   }
     data.formData[field]=value;
     this.setState(data)
   }

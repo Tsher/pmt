@@ -60,7 +60,7 @@ class SelectForm extends React.Component{
       SActivityTime : undefined, // 中奖开始时间
       EActivityTime : undefined, // 中奖结束时间
       WinningPlaces : undefined, // 中奖名额
-      prize_type : 1, // 抽奖模式  1 = 时间区间  2=区域  3 = 产品
+      prize_type : 'time', // 抽奖模式  1 = 时间区间  2=区域  3 = 产品
       sale_all_prizeName : <Option value="1">1</Option>, // 所有奖品
       sale_all_prizeLevel : <Option value="1">1</Option>, // 所有奖品级别
     };
@@ -146,7 +146,7 @@ class SelectForm extends React.Component{
       FirstWinningRate:undefined, // 首次中奖率
       WinningPlaces : undefined, // 中奖次数
       NFirstWinningRate : undefined, // 非首次中奖率
-      prize_type : 1, // 抽奖模式  1 = 时间区间  2=区域  3 = 产品
+      prize_type : 'time', // 抽奖模式  1 = 时间区间  2=区域  3 = 产品
     })
   }
   
@@ -302,10 +302,6 @@ function EditPrize(e){
 let updateTableData;
 
 const columns = [{
-  title: '奖品编号',
-  dataIndex: 'Prize_Code',
-  key: 'Prize_Code'
-}, {
   title: '奖品名称',
   dataIndex: 'Prize_Name',
   key: 'Prize_Name'
