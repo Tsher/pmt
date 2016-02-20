@@ -97,7 +97,7 @@ class SalePrizeAdd extends React.Component{
   // 上传成功回调
   uploadSuccess(src){
     var state = _G.assign({},this.state);
-    state.formData.Image.push({"Image" : src});
+    state.formData.ImageDetail.push({"Image" : src});
     this.setState(state);
   }
 
@@ -143,7 +143,7 @@ class SalePrizeAdd extends React.Component{
         "RegisterOn":this.state.formData.RegisterOn,
         "Brand":this.state.formData.Brand,
         "Spec":this.state.formData.Spec,
-        "ImageDetail":this.state.formData.ImageDetail
+        "ImageDetail":this.state.formData.ImageDetail.length?this.state.formData.ImageDetail : [{}]
       }
 
       const validation = this.refs.validation;

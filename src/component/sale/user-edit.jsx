@@ -357,13 +357,13 @@ class SaleUserEdit extends React.Component {
                                       </Validator>
                                   </FormItem>
                                   <FormItem label="行政区域："  labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                                      <Select value={this.state.formData.Province_Name} style={{width:"33%"}} onChange={this.handleProvinceChange}>
+                                      <Select value={this.state.formData.Province_Name} style={{width:"33%"}} onChange={this.handleProvinceChange} dropdownMatchSelectWidth={false}>
                                           {provinceOptions}
                                       </Select>
-                                      <Select value={this.state.formData.City_Name} style={{width:"33%"}} onChange={this.handleCityChange}>
+                                      <Select value={this.state.formData.City_Name} style={{width:"33%"}} onChange={this.handleCityChange} dropdownMatchSelectWidth={false}>
                                           {cityOptions}
                                       </Select>
-                                      <Select value={this.state.formData.Area_Name} style={{width:"33%"}} onChange={this.handleAreaChange}>
+                                      <Select value={this.state.formData.Area_Name} style={{width:"33%"}} onChange={this.handleAreaChange} dropdownMatchSelectWidth={false}>
                                           {areaOptions}
                                       </Select>
                                   </FormItem>

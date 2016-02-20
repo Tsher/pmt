@@ -43,7 +43,9 @@ const msg_success = function() {
     message.success('数据提交成功，等待后台处理')
 }
 
-
+var provinceData = []
+var cityData = {}
+var areaData = {}
 class SaleVipInfo extends React.Component{
   //mixins: [Validation.FieldMixin],
   constructor(props) {
@@ -58,13 +60,92 @@ class SaleVipInfo extends React.Component{
           Member_Status: '', // 会员状态
           RegisterTime: '', //注册日期
           Member_Email: '', // 电子邮件
-          SortNo: '', // 行政区域
+          Province: '',
+          Province_Name: "",
+          City: '',
+          City_Name: "",
+          Area: '',
+          Area_Name: "",
           Member_Address: '', // 详细地址
       };
       this.handleResetPwd = this.handleResetPwd.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
+      this.getProvince = this.getProvince.bind(this);
+      this.getCity = this.getCity.bind(this);
+      this.getArea = this.getArea.bind(this);
   }
+  getProvince() {
+         _G.ajax({
+             url: config.__URL + config.sale.user.province,
+             type: "get",
+             success: function(res) {
+                 provinceData = res.Data
+                 var code = this.state.Province ? this.state.Province : provinceData[0].Region_Code
+                 var name
+                 res.Data.map(function(elem) {
+                     if (elem.Region_Code == code) {
+                         name = elem.Region_Name
+                     }
+                 })
 
+                 this.setState({
+                     Province: code,
+                     Province_Name: name
+                 })
+                 this.getCity()
+             }.bind(this)
+         })
+     }
+     getCity() {
+         var a = this.state.Province;
+         _G.ajax({
+             url: config.__URL + config.sale.user.city,
+             type: "get",
+             data: {
+                 Region_Code: a
+             },
+             success: function(res) {
+                 cityData[a] = res.Data
+                 var code = this.state.City ? this.state.City : cityData[a][0].Region_Code
+                 var name
+                 res.Data.map(function(elem) {
+                     if (elem.Region_Code == code) {
+                         name = elem.Region_Name
+                     }
+                 })
+
+                 this.setState({
+                     City: code,
+                     City_Name: name
+                 })
+                 this.getArea()
+             }.bind(this)
+         })
+     }
+     getArea() {
+         var a = this.state.City;
+         _G.ajax({
+             url: config.__URL + config.sale.user.area,
+             type: "get",
+             data: {
+                 Region_Code: a
+             },
+             success: function(res) {
+                 areaData[a] = res.Data
+                 var code = this.state.Area ? this.state.Area : areaData[a][0].Region_Code
+                 var name
+                 res.Data.map(function(elem) {
+                     if (elem.Region_Code == code) {
+                         name = elem.Region_Name
+                     }
+                 })
+                 this.setState({
+                     Area: code,
+                     Area_Name: name
+                 })
+             }.bind(this)
+         })
+     }
   componentDidMount() {
       var opts = {
           Member_Code: this.props.params.id
@@ -75,7 +156,7 @@ class SaleVipInfo extends React.Component{
           data: opts,
           success: function(res) {
               this.setState(_G.assign(res.Data,{RegisterTime:_G.timeFormat2(res.Data.RegisterTime)}))
-              //RegisterTime
+              this.state.Province&&this.getProvince()
           }.bind(this)
       })
   }
@@ -126,7 +207,7 @@ class SaleVipInfo extends React.Component{
                               <Input name="Member_Phone" value={this.state.Member_Phone} disabled />
                           </FormItem>
                       </Col>
-                      <Col span="8">
+                      <Col span="12">
                           <FormItem label="会员状态：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                               <Input name="Member_Status" value={this.state.Member_Status} disabled />
                           </FormItem>
@@ -137,7 +218,9 @@ class SaleVipInfo extends React.Component{
                               <Input name="Member_Email" value={this.state.Member_Email} disabled />
                           </FormItem>
                           <FormItem label="行政区域：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
-                              <Input name="SortNo" value={this.state.SortNo} disabled />
+                              <Input name="Province_Name" value={this.state.Province_Name} disabled style={{width:"33%"}}  />
+                              <Input name="City_Name" value={this.state.City_Name} disabled style={{width:"33%"}}  />
+                              <Input name="Area_Name" value={this.state.Area_Name} disabled style={{width:"33%"}}  />
                           </FormItem>
                           <FormItem label="地址：" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                               <Input name="Member_Address" value={this.state.Member_Address} disabled />
