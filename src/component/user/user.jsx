@@ -243,9 +243,9 @@ class SelectForm extends React.Component{
                     <label className="ant-checkbox-inline">用户状态：</label>
                     <label className="ant-checkbox-inline">
                     <RadioGroup name="User_Status" onChange={this.radioChange} value={this.state.User_Status}>
-                      <Radio value="2">全部</Radio>
-                      <Radio value="0">在职</Radio>
-                      <Radio value="1">离职</Radio>
+                      <Radio value="">全部</Radio>
+                      <Radio value="10">在职</Radio>
+                      <Radio value="11">离职</Radio>
                     </RadioGroup>
                     </label>
                    </Col>

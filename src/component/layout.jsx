@@ -7,8 +7,6 @@ import Tag from 'antd/lib/tag';
 import { Link } from 'react-router';
 
 
-
-
 class Layout extends React.Component{
 	constructor(props){
 		super(props)

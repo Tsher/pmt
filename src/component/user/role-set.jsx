@@ -17,6 +17,13 @@ const goBack = History.goBack;
 
 const TreeNode = Tree.TreeNode;
 
+const msg_error = function(){
+  message.error('数据验证错误,请检查后提交')
+}
+const msg_success = function(){
+  message.success('数据提交成功，等待后台处理')
+}
+
 /*
 *
 * @params id
@@ -36,7 +43,7 @@ class UserRoleSet extends React.Component{
 		super();
 		this.state = {
 			menus : [],
-			selectedRole : '',
+			selectedRole : {},
 			selectedRoleArray : [],
 			id : '', // 如果是编辑状态
 			Role_Name : '',
@@ -132,33 +139,50 @@ class UserRoleSet extends React.Component{
 	}
 	
 	onChange(e){
-		// var roles = this.state.selectedRole;
-		// if(e.target.checked){
-		// 	roles+=','+e.target.value
-		// }else{
-		// 	roles = roles.replace(','+e.target.value,'')
-		// }
-		// this.setState({
-		// 	selectedRole : roles
-		// })
+		var roles = _G.assign({},this.state.selectedRole);
+        var s = e.target.value.split('-');
+        roles[s[0]] = roles[s[0]] || '';
+		if(e.target.checked){
+            roles[s[0]] += ',' + s[1];
+		}else{
+            roles[s[0]] = roles[s[0]].replace(s[1],'');
+		}
+        roles[s[0]] = roles[s[0]].replace(/,{1,}/g,',').replace(/^,|,$/,'');
+        console.log(roles)
+		this.setState({
+			selectedRole : roles
+		})
+        s=null;
+        roles=null;
 	}
 
 	handleSubmit(){
-		// // 已读取 选择 内容 ，等待ajax提交 *****************************************************
-		// var data = _G.assign({},this.state);
-		// // to do ***************************************************
-		// _G.ajax({
-		// 	url : saveRoles,
-		// 	data : {
-		// 		Role_Code : this.state.id,
-		// 		selectedRole : this.state.selectedRole,
-
-		// 	},
-		// 	type : 'post',
-		// 	success : function(){
-
-		// 	}
-		// })
+		// 已读取 选择 内容 ，等待ajax提交 *****************************************************
+		var data = _G.assign({},this.state);
+        var LineJson = [];
+        for(var key in data.selectedRole){
+            if(data.selectedRole[key]!=''){
+                LineJson[LineJson.length] = {
+                    MenuID : key,
+                    Roles : data.selectedRole[key]
+                }
+            }
+        }
+        console.log(LineJson)
+		// to do ***************************************************
+		_G.ajax({
+			url : saveRoles + '?Role_Code='+ this.state.Role_Code + '&LineJson={"Data":'+ JSON.stringify(LineJson) +'}' ,
+			data : {
+				LineJson : JSON.stringify({DATA:LineJson})
+			},
+			type : 'post',
+			success : function(res){
+                msg_success();
+                // 调转到列表页
+                goBack();
+                return;
+			}
+		})
 	}
 	handleReset(){
 		goBack();
@@ -178,12 +202,12 @@ class UserRoleSet extends React.Component{
 			"3" : '修改',
 			"4" : '删除'
 		};
-		const loopLis = (data) => {
+		const loopLis = (data,code) => {
 			return ["1","2","3","4"].map( (item) => {
 				if(data.indexOf(item)>-1){
-					return (<li><Checkbox key={item} defaultChecked={true}  onChange={that.onChange} />{values[item]}</li>)
+					return (<li key={code+'-'+item}><Checkbox key={code+'-'+item} value={code+'-'+item} defaultChecked={true}  onChange={that.onChange} />{values[item]}</li>)
 				}else{
-					return (<li><Checkbox key={item} defaultChecked={false} onChange={that.onChange} />{values[item]}</li>)
+					return (<li key={code+'-'+item}><Checkbox key={code+'-'+item} value={code+'-'+item} defaultChecked={false} onChange={that.onChange} />{values[item]}</li>)
 				}
 			} )
 		}
@@ -192,7 +216,7 @@ class UserRoleSet extends React.Component{
 	        if(item.Children && item.Children.length){
 	          return (<div key={item.Code}><h2>{item.Name}</h2>{loop(item.Children)}</div>);
 	        }else{
-	          return (<dl key={item.Code} className="roles_set"><dt>{item.Name}</dt><dd><ul>{loopLis(item.Fun_Code||'')}</ul></dd></dl>);
+	          return (<dl key={item.Code} className="roles_set"><dt>{item.Name}</dt><dd><ul>{loopLis(item.Fun_Code||'',item.Code)}</ul></dd></dl>);
 	        }
 	      } )
 	    }

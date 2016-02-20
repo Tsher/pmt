@@ -98,7 +98,7 @@ class SalePrizeEdit extends React.Component{
   // 上传成功回调
   uploadSuccess(src){
     var state = _G.assign({},this.state);
-    state.formData.Image.push({"Image" : src});
+    state.formData.ImageDetail.push({"Image" : src});
     this.setState(state);
   }
 
@@ -130,7 +130,7 @@ class SalePrizeEdit extends React.Component{
               });
               this.setState({
                   formData: Object.assign(res.Data, {
-                      ImageDetail: img,
+                      ImageDetail: img.length?img:[{}],
                       RegisterOn: _G.timeFormat2(res.Data.RegisterOn,"YYYY-MM-DD")
                   })
               })
