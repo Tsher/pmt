@@ -321,29 +321,40 @@ class SelectForm extends React.Component{
                     <li className="fleft">
                         <label className="do-add-time-title">箱号：</label>
                         <span className="timepicker">
-                          <FormItem
-                                label=""
-                                id="boxNumStart"
-                                validateStatus={this.renderValidateStyle('boxNumStart')}
-                                help={status.boxNumStart.errors ? status.boxNumStart.errors.join(',') : null}
-                                required >
-                                  <Validator rules={[{required: true, message: '请输入起始箱号'}]}>
-                                    <Input placeholder="" id="boxNumStart" name="boxNumStart" onChange={this.setValue} value={formData.boxNumStart} />
-                                  </Validator>
+                          
+                            <FormItem
+                              label=""
+                              id="boxNumStart"
+                              validateStatus={this.renderValidateStyle('boxNumStart')}
+                              help={status.boxNumStart.errors ? status.boxNumStart.errors.join(',') : null}
+                              required
+                              >
+                              
+                              <Validator rules={[{required: true, message: '请输入起始箱号',type : 'number'}]}>
+                              <InputNumber style={{width:150}} min={0} name="boxNumStart" id="boxNumStart" value={formData.boxNumStart} />
+                              </Validator>
+                              
                             </FormItem>
+
                         </span>
                         <span className="timepicker-space"> 至 </span>
                         <span className="timepicker">
-                          <FormItem
-                                label=""
-                                id="boxNumEnd"
-                                validateStatus={this.renderValidateStyle('boxNumEnd')}
-                                help={status.boxNumEnd.errors ? status.boxNumEnd.errors.join(',') : null}
-                                required>
-                                  <Validator rules={[{required: true, message: '请输入结束箱号'}]}>
-                                    <Input placeholder="" id="boxNumEnd" name="boxNumEnd" onChange={this.setValue} value={formData.boxNumEnd} />
-                                  </Validator>
+                          
+
+                            <FormItem
+                              label=""
+                              id="boxNumEnd"
+                              validateStatus={this.renderValidateStyle('boxNumEnd')}
+                              help={status.boxNumEnd.errors ? status.boxNumEnd.errors.join(',') : null}
+                              required
+                              >
+                              
+                              <Validator rules={[{required: true, message: '请输入结束箱号',type : 'number'}]}>
+                              <InputNumber style={{width:150}} min={0} name="boxNumEnd" id="boxNumEnd" value={formData.boxNumEnd} />
+                              </Validator>
+                              
                             </FormItem>
+
                         </span>
                             
                     </li>
