@@ -24,7 +24,7 @@ const confirm = Modal.confirm;
 const history = createHistory();
 
 const FormItem = Form.Item;
-
+var kinds = [];
 class SelectForm extends React.Component{
 	//mixins: [Form.ValueMixin],
 
@@ -61,7 +61,15 @@ class SelectForm extends React.Component{
       this.props.changeTableState(data);
   }
   componentDidMount() {
-      this.handleSubmit()
+      _G.ajax({
+          url: config.__URL + config.sale.prize.kinds,
+          type: "get",
+          data: {Prize_Name:''},
+          success: function(res) {
+              kinds = res.Data
+              this.handleSubmit()
+          }.bind(this)
+      })
   }
 
   // datepicker change
@@ -81,6 +89,9 @@ class SelectForm extends React.Component{
 
  
   render() {
+    var renderKinds = kinds.map(function(elem,index) {
+      return <Option key={index} value={elem.Prize_Type}>{elem.Prize_Type}</Option>;
+    })
     return (
     	<div className="fright">
       <Form inline onSubmit={this.handleSubmit}>
@@ -100,25 +111,21 @@ class SelectForm extends React.Component{
 		            label="奖品类别："
 		            id="Prize_Type">
 		            	<Select size="large" placeholder="请选择奖品类别" style={{width: 80}} name="Prize_Type"  value={this.state.Prize_Type} onChange={this.onChange.bind(this,'Prize_Type')}>
-		                    <Option value="prize-type-1">类别1</Option>
-		                    <Option value="prize-type-2">类别2</Option>
-		                    <Option value="prize-type-3">类别3</Option>
-		                    <Option value="prize-type-4">类别4</Option>
-		                    <Option value="prize-type-5">类别5</Option>
-		                  </Select>
+		                  {renderKinds}
+		              </Select>
 		          </FormItem>
             	</li>
               <li className="fleft date-picker">
                 <FormItem id="startTime" label="入网时间：" labelCol={{span : 5}} >
                   	<Row span="24" >
                   	<Col span="10">
-			            <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'startTime')} />
+			            <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'Register_On_S')} />
 			          </Col>
 			          <Col span="1">
 			            <p className="ant-form-split">-</p>
 			          </Col>
 			          <Col span="10">
-			            <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'endTime')} />
+			            <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'Register_On_E')} />
 			          </Col>
 			          </Row>
                 </FormItem>
@@ -150,15 +157,17 @@ function showModal(e){
   modalState(id)
 }
 
-const columns = [{
-  title: '奖品编码',
-  dataIndex: 'Prize_Code',
-  key: 'Prize_Code',
-  render: function(text,record) {
-  	var href= '/sale/prize/info/'+text;
-    return <Link to={href}>{text}</Link>;
-  }
-}, {
+const columns = [
+// {
+//   title: '奖品编码',
+//   dataIndex: 'Prize_Code',
+//   key: 'Prize_Code',
+//   render: function(text,record) {
+//   	var href= '/sale/prize/info/'+text;
+//     return <Link to={href}>{text}</Link>;
+//   }
+// }, 
+{
   title: '奖品名称',
   dataIndex: 'Prize_Name',
   key: 'Prize_Name'
