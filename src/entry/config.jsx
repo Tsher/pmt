@@ -124,10 +124,11 @@ window['_G']={
 		var url = opts.url;
 		var data = Object.assign({},opts.data);
 		var callback = opts.callback;
+		var type = opts.type || 'get';
 		var str = '';
 		this.ajax({
 			url:url,
-			type:'get',
+			type:type,
 			data : data,
 			success : function(res){
 				callback(res)
@@ -181,6 +182,7 @@ window['config'] = {
 			saveRole : '/api/SRole/PostSetRole', // 保存角色权限
 
 			getRole : '/api/SRole/GetSetRole', // 获取角色权限
+			excel : '/api/SRole/ExportExcelRole',//导出excel
 		},
 		// 组织机构管理
 		group : {
@@ -206,6 +208,7 @@ window['config'] = {
 			add : '/api/SProduct/PostProduct', // 新增提交
 			edit : '/api/SProduct/PutProduct', // 修改提交
 			del : '/api/SProduct/DeleteProduct', // 删除
+			excel : '/api/SProduct/ProductToExcel',//导出excel
 		},
 		info : {
 			list : '/api/SEnterprise/GetEnterprise'
@@ -238,7 +241,8 @@ window['config'] = {
 			list : '/api/SMember/GetMemberBy',	//获取会员列表
 			info : '/api/SMember/GetMember',	//获取会员信息
 			freeze:'/api/SMember/PutMember',	//冻结解冻会员
-			resetPwd:'/api/SMember/ResetPwd'	//重置会员密码
+			resetPwd:'/api/SMember/ResetPwd',	//重置会员密码
+			excel : '/api/SMember/MemberExcel',//导出excel
 
 		},
 		'user':{
@@ -250,7 +254,8 @@ window['config'] = {
 			add : '/api/SSalesPersonMana/PostSalesPerson',		//添加促销人员
 			edit : '/api/SSalesPersonMana/PutSalesPerson',		//修改促销人员
 			del : '/api/SSalesPersonMana/DeleteSalesPerson',	// 删除促销人员
-			resetPwd:'/api/SSalesPersonMana/ResetPwd'			//重置会员密码
+			resetPwd:'/api/SSalesPersonMana/ResetPwd',			//重置会员密码
+			excel : '/api/SSalesPersonMana/SalesPersonExcel',//导出excel
 		},
 		'prize':{
 			list : '/api/SPrizeMana/GetPrizeBy',		//获取奖品列表
@@ -259,7 +264,8 @@ window['config'] = {
 			add : '/api/SPrizeMana/PostPrize', 		//添加奖品
 			upload : '/api/SPrizeMana/UpProImage', 		//上传图片
 			edit : '/api/SPrizeMana/PutPrize', 		//修改奖品
-			del : '/api/SPrizeMana/DeletePrize'		// 删除奖品
+			del : '/api/SPrizeMana/DeletePrize',		// 删除奖品
+			excel : '/api/SPrizeMana/PrizeExcel',//导出excel
 		}
 	},
 	// 促销数据

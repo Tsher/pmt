@@ -35,6 +35,7 @@ class SelectForm extends React.Component{
       Prize_Type : '', // 奖品类别
       Register_On_S : '', // 注册开始时间
       Register_On_E : '', // 注册结束时间
+      excel : 'javascript:;',
     };
     this.setValue = this.setValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -59,6 +60,21 @@ class SelectForm extends React.Component{
           Register_On_E: _G.timeFormat2(new Date(this.state.Register_On_E).getTime(), 'YYYY-MM-DD')
       });
       this.props.changeTableState(data);
+      //excel导出 begin
+      var _this = this;
+      var url = config.__URL + config.sale.prize.excel;
+      _G.getExcel({
+         url : url,
+         data : data,
+         callback : function(d){
+             var excel = d.ReturnOperateStatus;
+             _this.setState({
+                 excel : excel
+             })
+             console.log(_this.state.excel)
+         }
+      });
+      //excel导出 end
   }
   componentDidMount() {
       _G.ajax({

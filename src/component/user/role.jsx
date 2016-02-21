@@ -27,6 +27,7 @@ import '../../entry/config';
 const urlRoleList = config.__URL + config.user.role.list;
 const urlRoleDel = config.__URL + config.user.role.del;
 const urlRoleType = config.__URL + config.user.role.type;
+const urlRoleExcel = config.__URL + config.user.role.excel;
 
 
 let role_all_type={};
@@ -40,6 +41,7 @@ class SelectForm extends React.Component{
       Role_Name : '',
       Role_Type : "",
       role_all_type : undefined,
+      excel : 'javascript:;',
     };
     this.setValue = this.setValue.bind(this);
     this.handleSelectChange = this.handleSelectChange.bind(this);
@@ -89,6 +91,20 @@ class SelectForm extends React.Component{
     }
     this.props.changeTableState(data);
     console.log(this.state);
+
+    //excel导出 begin
+    var _this = this;
+    _G.getExcel({
+       url : urlRoleExcel,
+       data : data,
+       callback : function(d){
+           var excel = d.ReturnOperateStatus;
+           _this.setState({
+               excel : excel
+           })
+       }
+    });
+    //excel导出 end
     
   }
 
@@ -114,7 +130,9 @@ class SelectForm extends React.Component{
     		  </Button>
         </FormItem>
         <FormItem>
-          <Button type="primary" size="large"  >导出excel</Button>
+          <a href={this.state.excel}>
+                  <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
+                </a>
         </FormItem>
       </Form>
       </div>
