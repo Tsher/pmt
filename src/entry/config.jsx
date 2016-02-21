@@ -181,6 +181,7 @@ window['config'] = {
 			saveRole : '/api/SRole/PostSetRole', // 保存角色权限
 
 			getRole : '/api/SRole/GetSetRole', // 获取角色权限
+			excel : '/api/SRole/ExportExcelRole',//导出excel
 		},
 		// 组织机构管理
 		group : {
