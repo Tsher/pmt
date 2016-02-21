@@ -70,7 +70,7 @@ class SelectForm extends React.Component{
     this.showMoreSearch = this.showMoreSearch.bind(this);
     this.departCheck = this.departCheck.bind(this);
     this.checkhandle = this.checkhandle.bind(this);
-    this.fixedTreeClick = this.fixedTreeClick.bind(this);
+    this.fixedTreeClear = this.fixedTreeClear.bind(this);
   }
 
   showMoreSearch(){
@@ -148,7 +148,7 @@ class SelectForm extends React.Component{
       User_Status : data.User_Status,
       Depart_Code : data.Depart_Code,
       Login_Name : data.Login_Name,
-      page : data.page,
+      page : 1,
       pageSize : data.pageSize
     }
     console.log('first time')
@@ -203,13 +203,13 @@ class SelectForm extends React.Component{
     // 根据选中的 key ，获取 相关数据 ,更新state，展示再右侧
   }
   
-  fixedTreeClick(e){
-    //  console.log(e)
-    // var state = _G.assign({},this.state);
-    // state.Depart_Code = '';
-    // state.Depart_Name = '';
-    // state.top = -1000;
-    // this.setState(state);
+  fixedTreeClear(e){
+     console.log(e)
+    var state = _G.assign({},this.state);
+    state.Depart_Code = '';
+    state.Depart_Name = '';
+    state.top = -1000;
+    this.setState(state);
   }
 
  
@@ -273,6 +273,7 @@ class SelectForm extends React.Component{
                   <Tree multiple={false} onSelect={this.checkhandle}>
                       {this.state.treeNodes}
                   </Tree>
+                  <a className="clear-btn" onClick={this.fixedTreeClear}></a>
                 </div>
               </li>
               <li className="fleft">

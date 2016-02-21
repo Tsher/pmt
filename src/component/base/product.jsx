@@ -82,6 +82,7 @@ class SelectForm extends React.Component{
     var data = _G.assign({},this.state);
     data.Register_On_S = ''+_G.timeFormat2( new Date(data.Register_On_S).getTime() , 'YYYY-MM-DD' );
     data.Register_On_E = ''+_G.timeFormat2( new Date(data.Register_On_E).getTime() , 'YYYY-MM-DD');
+    data.page = 1;
     this.props.changeTableState(data);
 
 
@@ -203,17 +204,20 @@ const columns = [{
   dataIndex: 'Brand',
   key: 'Brand'
 },{
-  title: '规格',
+  title: '产品规格',
   dataIndex: 'Product_Spec',
   key: 'Product_Spec'
 },{
   title: '有效期',
   dataIndex: 'Validity',
-  key: 'Validity'
+  key: 'Validity',
 },{
   title: '入网日期',
   dataIndex: 'Register_Time',
-  key: 'Register_Time'
+  key: 'Register_Time',
+  render:function(text,record,index){
+      return <span>{_G.timeFormat2(record.Add_On)}</span>
+  }
 }, {
   title: '操作',
   key: 'operation',
@@ -499,7 +503,7 @@ class BaseProduct extends React.Component{
           <Col span="20">
 					 <Table onChange={this.tableChange}  onShowSizeChange={this.showSizechange}
             columns={columns} dataSource={this.state.data} 
-            pagination={{showQuickJumper:true,pageSize:10,current:1,showSizeChanger:true,total:this.state.total}}  />
+            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total}}  />
           </Col>
 				</Row>
         <Modal 

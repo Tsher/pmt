@@ -312,10 +312,8 @@ window['config'] = {
 	login : '/api/SLogin/LoginIn', // 登录
 	valCode : '/api/SLogin/GetValidateCode', // 验证码
 	checkValCode : '/api/SLogin/CheckVailidateCode', // 校验验证码
-	updatePWD : '/api/SLogin/UpdateUserPwd', // 修改密码
+	updatePWD : '/api/SUser/UpdateUserPwd', // 修改密码
 }
-
-
 
 function get_data(url,name,params,cb){
 	if(!_G.Token) return;

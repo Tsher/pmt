@@ -162,7 +162,7 @@ class BaseProductAdd extends React.Component{
         SName : undefined, // 产品简称
         Brand : undefined, // 品牌
         Product_Description : undefined, // 描述
-        Package_Spec : undefined, // 规格
+        Product_Spec : undefined, // 规格
         Validity : undefined, // 有效期
         Validity_Unit:'', // 有效期单位
         Validity_Units : '', // 所有有效期类别
@@ -256,7 +256,7 @@ class BaseProductAdd extends React.Component{
 
   uploadSuccess(src){
     var state = _G.assign({},this.state);
-    state.formData.DataImage = [{image : src}];
+    state.formData.DataImage.push({Image : src});
     this.setState(state);
   }
 
@@ -304,7 +304,7 @@ class BaseProductAdd extends React.Component{
                 SName : _res.Data.SName, // 产品简称
                 Brand : _res.Data.Brand, // 品牌
                 Product_Description : _res.Data.Product_Description, // 描述
-                Package_Spec : _res.Data.Package_Spec, // 规格
+                Product_Spec : _res.Data.Product_Spec, // 规格
                 Validity : _res.Data.Validity, // 有效期
                 Validity_Unit:_res.Data.Validity_Unit, // 有效期单位
                 Append_Code : _res.Data.Append_Code, // 行业编码 商品码
@@ -396,7 +396,7 @@ class BaseProductAdd extends React.Component{
         Product_Description : formData.Product_Description,
         Product_Name : formData.Product_Name,
         SName : formData.SName,
-        Package_Spec : formData.Package_Spec,
+        Product_Spec : formData.Product_Spec,
         Unit : formData.Unit,
         Validity : parseInt(formData.Validity),
         Validity_Unit : formData.Validity_Unit
@@ -626,7 +626,7 @@ class BaseProductAdd extends React.Component{
       var value = e.target.value;
       let state = _G.assign({},this.state);
       state[name] = value;
-      state.formData.Product_Name = (state.formData.Brand||'') + (state.formData.SName||'');
+      state.formData.Product_Name = (state.formData.SName||'') + (state.formData.Product_Spec||'') ;
       this.setState(state);
     }.bind(this),200)
   }
@@ -660,10 +660,13 @@ class BaseProductAdd extends React.Component{
   }
 
   renderImage(){
-    if(this.state.formData.DataImage[0]&&this.state.formData.DataImage[0].image){
-      return (<img src={this.state.formData.DataImage[0].image} />)
-    }
-    return (<span></span>)
+      var that = this;
+      function imgs(){
+          return that.state.formData.DataImage.map( (item,index) =>{
+            return <img key={index} src={item.Image} />
+        } )
+      }
+    return (<span key='renderImage'>{imgs()}</span>)
   }
 
   render() {
@@ -745,11 +748,11 @@ class BaseProductAdd extends React.Component{
                     <Input name="Append_Code" value={formData.Append_Code} onChange={this.setValue} />
                 </FormItem>
                 <FormItem
-                  label="规格："
-                  id="Package_Spec"
+                  label="产品规格："
+                  id="Product_Spec"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}} >
-                    <Input name="Package_Spec" value={formData.Package_Spec} onChange={this.setValue} />
+                    <Input name="Product_Spec" value={formData.Product_Spec} onChange={this.setValue} />
                 </FormItem>
             </Col>
             <Col span="24">
