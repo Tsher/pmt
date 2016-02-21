@@ -30,7 +30,9 @@ const urlRoleType = config.__URL + config.user.role.type;
 const urlRoleExcel = config.__URL + config.user.role.excel;
 
 
-let role_all_type={};
+let role_all_type={
+    "全部" : ''
+};
 
 class SelectForm extends React.Component{
 	//mixins: [Form.ValueMixin],
@@ -56,7 +58,7 @@ class SelectForm extends React.Component{
       res.Data.map(function(item){
         role_all_type[item.REAL_Code] = item.CODE_NM;
       })
-      const doms = res.Data.map( (item,index)=>{
+      const doms = [{'REAL_Code':'','CODE_NM':'全部'}].concat(res.Data).map( (item,index)=>{
         return <Option key={index} value={item['REAL_Code']}>{item['CODE_NM']}</Option>
       } )
       that.setState({

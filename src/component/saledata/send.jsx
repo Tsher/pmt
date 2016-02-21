@@ -107,7 +107,9 @@ class DateRange extends React.Component{
     //excel导出 end
 
 
-    this.props.changeTableState(this.state);
+    var data = _G.assign({},this.state);
+    data.page =1;
+    this.props.changeTableState(data);
   }
   render() {
     return <div>

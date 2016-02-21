@@ -36,6 +36,7 @@ class SelectForm extends React.Component{
       Register_On_S : '', // 注册开始时间
       Register_On_E : '', // 注册结束时间
       excel : 'javascript:;',
+      kinds : [],
     };
     this.setValue = this.setValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -57,7 +58,8 @@ class SelectForm extends React.Component{
       e&&e.preventDefault();
       var data = _G.assign(this.state, {
           Register_On_S: _G.timeFormat2(new Date(this.state.Register_On_S).getTime(), 'YYYY-MM-DD'),
-          Register_On_E: _G.timeFormat2(new Date(this.state.Register_On_E).getTime(), 'YYYY-MM-DD')
+          Register_On_E: _G.timeFormat2(new Date(this.state.Register_On_E).getTime(), 'YYYY-MM-DD'),
+          page : 1
       });
       this.props.changeTableState(data);
       //excel导出 begin
@@ -82,7 +84,10 @@ class SelectForm extends React.Component{
           type: "get",
           data: {Prize_Name:''},
           success: function(res) {
-              kinds = res.Data
+              console.log(res.Data)
+              this.setState({
+                  kinds : res.Data
+              })
               this.handleSubmit()
           }.bind(this)
       })
@@ -105,7 +110,7 @@ class SelectForm extends React.Component{
 
  
   render() {
-    var renderKinds = kinds.map(function(elem,index) {
+    var renderKinds = [{'Prize_Type':'全部','Prize_Code':''}].concat(this.state.kinds).map(function(elem,index) {
       return <Option key={index} value={elem.Prize_Type}>{elem.Prize_Type}</Option>;
     })
     return (

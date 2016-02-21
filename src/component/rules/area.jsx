@@ -91,7 +91,7 @@ class SelectForm extends React.Component{
     subD.Start_Box_Code_S = this.state.boxNumStart || '';
     subD.End_Box_Code_E = this.state.boxNumEnd || '';
     subD.SalesRegion_Code = this.state.saleRegion || '';
-
+	subD.page = 1;
     this.props.changeTableState(subD);
 
     //excel导出 begin
@@ -166,7 +166,7 @@ class SelectForm extends React.Component{
 		            	<Select size="large" placeholder="选择销售区域" style={{width: 200}} name="saleRegion"  value={this.state.saleRegion} onChange={this.onChange.bind(this,'saleRegion')}>
 
                     {
-                       this.state.selesD.map(function(d){
+                       [{'SalesRegion_Code':'','SalesRegion_Name':'全部'}].concat(this.state.selesD).map(function(d){
                           return <Option key={d.SalesRegion_Code} value={d.SalesRegion_Code} >{d.SalesRegion_Name}</Option>
                        })
                     }

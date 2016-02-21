@@ -54,7 +54,8 @@ class SelectForm extends React.Component {
         e&&e.preventDefault();
         this.setState({
             Register_On_S: _G.timeFormat2(new Date(this.state.Register_On_S).getTime(), 'YYYY-MM-DD'),
-            Register_On_E: _G.timeFormat2(new Date(this.state.Register_On_E).getTime(), 'YYYY-MM-DD')
+            Register_On_E: _G.timeFormat2(new Date(this.state.Register_On_E).getTime(), 'YYYY-MM-DD'),
+            page:1
         })
         this.props.changeTableState(this.state);
 

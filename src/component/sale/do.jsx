@@ -74,8 +74,9 @@ class SelectForm extends React.Component{
     e&&e.preventDefault();
 
     var data = _G.assign({},this.state);
+    data.page = 1;
     //data.MA_StartTime = 
-    this.props.changeTableState(this.state);
+    this.props.changeTableState(data);
 
     //excel导出 begin
     var _this = this;
