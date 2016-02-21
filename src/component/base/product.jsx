@@ -40,6 +40,7 @@ import '../../entry/config';
 const baseProductList = config.__URL + config.base.product.list;
 const baseGetIndustry  = config.__URL + config.base.product.GetIndustry;
 const baseProductDel = config.__URL + config.base.product.del;
+const baseProductExcel = config.__URL + config.base.product.excel;
 
 
 class SelectForm extends React.Component{
@@ -48,10 +49,11 @@ class SelectForm extends React.Component{
   constructor() {
   	super();
     this.state =  {
-      Product_Name : undefined, // 产品名称
-      Brand: undefined, // 产品品牌
-      Register_On_S : undefined, // 注册开始时间
-      Register_On_E : undefined, // 注册结束时间
+      Product_Name : '', // 产品名称
+      Brand: '', // 产品品牌
+      Register_On_S : '', // 注册开始时间
+      Register_On_E : '', // 注册结束时间
+      excel : 'javascript:;',
     };
     this.setValue = this.setValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -83,6 +85,20 @@ class SelectForm extends React.Component{
     data.Register_On_S = ''+_G.timeFormat2( new Date(data.Register_On_S).getTime() , 'YYYY-MM-DD' );
     data.Register_On_E = ''+_G.timeFormat2( new Date(data.Register_On_E).getTime() , 'YYYY-MM-DD');
     this.props.changeTableState(data);
+
+    //excel导出 begin
+      var _this = this;
+      _G.getExcel({
+         url : baseProductExcel,
+         data : data,
+         callback : function(d){
+             var excel = d.ReturnOperateStatus;
+             _this.setState({
+                 excel : excel
+             })
+         }
+      });
+      //excel导出 end
 
 
     // message.success('收到表单值~~~ ：' + JSON.stringify(this.state, function(k, v) {

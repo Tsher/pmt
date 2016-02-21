@@ -124,10 +124,11 @@ window['_G']={
 		var url = opts.url;
 		var data = Object.assign({},opts.data);
 		var callback = opts.callback;
+		var type = opts.type || 'get';
 		var str = '';
 		this.ajax({
 			url:url,
-			type:'get',
+			type:type,
 			data : data,
 			success : function(res){
 				callback(res)
@@ -207,6 +208,7 @@ window['config'] = {
 			add : '/api/SProduct/PostProduct', // 新增提交
 			edit : '/api/SProduct/PutProduct', // 修改提交
 			del : '/api/SProduct/DeleteProduct', // 删除
+			excel : '/api/SProduct/ProductToExcel',//导出excel
 		},
 		info : {
 			list : '/api/SEnterprise/GetEnterprise'
@@ -262,7 +264,8 @@ window['config'] = {
 			add : '/api/SPrizeMana/PostPrize', 		//添加奖品
 			upload : '/api/SPrizeMana/UpProImage', 		//上传图片
 			edit : '/api/SPrizeMana/PutPrize', 		//修改奖品
-			del : '/api/SPrizeMana/DeletePrize'		// 删除奖品
+			del : '/api/SPrizeMana/DeletePrize',		// 删除奖品
+			excel : '/api/SPrizeMana/PrizeExcel',//导出excel
 		}
 	},
 	// 促销数据
