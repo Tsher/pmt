@@ -35,6 +35,7 @@ class SelectForm extends React.Component{
           Register_On_S: '', // 注册开始时间
           Register_On_E: '', // 注册结束时间
           Phone: '', // 手机号
+          excel : 'javascript:;',
       };
       this.setValue = this.setValue.bind(this);
       this.handleSubmit = this.handleSubmit.bind(this);
@@ -58,6 +59,21 @@ class SelectForm extends React.Component{
           Register_On_E: _G.timeFormat2(new Date(this.state.Register_On_E).getTime(), 'YYYY-MM-DD')
       });
       this.props.changeTableState(data);
+
+      //excel导出 begin
+      var _this = this;
+      var url = config.__URL + config.sale.user.excel;
+      _G.getExcel({
+         url : url,
+         data : data,
+         callback : function(d){
+             var excel = d.ReturnOperateStatus;
+             _this.setState({
+                 excel : excel
+             })
+         }
+      });
+      //excel导出 end
   }
 
   componentDidMount() {
@@ -125,9 +141,9 @@ class SelectForm extends React.Component{
                               </li>
                               <li className="fleft">
                                   <FormItem>
-                                      <Button type="primary" size="large">
-                                          导出excel
-                                      </Button>
+                                      <a href={this.state.excel}>
+                                        <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
+                                      </a>
                                   </FormItem>
                               </li>
                           </ul>

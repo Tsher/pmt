@@ -239,7 +239,8 @@ window['config'] = {
 			list : '/api/SMember/GetMemberBy',	//获取会员列表
 			info : '/api/SMember/GetMember',	//获取会员信息
 			freeze:'/api/SMember/PutMember',	//冻结解冻会员
-			resetPwd:'/api/SMember/ResetPwd'	//重置会员密码
+			resetPwd:'/api/SMember/ResetPwd',	//重置会员密码
+			excel : '/api/SMember/MemberExcel',//导出excel
 
 		},
 		'user':{
@@ -251,7 +252,8 @@ window['config'] = {
 			add : '/api/SSalesPersonMana/PostSalesPerson',		//添加促销人员
 			edit : '/api/SSalesPersonMana/PutSalesPerson',		//修改促销人员
 			del : '/api/SSalesPersonMana/DeleteSalesPerson',	// 删除促销人员
-			resetPwd:'/api/SSalesPersonMana/ResetPwd'			//重置会员密码
+			resetPwd:'/api/SSalesPersonMana/ResetPwd',			//重置会员密码
+			excel : '/api/SSalesPersonMana/SalesPersonExcel',//导出excel
 		},
 		'prize':{
 			list : '/api/SPrizeMana/GetPrizeBy',		//获取奖品列表
