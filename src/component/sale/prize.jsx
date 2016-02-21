@@ -346,9 +346,9 @@ class SalePrize extends React.Component{
 	          </Link>
 	       </Col>
       		<Col span="2">
-      			<Link to={this.state.excel}>
+      			<a href={this.state.excel}>
               <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
-      			</Link>
+            </a>
 					</Col>
 					<Col span="20">
 						<SelectForm excelChange={this.excelChange} changeTableState={this.changeTableState} />
