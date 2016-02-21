@@ -73,6 +73,7 @@ class SelectForm extends React.Component{
              _this.setState({
                  excel : excel
              })
+             _this.props.excelChange(excel);
              console.log(_this.state.excel)
          }
       });
@@ -234,6 +235,7 @@ class SalePrize extends React.Component{
       changeId : false,
       total : 0,
       data :[],
+      excel : 'javascript:;',
       opts: {
           page: 1,
           pageSize: 10,
@@ -243,6 +245,7 @@ class SalePrize extends React.Component{
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.changeTableState = this.changeTableState.bind(this);
+    this.excelChange = this.excelChange.bind(this);
 	}
 
   componentDidMount(){
@@ -298,6 +301,12 @@ class SalePrize extends React.Component{
   handleClick(e){
     console.log(e);
   }
+  
+  excelChange(src){
+      this.setState({
+          excel : src
+      })
+  }
 
   // 发送ajax请求，获取table值
     changeTableState(opts) {
@@ -337,12 +346,12 @@ class SalePrize extends React.Component{
 	          </Link>
 	       </Col>
       		<Col span="2">
-      			<Link to='/sale/prize/exports'>
+      			<Link to={this.state.excel}>
               <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
       			</Link>
 					</Col>
 					<Col span="20">
-						<SelectForm changeTableState={this.changeTableState} />
+						<SelectForm excelChange={this.excelChange} changeTableState={this.changeTableState} />
 					</Col>
 				</Row>
 				<Row>
