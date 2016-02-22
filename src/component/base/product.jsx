@@ -51,8 +51,8 @@ class SelectForm extends React.Component{
     this.state =  {
       Product_Name : '', // 产品名称
       Brand: '', // 产品品牌
-      Register_On_S : '', // 注册开始时间
-      Register_On_E : '', // 注册结束时间
+      Begin_Time : '', // 注册开始时间
+      End_Time : '', // 注册结束时间
       excel : 'javascript:;',
     };
     this.setValue = this.setValue.bind(this);
@@ -82,8 +82,8 @@ class SelectForm extends React.Component{
     console.log(this.state)
 
     var data = _G.assign({},this.state);
-    data.Register_On_S = ''+_G.timeFormat2( new Date(data.Register_On_S).getTime() , 'YYYY-MM-DD' );
-    data.Register_On_E = ''+_G.timeFormat2( new Date(data.Register_On_E).getTime() , 'YYYY-MM-DD');
+    data.Begin_Time = ''+_G.timeFormat2( new Date(data.Begin_Time).getTime() , 'YYYY-MM-DD' );
+    data.End_Time = ''+_G.timeFormat2( new Date(data.End_Time).getTime() , 'YYYY-MM-DD');
     data.page = 1;
     this.props.changeTableState(data);
 
@@ -113,11 +113,11 @@ class SelectForm extends React.Component{
 
   // datepicker change
   onChange(field,value){
-    if(field == 'Register_On_S' && this.state.Register_On_E){
-      if(value.getTime() > this.state.Register_On_E.getTime()){
+    if(field == 'Begin_Time' && this.state.End_Time){
+      if(value.getTime() > this.state.End_Time.getTime()){
         this.setState({
-          Register_On_E : value,
-          Register_On_S : value
+          End_Time : value,
+          Begin_Time : value
         })
         return;
       }
@@ -129,10 +129,10 @@ class SelectForm extends React.Component{
   
 
   disabledEndDate(endValue){
-    if (!endValue || !this.state.Register_On_S) {
+    if (!endValue || !this.state.Begin_Time) {
       return false;
     }
-    return endValue.getTime() <= this.state.Register_On_S.getTime();
+    return endValue.getTime() <= this.state.Begin_Time.getTime();
   }
 
  
@@ -159,16 +159,16 @@ class SelectForm extends React.Component{
 		          </FormItem>
             	</li>
               <li className="fleft date-picker">
-                <FormItem id="Register_On_S" label="入网日期：" labelCol={{span : 5}} >
+                <FormItem id="Begin_Time" label="入网日期：" labelCol={{span : 5}} >
                   	<Row span="24" >
                   	<Col span="10">
-			            <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'Register_On_S')} value={this.state.Register_On_S} />
+			            <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'Begin_Time')} value={this.state.Begin_Time} />
 			          </Col>
 			          <Col span="1">
 			            <p className="ant-form-split">-</p>
 			          </Col>
 			          <Col span="10">
-			            <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" value={this.state.Register_On_E} onChange={this.onChange.bind(this,'Register_On_E')} />
+			            <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" value={this.state.End_Time} onChange={this.onChange.bind(this,'End_Time')} />
 			          </Col>
 			          </Row>
                 </FormItem>
@@ -502,8 +502,10 @@ class BaseProduct extends React.Component{
 		return(
 			<div className="m-list">
 				<Row>
-					<Col span="5">
+					<Col span="2">
 						{this.renderButton()}
+                    </Col>
+                    <Col span="3">
             <a href={this.state.excel}>
               <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
             </a>
