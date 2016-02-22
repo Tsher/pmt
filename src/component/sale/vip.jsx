@@ -54,15 +54,14 @@ class SelectForm extends React.Component {
         e&&e.preventDefault();
         this.setState({
             Register_On_S: _G.timeFormat2(new Date(this.state.Register_On_S).getTime(), 'YYYY-MM-DD'),
-            Register_On_E: _G.timeFormat2(new Date(this.state.Register_On_E).getTime(), 'YYYY-MM-DD'),
-            page:1
+            Register_On_E: _G.timeFormat2(new Date(this.state.Register_On_E).getTime(), 'YYYY-MM-DD')
         })
         this.props.changeTableState(this.state);
 
 
         //excel导出 begin
         var _this = this;
-        var url = config.__URL + config.sale.user.excel;
+        var url = config.__URL + config.sale.vip.excel;
         var data = this.state;
         _G.getExcel({
            url : url,
