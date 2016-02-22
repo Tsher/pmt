@@ -130,8 +130,29 @@ class UserRoleSet extends React.Component{
 				Role_Code : this.props.params.id
 			},
 			success : function(res){
-				this.setState({
-					treedata : res.Data
+                
+                var selectedRole = {};
+                const loopLis = (data,code) => {
+                    if(data){
+                        selectedRole[code] = data
+                    }
+                }
+                const loop = (data) => {
+                return data.map( (item) => {
+                    if(item.Children && item.Children.length){
+                    return loop(item.Children);
+                    }else{
+                    return loopLis(item.Fun_Code||'',item.Code);
+                    }
+                } )
+                }
+                const parseTree = (data) => loop(data);
+                parseTree(res.Data);
+                    
+                console.log(selectedRole)
+                this.setState({
+					treedata : res.Data,
+                    selectedRole : selectedRole
 				})
 			}.bind(this)
 		})
@@ -222,6 +243,8 @@ class UserRoleSet extends React.Component{
 	    }
 	    const parseTree = (data) => loop(data);
 	    let treeNodes = parseTree(this.state.treedata);
+       
+        
 	    return treeNodes
 	}
 	
