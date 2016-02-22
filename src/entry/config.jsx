@@ -169,6 +169,7 @@ window['config'] = {
 			part : '/api/SUser/GetOrganization', // 部门
 			all : '/api/SRole/GetAllRoles', // 所有角色信息
 			save : '/api/SUser/SaveUserRole', // 保存角色设置
+			excel : '/api/SUser/ExportExcelUser',//导出excel
 		},
 		// 角色管理
 		role : {
