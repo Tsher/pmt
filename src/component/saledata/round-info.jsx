@@ -20,10 +20,6 @@ import '../../entry/config';
 const saledataRoundInfo = config.__URL + config.saledata.round.info;
 
 const columns = [{
-  title: '序号',
-  dataIndex: 'WR_Code',
-  key: 'WR_Code'
-},{
   title: '抽奖地区',
   dataIndex: 'Region_Address',
   key: 'Region_Address'
@@ -127,6 +123,7 @@ class SaleDataRoundInfo extends React.Component{
         for(var i=0;i<d.length;i++){
           d[i].key = i;
           d[i].WR_Time = _G.timeFormat2(d[i].WR_Time,'YYYY-MM-DD');
+          d[i].Convert_Time = _G.timeFormat2(d[i].Convert_Time,'YYYY-MM-DD');
         }
         
         this.setState({
