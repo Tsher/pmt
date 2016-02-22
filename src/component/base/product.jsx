@@ -97,6 +97,7 @@ class SelectForm extends React.Component{
              _this.setState({
                  excel : excel
              })
+             _this.props.excelChange(excel);
          }
       });
       //excel导出 end
@@ -265,6 +266,7 @@ class BaseProduct extends React.Component{
         page :1,
         pageSize : 10,
       },
+      excel : 'javascript:;',
     }
     this.showModal = this.showModal.bind(this);
     this.handleOk = this.handleOk.bind(this);
@@ -274,6 +276,7 @@ class BaseProduct extends React.Component{
     this.tableChange = this.tableChange.bind(this);
     this.showSizechange = this.showSizechange.bind(this);
     this.renderButton = this.renderButton.bind(this);
+    this.excelChange = this.excelChange.bind(this);
 	}
 
   componentDidMount(){
@@ -462,6 +465,11 @@ class BaseProduct extends React.Component{
     //******************* ajax 请求，选中树节点的数据 **********************************
     
   }
+  excelChange(src){
+      this.setState({
+          excel : src
+      })
+  }
 
   renderButton(){
     if(this.state.addBtnStatus){
@@ -496,13 +504,13 @@ class BaseProduct extends React.Component{
 				<Row>
 					<Col span="5">
 						{this.renderButton()}
-                        <Link to='/base/product/exports'>
-							<Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
-	          			</Link>
+            <a href={this.state.excel}>
+              <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
+            </a>
 					</Col>
 					
 					<Col span="19">
-						<SelectForm changeTableState={this.changeTableState} addBtnStatus={this.state.addBtnStatus} />
+						<SelectForm excelChange={this.excelChange} changeTableState={this.changeTableState} addBtnStatus={this.state.addBtnStatus} />
 					</Col>
 				</Row>
 				<Row>

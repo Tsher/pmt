@@ -41,6 +41,7 @@ import '../../entry/config';
 const urlUserList = config.__URL + config.user.user.list;
 const urlUserDel  = config.__URL + config.user.user.del;
 const urlUserPart = config.__URL + config.user.user.part;
+const urlUserExcel = config.__URL + config.user.user.excel;
 
 
 let changeTableState;
@@ -61,6 +62,7 @@ class SelectForm extends React.Component{
       right:0,
       top:-1000,
       width:100,
+      excel : 'javascript:;',
     };
     this.setValue = this.setValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -154,6 +156,20 @@ class SelectForm extends React.Component{
     console.log('first time')
     console.log(d)
     this.props.changeTableState(d);
+
+    //excel导出 begin
+      var _this = this;
+      _G.getExcel({
+         url : urlUserExcel,
+         data : d,
+         callback : function(d){
+             var excel = d.ReturnOperateStatus;
+             _this.setState({
+                 excel : excel
+             })
+         }
+      });
+    //excel导出 end
     
   }
 
@@ -283,7 +299,9 @@ class SelectForm extends React.Component{
               </li>
               <li className="fleft">
                 <FormItem>
-                  <Button type="primary" >导出excel</Button>
+                  <a href={this.state.excel}>
+                    <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
+                  </a>
                 </FormItem>
               </li>
             </ul>
