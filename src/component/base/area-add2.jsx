@@ -73,6 +73,7 @@ class RightBox extends React.Component{
 	      treedata : [],
 	      selectedKeys : [],
 	      checkedKeys:[],
+	      defaultCheckedKeys:[],
 	      showEditBtn : false, // 是否可点 编辑按钮
 	      showDelBtn : false, // 是否可点 删除按钮
 	      editLink : '', // 编辑链接地址
@@ -107,64 +108,74 @@ class RightBox extends React.Component{
   componentDidMount(){
   	var id = this.props.id;
 
-  	if (id) {
-  		_G.ajax({
-		  url : salesRegionOneUrl,
-		  type: "get",
-		  data : {SalesRegion_Code:id},
-		  success:function(res){
-		    var d = res.Data;
-		    var keys=[];
-		    keys = d.RegionNos.split(',');
-
-		    var json = {
-		        id : id, // 新增 or 编辑 识别
-		        no : id, // 编辑状态 部门编号
-		        name: d.SalesRegion_Name, // 新增部门的名称
-		        desc : d.Region_Description, // 新增部门的描述
-		        title : '区域成员管理'
-		    }
-
-		    this.setState({
-	          formData : json,
-	          checkedKeys : keys,
-	          key : d.RegionNos,
-	        })
-		    
-		  }.bind(this)
-
-		})
-  	};
-
-  	
 
   	_G.ajax({
-	  url : regionUrl,
-	  type: "get",
-	  success:function(res){
-	    var d = res.Data;
-	    //_data[0].Children = d;
-	    _data[0].Children.push(d[0])
-	    _data[0].Children.push(d[1])
-	    this.setState({
-	      treedata : _data
-	    });	    
-	  }.bind(this)
+      url : regionUrl,
+      type : 'get',
+      success : function(res){
+        var arr = [];
+        //arr.push(res.Data[0])
+        //arr.push(res.Data[1])
+        arr = res.Data;
 
-	})
+        if (id) {
+	  		_G.ajax({
+			  url : salesRegionOneUrl,
+			  type: "get",
+			  data : {SalesRegion_Code:id},
+			  success:function(res){
+			    var d = res.Data;
+			    console.log(d)
+			    var keys=[];
+			    keys = d.RegionNos.split(',');
+
+			    var json = {
+			        id : id, // 新增 or 编辑 识别
+			        no : id, // 编辑状态 部门编号
+			        name: d.SalesRegion_Name, // 新增部门的名称
+			        desc : d.Region_Description, // 新增部门的描述
+			        title : '区域成员管理',
+			    }
+
+			    this.setState({
+			      treedata : arr,
+		          formData : json,
+		          defaultCheckedKeys : keys,
+		          checkedKeys : keys,
+		          key : d.RegionNos,
+		        })
+			    
+			  }.bind(this)
+
+			})
+	  	}else{
+	  		this.setState({
+	          treedata : arr,
+	        });
+	  	}
+
+        
+
+      }.bind(this)
+
+    })
+
 
   }
 
+
   // 点击树菜单
   handleCheck(info){
-  	var arr = this.state.checkedKeys;
-  	var arrList = getKeys(info.node.props);
-  	arr = arr.concat(arrList);
-  	var str = getKeys(info.node.props).join(',');
-  	console.log(arr)
-  	//console.log(info.node.props.eventKey)
-  	this.setState({
-      selectedKeys : [info.node.props.eventKey],
+    console.log(this.state.checkedKeys, info);
+    var arr = info.checkedKeys.join(',');
+    if(arr.indexOf(info.node.props.eventKey)>-1){
+    	var reg = new RegExp(info.node.props.eventKey + ',?|,'+info.node.props.eventKey+'$')
+    	arr = arr.replace(reg,'');
+    }else{
+    	arr += ',' + info.node.props.eventKey;
+    }
+    arr = arr.split(',');
+    this.setState({
       editLink : '/base/area/add/'+ info.node.props.eventKey,
       showEditBtn : true,
       showInfo : 'block',
@@ -172,23 +183,7 @@ class RightBox extends React.Component{
       key:arr.join(','),
     })
 
-    function getKeys(obj){
-    	var arr=[];
-	  	arr.push(obj.eventKey);
-	  	function dg(o){
-	  		for(var i in o){
-	  			arr.push(o[i].key);
-	  			if (o[i].children) {
-	  				dg(o[i].children)
-	  			};
-	  			if (o[i].props.children) {
-	  				dg(o[i].props.children)
-	  			};
-	  		}
-	  	}
-	  	dg(obj.children)
-	  	return arr;
-	}
+    
   }
 
   handleReset(e) {
@@ -216,48 +211,48 @@ class RightBox extends React.Component{
         console.log('submit');
       }
       //console.log(this.state.formData);
-      msg_success();
+      //msg_success();
+
+	    // 提交数据
+	      let u = this.state.formData.id ? baseAreaEdit+'?SalesRegion_Code='+this.state.formData.id : baseAreaAdd;
+	      var keys = this.state.checkedKeys;
+	      var arr = [];
+	      console.log(this.state.checkedKeys)
+	      for(var i=0;i<keys.length;i++){
+	      	var json = {};
+	      	json.Region_Code = keys[i];
+	      	arr.push(json);
+	      }
+	      var fD = {
+	      	SalesRegion_Name : this.state.formData.name,
+	      	Region_Description : this.state.formData.desc,
+	      	SalesRegion_Code : this.state.formData.id,
+	      	Detail:arr,
+	      }
+
+	      _G.ajax({
+	        url  : u,
+	        data : {JsonValue:JSON.stringify(fD)},
+	        method : 'post',
+	        success:function(res){
+	          if(res.ReturnOperateStatus == 'True'){
+	            msg_success();
+	            // 调转到列表页
+	            goBack();
+	            return;
+	          }
+	          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
+	            msg_error(res.Msg);
+	            return
+	          }
+	        },
+	        fail:function(res){
+	          msg_error();
+	        }
+	      })
+
+
     });
-
-    
-
-    // 提交数据
-      let u = this.state.formData.id ? baseAreaEdit : baseAreaAdd;
-      var keys = this.state.key.split(',');
-      var arr = [];
-      for(var i=0;i<keys.length;i++){
-      	var json = {};
-      	json.Region_Code = keys[i];
-      	arr.push(json);
-      }
-      var fD = {
-      	SalesRegion_Name : this.state.formData.name,
-      	Region_Description : this.state.formData.desc,
-      	SalesRegion_Code : this.state.formData.id,
-      	Detail:arr,
-      }
-      //console.log(JSON.stringify(fD)+'--'+u);
-      //return
-      _G.ajax({
-        url  : u,
-        data : fD,
-        method : 'post',
-        success:function(res){
-          if(res.ReturnOperateStatus == 'True'){
-            msg_success();
-            // 调转到列表页
-            goBack();
-            return;
-          }
-          if(res.ReturnOperateStatus == 'False' || res.ReturnOperateStatus == 'NULL'){
-            msg_error(res.Msg);
-            return
-          }
-        },
-        fail:function(res){
-          msg_error();
-        }
-      })
 
   }
 
@@ -320,7 +315,7 @@ class RightBox extends React.Component{
 						                help={status.name.errors ? status.name.errors.join(',') : null}
 						                required>
 						                  <Validator rules={[{required: true, message: '区域名称'}]}>
-						                    <Input  name="name" value={formData.name} />
+						                    <Input name="name" value={formData.name} />
 						                  </Validator>
 						            </FormItem>
 						            
@@ -347,7 +342,7 @@ class RightBox extends React.Component{
 						<div className="border border-raduis">
 							<div className="title">区域树</div>
 							<div className="con">
-								<Tree multiple={false} checkable defaultExpandAll checkedKeys={this.state.checkedKeys} onCheck={this.handleCheck}>
+								<Tree checkable={true} multiple={true} checkedKeys={this.state.checkedKeys} defaultCheckedKeys={this.state.defaultCheckedKeys} onCheck={this.handleCheck} >
 					          		{treeNodes}
 					        	</Tree>
 							</div>
@@ -375,8 +370,6 @@ class RightBox extends React.Component{
 class BaseAreaAdd extends React.Component{
 	constructor(){
 		super();
-	    this.state = {
-	    }
 	}
 
     render(){
