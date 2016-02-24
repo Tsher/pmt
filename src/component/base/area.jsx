@@ -239,6 +239,9 @@ class BaseArea extends React.Component{
 	handleClick(e){
 		var tar = e.target;
 		if(tar.nodeName == 'A') return;
+		if (tar.nodeName == 'SPAN') {
+			tar = e.target.parentNode;
+		};
 
 		// var n,d=[];
   //       for(var i=0;i<this.state.Data.length;i++){
