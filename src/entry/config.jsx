@@ -220,7 +220,8 @@ window['config'] = {
 			salesRegionOne:'/api/SSaleRegion/GetSaleRegion_SalesRegion_Code',
 			add:'/api/SSaleRegion/PostSalesRegion',
 			edit : '/api/SSaleRegion/UpdateSalesRegion',
-			del:'/api/SSaleRegion/DeleteSSaleRegion'
+			del:'/api/SSaleRegion/DeleteSSaleRegion',
+			regionOne : '/api/SSaleRegion/GetRegions_SalesRegionCode_ParentCode',
 		}
 	},
 	// 促销设置

@@ -51,6 +51,7 @@ const regionUrl = config.__URL + config.base.area.region;
 const salesRegionOneUrl = config.__URL + config.base.area.salesRegionOne;
 const baseAreaAdd = config.__URL + config.base.area.add;
 const baseAreaEdit = config.__URL + config.base.area.edit;
+const regionUrlOne = config.__URL + config.base.area.regionOne;
 
 var changeTableState;
 
@@ -95,6 +96,10 @@ class RightBox extends React.Component{
 	      },
 	      no : undefined,
 	      key : '',
+	      region : {
+	      	Parent_Code:'',
+	      	SalesRegion_Code:'',
+	      },
 	    };
 
 	    this.handleCheck = this.handleCheck.bind(this);
@@ -103,6 +108,10 @@ class RightBox extends React.Component{
 	    this.handleValidate = FieldMixin.handleValidate.bind(this);
 	    this.onValidate = FieldMixin.onValidate.bind(this);
 	    this.handleSubmit = this.handleSubmit.bind(this);
+	    this.handleDataLoaded = this.handleDataLoaded.bind(this);
+	    this.timeout = this.timeout.bind(this);
+	    
+	    
 	}
 
   componentDidMount(){
@@ -110,7 +119,8 @@ class RightBox extends React.Component{
 
 
   	_G.ajax({
-      url : regionUrl,
+      url : regionUrlOne,
+      data : this.state.region,
       type : 'get',
       success : function(res){
         var arr = [];
@@ -184,6 +194,51 @@ class RightBox extends React.Component{
     })
 
     
+  }
+
+  handleDataLoaded(info){
+  	return this.timeout(100).then(() => {
+  		var eKey = info.props.eventKey;
+	    var rData = _G.assign({},this.state.region);
+	    var tData = [].concat(this.state.treedata);
+
+	    rData.Parent_Code=eKey;
+	    var _this = this;
+
+	    _G.ajax({
+	      url : regionUrlOne,
+	      data : rData,
+	      type : 'get',
+	      success : function(res){
+
+	      	addChild(res.Data,tData)
+			_this.setState({
+			   treedata : tData,
+			})
+	      }
+	     })
+
+	    function addChild(d,data){
+	    	for(var item in data){
+	      		if (data[item].Code==eKey) {
+	      			data[item].Children = d;
+	      		};
+	      		if (data[item].Children) {
+	      			addChild(d,data[item].Children)
+	      		};
+	      	}
+	    }
+
+    });
+
+
+
+  }
+
+  timeout(duration = 0) {
+    return new Promise((resolve) => {
+      setTimeout(resolve.bind(this), duration);
+    });
   }
 
   handleReset(e) {
@@ -342,7 +397,7 @@ class RightBox extends React.Component{
 						<div className="border border-raduis">
 							<div className="title">区域树</div>
 							<div className="con">
-								<Tree checkable={true} multiple={true} checkedKeys={this.state.checkedKeys} defaultCheckedKeys={this.state.defaultCheckedKeys} onCheck={this.handleCheck} >
+								<Tree checkable={true} multiple={true} checkedKeys={this.state.checkedKeys} defaultCheckedKeys={this.state.defaultCheckedKeys} onCheck={this.handleCheck} onDataLoaded={this.handleDataLoaded} showLine={false} >
 					          		{treeNodes}
 					        	</Tree>
 							</div>

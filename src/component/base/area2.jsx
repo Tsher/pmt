@@ -23,8 +23,6 @@ const regionUrl = config.__URL + config.base.area.region;
 const salesRegionUrl = config.__URL + config.base.area.salesRegion;
 const salesRegionOneUrl = config.__URL + config.base.area.salesRegionOne;
 const baseAreaDel = config.__URL + config.base.area.del;
-const regionUrlOne = config.__URL + config.base.area.regionOne;
-
 
 var changeTableState;
 
@@ -52,25 +50,22 @@ class RightBox extends React.Component{
 	      showDelBtn : false, // 是否可点 删除按钮
 	      editLink : '', // 编辑链接地址
 	      showInfo : 'none' , // none 隐藏， block 显示   右侧详细信息
-	      region : {
-	      	Parent_Code:'',
-	      	SalesRegion_Code:'',
-	      }
 	    };
+
 	    this.handleCancel = this.handleCancel.bind(this);
 	    this.handleOk = this.handleOk.bind(this);
 	    this.handleCancel = this.handleCancel.bind(this);
-	    this.handleDataLoaded = this.handleDataLoaded.bind(this);
-	    this.timeout = this.timeout.bind(this);
 	}
 
   componentDidMount(){
   	_G.ajax({
-	  url : regionUrlOne,
-	  data : this.state.region,
+	  url : regionUrl,
 	  type: "get",
 	  success:function(res){
 	    var d = res.Data;
+	    //_data[0].Children.push(d[0])
+	    _data[0].Children = d;
+	    //setData(d)
 	    this.setState({
 	      treedata : d
 	    });	    
@@ -78,51 +73,6 @@ class RightBox extends React.Component{
 
 	}) 
 
-  }
-
-  handleDataLoaded(info){
-  	return this.timeout(100).then(() => {
-  		var eKey = info.props.eventKey;
-	    var rData = _G.assign({},this.state.region);
-	    var tData = [].concat(this.state.treedata);
-
-	    rData.Parent_Code=eKey;
-	    var _this = this;
-
-	    _G.ajax({
-	      url : regionUrlOne,
-	      data : rData,
-	      type : 'get',
-	      success : function(res){
-
-	      	addChild(res.Data,tData)
-			_this.setState({
-			   treedata : tData,
-			})
-	      }
-	     })
-
-	    function addChild(d,data){
-	    	for(var item in data){
-	      		if (data[item].Code==eKey) {
-	      			data[item].Children = d;
-	      		};
-	      		if (data[item].Children) {
-	      			addChild(d,data[item].Children)
-	      		};
-	      	}
-	    }
-
-    });
-
-
-
-  }
-
-  timeout(duration = 0) {
-    return new Promise((resolve) => {
-      setTimeout(resolve.bind(this), duration);
-    });
   }
   
 
@@ -187,7 +137,7 @@ class RightBox extends React.Component{
 						<div className="border border-raduis">
 							<div className="title">区域树</div>
 							<div className="con">
-								<Tree checkable multiple={true}  checkedKeys={adata.keys} onDataLoaded={this.handleDataLoaded} >
+								<Tree checkable multiple={true}  checkedKeys={adata.keys}>
 					          		{treeNodes}
 					        	</Tree>
 							</div>
@@ -239,9 +189,6 @@ class BaseArea extends React.Component{
 	handleClick(e){
 		var tar = e.target;
 		if(tar.nodeName == 'A') return;
-		if (tar.nodeName == 'SPAN') {
-			tar = e.target.parentNode;
-		};
 
 		// var n,d=[];
   //       for(var i=0;i<this.state.Data.length;i++){
