@@ -147,7 +147,7 @@ class SelectForm extends React.Component{
     var d = {
       Register_On_S : data.Register_On_S,
       Register_On_E : data.Register_On_E,
-      User_Status : data.User_Status,
+      User_Status : data.User_Status == 0 ? '' : data.User_Status,
       Depart_Code : data.Depart_Code,
       Login_Name : data.Login_Name,
       page : 1,
@@ -272,7 +272,7 @@ class SelectForm extends React.Component{
                     <label className="ant-checkbox-inline">用户状态：</label>
                     <label className="ant-checkbox-inline">
                     <RadioGroup name="User_Status" onChange={this.radioChange} value={this.state.User_Status}>
-                      <Radio value="">全部</Radio>
+                      <Radio value="0">全部</Radio>
                       <Radio value="10">在职</Radio>
                       <Radio value="11">离职</Radio>
                     </RadioGroup>
