@@ -343,7 +343,7 @@ class SaleDo extends React.Component{
         var d = [];
         for(var i=0,l=res.Data.length;i<l;i++){
           d[i]=res.Data[i];
-          d[i]['key'] = res.Data[i].MA_Code;
+          d[i]['key'] = i;
           d[i].MA_EndTime = _G.timeFormat2(d[i].MA_EndTime,'YYYY-MM-DD');
           d[i].MA_StartTime = _G.timeFormat2(d[i].MA_StartTime,'YYYY-MM-DD');
         }

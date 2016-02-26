@@ -325,7 +325,7 @@ class SalePrize extends React.Component{
                 var d = [];
                 for (var i = 0, l = res.Data.length; i < l; i++) {
                     d[i] = res.Data[i];
-                    d[i]['key'] = res.Data[i].User_Code;
+                    d[i]['key'] = i;
                     d[i]['RegisterOn'] = _G.timeFormat2(d[i].RegisterOn)
                 }
                 this.setState({
