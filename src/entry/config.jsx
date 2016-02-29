@@ -12,6 +12,13 @@ const history = createHistory();
 // 全局方法
 window['_G']={
 	Token : '',
+  UserRole : [],
+  UserRoleHash : false,
+  hasRole : function(name,fun){
+    if(!name || !fun) return false;
+    
+    return _G.UserRoleHash[name] ? (_G.UserRoleHash[name].indexOf(fun) > -1 ? true : false) : false;
+  },
 	assign : function (target) { 
 		for (var i = 1; i < arguments.length; i++) { 
 			var source = arguments[i]; 

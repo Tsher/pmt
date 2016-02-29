@@ -78,13 +78,16 @@ class Layout extends React.Component{
 				}
 			],
 			tags : [],
-			menusNodes:''
+			menusNodes:'',
+            UserRole : [],
+            UserRoleHash : false,
 		};
 
 		this.topMenuChange = this.topMenuChange.bind(this);
 		this.secMenuChange = this.secMenuChange.bind(this);
 		this.tagClick = this.tagClick.bind(this);
 		this.logout = this.logout.bind(this);
+        this.SetUserRole = this.SetUserRole.bind(this);
 	}
 	// 一级菜单变更
 	topMenuChange(info){
@@ -135,7 +138,7 @@ class Layout extends React.Component{
 	}
 	renderMenu(){
 		return (
-			<LeftMenu secMenuChange={this.secMenuChange} topMenuChange={this.topMenuChange} history={this.props.history} data={this.state.menus} selectedKeys={this.state.selectedKeys} openKeys={this.state.openKeys} />
+			<LeftMenu secMenuChange={this.secMenuChange} topMenuChange={this.topMenuChange} history={this.props.history} data={this.state.UserRole} selectedKeys={this.state.selectedKeys} openKeys={this.state.openKeys} />
 		)
 	}
 	tagClick(key){
@@ -181,6 +184,11 @@ class Layout extends React.Component{
 			</div>
 		)
 	}
+    SetUserRole(data){
+        this.setState({
+            UserRole : data
+        })
+    }
 	componentDidMount(){
 		// window 注册事件计算页面宽度
 		let that = this;
@@ -193,7 +201,73 @@ class Layout extends React.Component{
 		}
 		size();
 		$(window).on('resize',size);
-
+        
+        
+        // 设置用户权限菜单
+        var hasSetUserRole = false,timer;
+        function setRole(){
+            if(hasSetUserRole){
+                clearInterval(timer);
+                timer = null;
+                return;
+            }
+            if(_G.UserRole.length == 0 || !_G.Token) return;
+            var roles={}, menus = [].concat(that.state.menus);
+            // 全菜单 hash化
+            var loopMenu = (data)=>{
+                data.map( (item)=>{
+                    roles[item.info]={
+                        route : item.route,
+                        key : item.key
+                    }
+                    if(item.className){
+                        roles[item.info]['className'] = item.className
+                    }
+                    if(item.children){
+                        loopMenu(item.children)
+                    }
+                } )
+            }
+            loopMenu(menus);
+            
+            _G.UserRoleHash = {};
+            // 权限
+            var loop = (data)=>{
+                data.map( (item,index)=>{
+                    if(roles[item.Name]){
+                       item['route'] = roles[item.Name].route;
+                       item['className'] = roles[item.Name].className;
+                       item['key'] = roles[item.Name].key;
+                       _G.UserRoleHash[item.Name] = item.Fun_Code;
+                    }
+                    if(item.Children){
+                        loop(item.Children)
+                    }
+                } )
+            }
+            loop(_G.UserRole);
+            console.log('roles',_G.UserRole,_G.UserRoleHash);
+            that.setState({
+                UserRole : _G.UserRole
+            })
+            hasSetUserRole = true;
+            
+            
+        }
+        
+        timer = setInterval(setRole,100)
+        
+        
+        
+        
+        // _G.UserRole.map( (data)=>{
+        //     that.state.menus.map( (item)=>{
+        //         if(item.info == data.Name){
+        //             data = _G.assign(data,item)
+        //         }
+        //     } )
+        // } )
+	    // console.log(_G.UserRole) 
 		var username = Cookie.read('userName');
 		this.setState({
 			username : username
@@ -203,6 +277,7 @@ class Layout extends React.Component{
 	logout(){
 		// 登出
 		Cookie.dispose('Token');
+        Cookie.dispose('UserRole');
 		location.reload();
 	}
 	userInfo(){

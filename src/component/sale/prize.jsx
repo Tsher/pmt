@@ -24,6 +24,17 @@ const confirm = Modal.confirm;
 const history = createHistory();
 
 const FormItem = Form.Item;
+
+import { Search } from '../btn-search'; // 查询按钮
+import { Export } from '../btn-export'; // 导出excel按钮
+import { Add } from '../btn-add'; // 新增按钮
+import { Edit } from '../btn-edit'; // 编辑，发布，设置等按钮
+import { Del } from '../btn-del'; // 删除
+
+let pageName = '奖品管理'; // 按钮，验证权限使用
+
+
+
 var kinds = [];
 class SelectForm extends React.Component{
 	//mixins: [Form.ValueMixin],
@@ -154,9 +165,7 @@ class SelectForm extends React.Component{
               </li>
               <li className="fleft">
                 <FormItem>
-                  <Button type="primary" shape="circle" size="large"  htmlType="submit">
-    	  		        <Icon type="search" />
-    	  		      </Button>
+                <Search Name={pageName} />
                 </FormItem>
               </li>
             </ul>
@@ -175,8 +184,8 @@ let modalState;
 function showModal(e){
   Event.stop(e);
   var tar = Event.target(e);
-  var id = tar.getAttribute('data-id');
-  modalState(id)
+  var id = tar.getAttribute('data-id'),name=tar.getAttribute('data-name');
+  modalState(id,name)
 }
 
 const columns = [
@@ -219,7 +228,11 @@ const columns = [
   render: function(text, record) {
   	var edit = '/sale/prize/edit/'+record.Prize_Code,
   		del = '/sale/prize/del/' + record.Prize_Code
-    return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.Prize_Code} data-text="删除" >删除</a></span>;
+    return <span>
+    <Edit Name={pageName} editLink={edit} />
+    <span className="ant-divider"></span>
+    <Del Name={pageName} id={record.Prize_Code} _name={record.Prize_Name} click={showModal} />
+    </span>;
 	}
 }];
 
@@ -255,10 +268,10 @@ class SalePrize extends React.Component{
   componentWillUnmount(){
     modalState = false;
   }
-  showModal(id){
+  showModal(id,name){
     this.setState({
       visible : true,
-      ModalText: '你正要删除 "'+ id +'"的奖品，是否继续？',
+      ModalText: '你正要删除 "'+ name +'"的奖品，是否继续？',
       confirmLoading: false,
       changeId : id
     })
@@ -341,14 +354,10 @@ class SalePrize extends React.Component{
 			<div className="m-list">
 				<Row>
 					<Col span="2">
-						<Link to='/sale/prize/add'>
-							<Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
-	          </Link>
+          <Add Name={pageName} addLink='/sale/prize/add' />
 	       </Col>
       		<Col span="2">
-      			<a href={this.state.excel}>
-              <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
-            </a>
+          <Export Name={pageName} excel={this.state.excel} />
 					</Col>
 					<Col span="20">
 						<SelectForm excelChange={this.excelChange} changeTableState={this.changeTableState} />

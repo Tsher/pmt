@@ -11,6 +11,13 @@ import Icon from 'antd/lib/icon';
 const FormItem = Form.Item;
 
 import '../../entry/config';
+import { Search } from '../btn-search'; // 查询按钮
+import { Export } from '../btn-export'; // 导出excel按钮
+import { Add } from '../btn-add'; // 新增按钮
+import { Edit } from '../btn-edit'; // 编辑，发布，设置等按钮
+import { Del } from '../btn-del'; // 删除
+
+let pageName = '消费者参与流水'; // 按钮，验证权限使用
 const saledataUserList = config.__URL + config.saledata.user.list;
 
 var changeTableState;
@@ -64,9 +71,9 @@ class DateRange extends React.Component{
         </Col>
         <Col span="3">
         <FormItem>
-          <Button type="primary" shape="circle" size="large"  htmlType="submit" style={{marginLeft:10}}>
-                <Icon type="search" />
-              </Button>
+        <div style={{marginLeft:10}}>
+        <Search Name={pageName} />
+        </div>
           </FormItem>
         </Col>
       </Form>

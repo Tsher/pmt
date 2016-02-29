@@ -185,7 +185,7 @@ class SaleDoAdd extends React.Component{
     var name = e.target.id;
     var data = _G.assign({},this.state.formData);
     if(name == 'MA_InitialDraw'){
-        data[name] = ''+e.target.value;
+        data[name] = ''+ parseInt(e.target.value);
     }else{
         data[name] = e.target.value;
     }

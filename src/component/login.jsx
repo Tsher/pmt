@@ -101,7 +101,7 @@ class Login extends React.Component{
           return;
         }
         _G.Token = res.Data.Token; 
-        _G.userName = res.Data.User_Name;
+        _G.userName = res.Data.Login_Name;
         Cookie.write({
           name : 'Token',
           value : _G.Token || '' 
@@ -110,9 +110,23 @@ class Login extends React.Component{
           name : 'userName',
           value : _G.userName
         })
+        var str = JSON.stringify(res.UserRole),
+          half = Math.floor(str.length/2),
+          strs = [
+            str.slice(0,half),str.slice(half)
+          ];
+        Cookie.write({
+          name : 'UserRole1',
+          value : strs[0]
+        })
+        Cookie.write({
+          name : 'UserRole2',
+          value : strs[1]
+        })
         var url = location.href;
         url = url.split('#');
         location.href = url[0]+'#';
+        _G.UserRole = res.UserRole;
       }.bind(this)
     })
     

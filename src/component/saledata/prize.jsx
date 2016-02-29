@@ -13,6 +13,11 @@ import ecConfig from 'echarts/config';
 const FormItem = Form.Item;
 
 import '../../entry/config';
+
+import { Search } from '../btn-search'; // 查询按钮
+
+let pageName = '奖品兑换流水'; // 按钮，验证权限使用
+
 const saledataPrizeList = config.__URL + config.saledata.prize.list;
 
 var changeTableState;
@@ -66,10 +71,9 @@ class DateRange extends React.Component{
           <DatePicker value={this.state.MA_EndTime} disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'MA_EndTime')} />
         </Col>
         <Col span="3">
-        <FormItem>
-          <Button type="primary" shape="circle" size="large"  htmlType="submit" style={{marginLeft:10}}>
-                <Icon type="search" />
-              </Button>
+        <FormItem >
+        <div style={{marginLeft:10}}> <Search Name={pageName} /></div>
+        
           </FormItem>
         </Col>
       </Form>

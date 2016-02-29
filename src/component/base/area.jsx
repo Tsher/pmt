@@ -18,6 +18,14 @@ const confirm = Modal.confirm;
 
 const history = createHistory();
 
+import { Search } from '../btn-search'; // 查询按钮
+import { Export } from '../btn-export'; // 导出excel按钮
+import { Add } from '../btn-add'; // 新增按钮
+import { Edit } from '../btn-edit'; // 编辑，发布，设置等按钮
+import { Del } from '../btn-del'; // 删除
+
+let pageName = '销售区域管理'; // 按钮，验证权限使用
+
 import '../../entry/config';
 const regionUrl = config.__URL + config.base.area.region;
 const salesRegionUrl = config.__URL + config.base.area.salesRegion;
@@ -343,9 +351,7 @@ class BaseArea extends React.Component{
 			<div className="m-list">
 				<Row>
 					<Col span="4">
-				        <Link to='/base/area/add'>
-							<Button type="primary" size="large"><Icon type="plus" /><span>新增销售区域</span></Button>
-				        </Link>
+          <Add Name={pageName} addLink='/base/area/add' />
 					</Col>
 				</Row>
 				<Row>
@@ -362,9 +368,10 @@ class BaseArea extends React.Component{
 				                           return <li key={code} id={code} name={code} className={this.state[code]} onClick={this.handleClick}>
 				                                 {d.SalesRegion_Name}
 				                                 <em className="btn">
-				                                 <Link to={edio}>修改</Link>
+                                         <Edit Name={pageName} editLink={edio} value='编辑' />
 				                                 <i>|</i>
-				                                 <a href="javascript:;" onClick={this.showModal} data-id={code} >删除</a></em>
+                                         <Del click={this.showModal}  id={code} Name={pageName} />
+				                                 </em>
 				                           </li>
 				                        }.bind(this))
 				                     }

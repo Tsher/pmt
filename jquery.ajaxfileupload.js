@@ -78,6 +78,8 @@
 				response = doc.body.innerHTML;
 
 			if (response) {
+                response = response.match(/\{[^}]*\}/);
+                response = response[0];
 				response = $.parseJSON(response);
 			} else {
 				response = {};

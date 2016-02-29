@@ -44,10 +44,10 @@ class LeftMenu extends React.Component{
 	renderItem(){
 		const loop = (data) => {
 			return data.map( (item) => {
-				if(item.children){
-					return (<SubMenu onClick={this.handleClick2} key={item.key} title={<div className={item.className}><Link to={item.route}>{item.info}</Link></div>} >{loop(item.children)}</SubMenu>);
+				if(item.Children && item.Children.length > 0){
+					return (<SubMenu onClick={this.handleClick2} key={item.key} title={<div className={item.className}><Link to={item.route}>{item.Name}</Link></div>} >{loop(item.Children)}</SubMenu>);
 				}else{
-					return (<Menu.Item key={item.key}><Link to={item.route}>{item.info}</Link></Menu.Item>);
+					return (<Menu.Item key={item.key}><Link to={item.route}>{item.Name}</Link></Menu.Item>);
 				}
 			} )
 		}

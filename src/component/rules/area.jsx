@@ -26,6 +26,16 @@ const history = createHistory();
 const FormItem = Form.Item;
 
 import '../../entry/config';
+
+import { Search } from '../btn-search'; // 查询按钮
+import { Export } from '../btn-export'; // 导出excel按钮
+import { Add } from '../btn-add'; // 新增按钮
+import { Edit } from '../btn-edit'; // 编辑，发布，设置等按钮
+import { Del } from '../btn-del'; // 删除
+
+let pageName = '批次区域管理'; // 按钮，验证权限使用
+
+
 const ruleAreaList = config.__URL + config.rule.area.list;
 const ruleAreaSearch  = config.__URL + config.rule.area.search;
 const ruleAreaDel  = config.__URL + config.rule.area.del;
@@ -175,23 +185,17 @@ class SelectForm extends React.Component{
               </li>
               <li className="fleft">
                 <FormItem>
-                  <Button type="primary" shape="circle" size="large"  htmlType="submit">
-	  		        <Icon type="search" />
-	  		      </Button>
+                <Search Name={pageName} />
                 </FormItem>
               </li>
             </ul>
           </div>
           <Row className="clearfix" style={{marginBottom:'20px'}}>
               <Col span="2" >
-                <Link to='/rule/area/add'>
-                  <Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
-                </Link>
+                <Add addLink='/rule/area/add' Name={pageName} />
               </Col>
               <Col span="2" >
-                <a href={this.state.excel}>
-                  <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
-                </a>
+              <Export Name={pageName} excel={this.state.excel} />
               </Col>
             </Row>
         </Col>
@@ -243,7 +247,11 @@ const columns = [{
   render: function(text, record,index) {
   	var edit = '/rule/area/edit/'+record.LotArea_Code,
   		del = '/rule/area/del/' + record.LotArea_Code;
-    return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.LotArea_Code} data-name={record.LotArea_Code} data-index={index} data-text="删除" >删除</a></span>;
+    return <span>
+    <Edit Name={pageName} editLink={edit} value='编辑' />
+    <span className="ant-divider"></span>
+    <Del click={showModal} index={index} _name={record.LotArea_Code} id={record.LotArea_Code} Name={pageName} />
+    </span>;
 	}
 }];
 

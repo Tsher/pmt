@@ -24,6 +24,15 @@ const FormItem = Form.Item;
 
 import '../../entry/config';
 
+import { Search } from '../btn-search'; // 查询按钮
+import { Export } from '../btn-export'; // 导出excel按钮
+import { Add } from '../btn-add'; // 新增按钮
+import { Edit } from '../btn-edit'; // 编辑，发布，设置等按钮
+import { Del } from '../btn-del'; // 删除
+
+let pageName = '企业角色管理'; // 按钮，验证权限使用
+
+
 const urlRoleList = config.__URL + config.user.role.list;
 const urlRoleDel = config.__URL + config.user.role.del;
 const urlRoleType = config.__URL + config.user.role.type;
@@ -126,15 +135,11 @@ class SelectForm extends React.Component{
 	         {this.state.role_all_type}
 	        </Select>
         </FormItem>
-        <FormItem>
-          <Button type="primary" shape="circle" size="large"  htmlType="submit">
-    		    <Icon type="search" />
-    		  </Button>
+        <FormItem >
+          <Search Name={pageName} />
         </FormItem>
         <FormItem>
-          <a href={this.state.excel}>
-                  <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
-                </a>
+          <Export Name={pageName} excel={this.state.excel} />
         </FormItem>
       </Form>
       </div>
@@ -180,7 +185,12 @@ const columns = [{
   	var edit = '/user/role/edit/'+ record.Role_Code,
   		set = '/user/role/set/' + record.Role_Code,
   		del = '/user/role/del/' + record.Role_Code
-    return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><Link to={set}>设置权限</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-index={index} data-name={record.Role_Name} data-id={record.Role_Code} >删除</a></span>;
+    return <span>
+    <Edit editLink={edit} Name={pageName} value='编辑' />
+    <span className="ant-divider"></span>
+    <Edit editLink={set} Name={pageName} value='设置权限' />
+    <span className="ant-divider"></span>
+    <Del click={showModal} index={index} _name={record.Role_Name} id={record.Role_Code} Name={pageName} /></span>;
   }
 }];
 
@@ -205,6 +215,7 @@ class UserRole extends React.Component{
     this.handleOk = this.handleOk.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
     this.changeTableState = this.changeTableState.bind(this);
+    this.tableChange = this.tableChange.bind(this);
 	}
 
   componentDidMount(){
@@ -335,9 +346,7 @@ class UserRole extends React.Component{
 			<div className="m-list">
 				<Row>
 					<Col span="4">
-          <Link to='/user/role/add'>
-						<Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
-          </Link>
+            <Add Name={pageName} addLink='/user/role/add' />
 					</Col>
 					<Col span="20">
 						<SelectForm query={this.props.location} changeTableState={this.changeTableState} />

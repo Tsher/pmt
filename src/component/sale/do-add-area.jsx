@@ -51,6 +51,8 @@ class SelectForm extends React.Component{
       Prize_Code : undefined, // 奖品编码,
       Prize_Name : undefined, // 奖品名称
       Prize_Level : undefined, // 奖品级别
+      Product_Code : undefined, // 产品编码
+      Product_Name : undefined, // 产品名称
       SalesRegion_Code : undefined, // 销售区域编码
       SalesRegion_Name : undefined, // 销售区域名称
       Prize_Level_Name : undefined, // 奖品级别名称
@@ -112,6 +114,18 @@ class SelectForm extends React.Component{
       })
     }); 
     
+    // 获取产品区域
+    _G.get_data(config['sale']['do']['sale_productName'],'sale_productName',{
+      Product_Name : ''
+    },function(res){
+      const doms = res.Data.map( (item,index)=>{
+        return <Option key={index} value={item['Product_Code']}>{item['Product_Name']}</Option>
+      } )
+      that.setState({
+        sale_all_productName : doms
+      })
+    }); 
+    
 
   }
   componentWillUnmount(){
@@ -123,9 +137,12 @@ class SelectForm extends React.Component{
   // 文本框的值 同步到 state
   setValue(e){
     var name = e.target.id;
-    
+    var value = e.target.value;
+    if(name == 'FirstWinningRate' || name == 'NFirstWinningRate' || name == 'WinningPlaces'){
+      value = value.replace(/[^\d\.]/,'');
+    }
   	this.setState({
-      [name] : e.target.value
+      [name] : value
   	})
   }
 
@@ -208,6 +225,17 @@ class SelectForm extends React.Component{
       'SalesRegion_Name' : d
     })
    }
+   if(field == 'Product_Code'){
+    var d;
+    this.state.sale_all_productName.map( (item)=>{
+        if(item.props.value == value){
+          d = item.props.children
+        }
+      } );
+    this.setState({
+      'Product_Name' : d
+    })
+   }
    
     this.setState({
       [field] : value
@@ -267,7 +295,13 @@ class SelectForm extends React.Component{
         </li>
       </ul>
       <ul className="do-add-time clearfix">
-        <li className="fleft" style={{width:'70%'}}  span="20">
+        <li span="8" className="fleft" style={{width:'30%'}}>
+          <label className="do-add-time-title">选择产品：</label>
+          <Select size="large" placeholder="请选择区域" style={{width: 140}} name="Product_Code"  value={this.state.Product_Code} onChange={this.onChange.bind(this,'Product_Code')}>
+            {this.state.sale_all_productName}
+          </Select>
+        </li>
+        <li className="fleft" style={{width:'50%'}}  span="20">
           <label className="do-add-time-title">活动时间：</label>
           <span className="timepicker">
             <DatePicker format="yyyy-MM-dd HH:mm:ss" name="SActivityTime" style={{width:150}} showTime placeholder="开始日期" value={this.state.SActivityTime} onChange={this.onChange.bind(this,'SActivityTime')}  />
@@ -321,6 +355,10 @@ const columns = [
   title: '奖品级别',
   dataIndex: 'Prize_Level_Name',
   key: 'Prize_Level_Name'
+},{
+  title: '产品名称',
+  dataIndex: 'Product_Name',
+  key: 'Product_Name'
 }, {
   title: '首次中奖率',
   dataIndex: 'FirstWinningRate',
@@ -418,6 +456,12 @@ class SaleADDArea extends React.Component{
     if(!opts.WinningPlaces){
       opts.WinningPlaces = 0;
     }
+    opts.FirstWinningRate = parseFloat(opts.FirstWinningRate);
+    opts.NFirstWinningRate = parseFloat(opts.NFirstWinningRate);
+    opts.WinningPlaces = parseFloat(opts.WinningPlaces);
+    
+    
+    
 
 
     this.props.addPrizeTime('area',opts); // 同步到父页面

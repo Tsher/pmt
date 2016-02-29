@@ -31,6 +31,14 @@ const FormItem = Form.Item;
 
 import '../../entry/config';
 
+import { Search } from '../btn-search'; // 查询按钮
+import { Export } from '../btn-export'; // 导出excel按钮
+import { Add } from '../btn-add'; // 新增按钮
+import { Edit } from '../btn-edit'; // 编辑，发布，设置等按钮
+import { Del } from '../btn-del'; // 删除
+
+let pageName = '产品信息管理'; // 按钮，验证权限使用
+
 
 // 用户列表api  http://172.31.0.49:8088/api/SUser/GetUsers?EntityCode=DEFAULT&page=0&pageSize=100
 // page ：当前请求页
@@ -175,9 +183,7 @@ class SelectForm extends React.Component{
               </li>
               <li className="fleft">
                 <FormItem>
-                  <Button type="primary" shape="circle" size="large"  htmlType="submit">
-    	  		        <Icon type="search" />
-    	  		      </Button>
+                <Search Name={pageName} />
                 </FormItem>
               </li>
             </ul>
@@ -241,7 +247,11 @@ const columns = [{
   render: function(text, record,index) {
   	var edit = '/base/product/edit/'+record.Product_Code,
   		del = '/base/product/del/' + record.Product_Code
-    return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.Product_Code} data-name={record.Product_Name} data-index={index} data-text="删除" >删除</a></span>;
+    return <span>
+    <Edit editLink={edit} value='编辑' Name={pageName} />
+    <span className="ant-divider"></span>
+    <Del click={showModal} index={index} _name={record.Product_Name} id={record.Product_Code} Name={pageName} />
+    </span>;
 	}
 }];
 
@@ -253,12 +263,14 @@ class BaseProduct extends React.Component{
     this.state = {
       visible : false,
       title : '',
+      roles : {},
       ModalText : '',
       changeId : false,
       index:false,
       total : 0,
       treedata : [],
       selectedKeys:[],
+      checkedKeys : [],
       addBtnStatus : false,
       data:[],
       level:{},
@@ -313,6 +325,17 @@ class BaseProduct extends React.Component{
       }.bind(this)
     })
     
+    setTimeout(function(){
+      var roles = {
+        add : _G.hasRole(pageName,2),
+        edit : _G.hasRole(pageName,3),
+        del : _G.hasRole(pageName,4)
+      }
+      this.setState({
+        roles : roles
+      })
+    }.bind(this),500)
+    
     
   }
   componentWillUnmount(){
@@ -354,10 +377,9 @@ class BaseProduct extends React.Component{
     var opts = opts || {};
     opts.page = opts.page || this.state.opts.page;
     opts.pageSize = opts.pageSize ||  this.state.opts.pageSize;
+    opts.Industry_Code = (this.state.checkedKeys||[]).join(',');
 
-    this.setState({
-      opts : opts
-    })
+    
 
     var that = this;
 
@@ -438,7 +460,9 @@ class BaseProduct extends React.Component{
   // 点击树菜单
   checkhandle(info){
     var level=[],that=this,state=0,key;
-
+    this.setState({
+      checkedKeys : info.checkedKeys
+    })
     info.checkedKeys.map( function(item,index){
       level[index] = that.state.level[item];
       if(that.state.level[item] == 3){
@@ -462,6 +486,28 @@ class BaseProduct extends React.Component{
         addBtnStatus : 0
       })
     }
+    setTimeout(function(){
+      this.changeTableState(this.state.opts);
+      
+      //excel导出 begin
+      var _this = this;
+      _G.getExcel({
+         url : baseProductExcel,
+         data : this.state.opts,
+         callback : function(d){
+             var excel = d.ReturnOperateStatus;
+             _this.setState({
+                 excel : excel
+             })
+             _this.excelChange(excel);
+         }
+      });
+      //excel导出 end
+      
+    }.bind(this),100)
+    
+    
+    
     //******************* ajax 请求，选中树节点的数据 **********************************
     
   }
@@ -474,11 +520,11 @@ class BaseProduct extends React.Component{
   renderButton(){
     if(this.state.addBtnStatus){
       var url = '/base/product/add/'+this.state.selectedKeys[0];
-      return (<Link to={url}>
+      return (<Link to={url} style={{ display : (this.state.roles.add?'block':'none') }} >
               <Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
             </Link>)
     }
-    return (<Button size="large"><Icon type="plus" /><span>新增</span></Button>)
+    return (<Button size="large" style={{ display : (this.state.roles.add?'block':'none') }} ><Icon type="plus" /><span>新增</span></Button>)
   }
 
 	render(){
@@ -505,13 +551,11 @@ class BaseProduct extends React.Component{
 					<Col span="2">
 						{this.renderButton()}
                     </Col>
-                    <Col span="3">
-            <a href={this.state.excel}>
-              <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
-            </a>
+          <Col span="3">
+                    <Export Name={pageName} excel={this.state.excel} />
 					</Col>
 					
-					<Col span="19">
+					<Col span="19" style={{float:'right'}}>
 						<SelectForm excelChange={this.excelChange} changeTableState={this.changeTableState} addBtnStatus={this.state.addBtnStatus} />
 					</Col>
 				</Row>

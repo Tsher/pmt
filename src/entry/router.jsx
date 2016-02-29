@@ -61,19 +61,14 @@ import {Layout} from '../component/layout';
 function validate(nextState, transition) {
 	
 	let token = Cookie.read('Token');
-	// // 临时token
-	// if(!token){
-	// 	Cookie.write({
-	// 		name : 'Token',
-	// 		value : 'a'
-	// 	})
-	// }
 	_G.Token = token;
 	// 验证token是否有效
 	if(!token){
 		if(nextState.location.pathname == '/login') return;
 		transition(nextState,'/login');
+        return;
 	}
+        _G.UserRole = JSON.parse( Cookie.read('UserRole1') + Cookie.read('UserRole2') );
 }
 
 const Router = (

@@ -31,6 +31,12 @@ const groupDel = config.__URL + config.user.group.del;
 var changeTableState;
 
 
+import { Add } from '../btn-add'; // 新增按钮
+import { Edit } from '../btn-edit'; // 编辑，发布，设置等按钮
+import { Del } from '../btn-del'; // 删除
+
+let pageName = '组织机构管理'; // 按钮，验证权限使用
+
 
 const columns = [{
   title: '真实名称',
@@ -50,6 +56,7 @@ class UserGroup extends React.Component{
 	    this.state = {
 	      treedata : [],
 	      selectedKeys : [],
+        roles : {},
 	      checkedKeys:[],
 	      info : {
 	      	no : null, // 编号
@@ -85,6 +92,7 @@ class UserGroup extends React.Component{
 	    this.handleCancel = this.handleCancel.bind(this);
       this.hideRightClickMenu = this.hideRightClickMenu.bind(this);
       this.renderEdit = this.renderEdit.bind(this);
+      this.renderDel = this.renderDel.bind(this);
 	}
 
   hideRightClickMenu(){
@@ -107,6 +115,17 @@ class UserGroup extends React.Component{
       }.bind(this)
 
     }) 
+    
+    setTimeout(function(){
+      var roles = {
+        add : _G.hasRole(pageName,2),
+        edit : _G.hasRole(pageName,3),
+        del : _G.hasRole(pageName,4)
+      }
+      this.setState({
+        roles : roles
+      })
+    }.bind(this),500)
 
     Event.add(document.body,'click',this.hideRightClickMenu)
     
@@ -226,12 +245,27 @@ class UserGroup extends React.Component{
   }
 
   renderEdit(){
-    if(this.state.editLink){
-      return (<Link to={this.state.editLink}>
-              <Button type="primary" size="large"><Icon type="edit" /><span>修改</span></Button>
-                </Link>)
+    if(this.state.roles.edit){
+      
+    var that = this;
+    
+      if(that.state.editLink){
+        return (<Link to={that.state.editLink}>
+                <Button type="primary" size="large"><Icon type="edit" /><span>修改</span></Button>
+                  </Link>)
+      }
+      return (<Button type="primary" size="large"><Icon type="edit" /><span>修改</span></Button>)
+    }else{
+      return (<span></span>)
     }
-    return (<Button type="primary" size="large"><Icon type="edit" /><span>修改</span></Button>)
+    
+  }
+  renderDel(){
+    if(this.state.roles.del){
+      return (<Button type="primary" size="large" onClick={this.showModal}><Icon type="edit" /><span>删除</span></Button>)
+    }else{
+      return (<span></span>)
+    }
   }
   
   render(){
@@ -252,15 +286,14 @@ class UserGroup extends React.Component{
 			<div className="m-list">
 				<Row>
 					<Col span="2">
-				        <Link to={this.state.addLink}>
-							<Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
-				        </Link>
+            <Add Name={pageName} addLink={this.state.addLink} />
 					</Col>
 					<Col span="2">
 				        {this.renderEdit()}
 					</Col>
 					<Col span="2">
-				        <Button type="primary" size="large" onClick={this.showModal}><Icon type="edit" /><span>删除</span></Button>
+          {this.renderDel()}
+				        
 					</Col>
 				</Row>
 				<Row>

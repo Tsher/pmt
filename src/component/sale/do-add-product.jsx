@@ -125,9 +125,12 @@ class SelectForm extends React.Component{
   // 文本框的值 同步到 state
   setValue(e){
     var name = e.target.id;
-    
+    var value = e.target.value;
+    if(name == 'FirstWinningRate' || name == 'NFirstWinningRate' || name == 'WinningPlaces'){
+      value = value.replace(/[^\d\.]/,'');
+    }
   	this.setState({
-      [name] : e.target.value
+      [name] : value
   	})
   }
 
@@ -415,6 +418,9 @@ class SaleADDProduct extends React.Component{
     if(!opts.WinningPlaces){
       opts.WinningPlaces = 0;
     }
+    opts.FirstWinningRate = parseFloat(opts.FirstWinningRate);
+    opts.NFirstWinningRate = parseFloat(opts.NFirstWinningRate);
+    opts.WinningPlaces = parseFloat(opts.WinningPlaces);
 
 
     this.props.addPrizeTime('product',opts,cb); // 同步到父页面

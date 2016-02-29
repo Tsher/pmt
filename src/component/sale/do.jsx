@@ -28,6 +28,14 @@ const FormItem = Form.Item;
 
 import '../../entry/config';
 
+import { Search } from '../btn-search'; // 查询按钮
+import { Export } from '../btn-export'; // 导出excel按钮
+import { Add } from '../btn-add'; // 新增按钮
+import { Edit } from '../btn-edit'; // 编辑，发布，设置等按钮
+import { Del } from '../btn-del'; // 删除
+
+let pageName = '促销活动设置'; // 按钮，验证权限使用
+
 
 // 用户列表api  http://172.31.0.49:8088/api/SUser/GetUsers?EntityCode=DEFAULT&page=0&pagesize=100
 // page ：当前请求页
@@ -153,18 +161,12 @@ class SelectForm extends React.Component{
               
               <li className="fleft">
                 <FormItem>
-                  <Button type="primary" shape="circle" size="large"  htmlType="submit">
-    	  		        <Icon type="search" />
-    	  		      </Button>
+                <Search Name={pageName} />
                 </FormItem>
               </li>
               <li className="fleft">
                 <FormItem>
-                <a href={this.state.excel}>
-                  <Button type="primary" size="large">
-                    导出excel
-                  </Button>
-                  </a>
+                <Export Name={pageName} excel={this.state.excel} />
                 </FormItem>
               </li>
             </ul>
@@ -236,7 +238,13 @@ const columns = [{
   	var publish = '/sale/do/publish/'+ record.MA_Code,
       edit = '/sale/do/edit/'+record.MA_Code,
   		del = '/sale/do/del/' + record.MA_Code
-    return <span><a href="#" onClick={showModalPublish} data-id={record.MA_Code} data-index={index} data-rstatus={record.MA_RStatus}>{record.MA_RStatus}</a><span className="ant-divider"></span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-name={record.MA_Name} data-index={index} data-id={record.MA_Code} data-text="删除" >删除</a></span>;
+    return <span>
+    <Del Name={pageName} do={1} click={showModalPublish} id={record.MA_Code} index={index} status={record.MA_RStatus} value={record.MA_RStatus} />
+    <span className="ant-divider"></span>
+    <Edit Name={pageName} editLink={edit} />
+    <span className="ant-divider"></span>
+    <Del Name={pageName} click={showModal} _name={record.MA_Name} index={index} id={record.MA_Code} />
+    </span>;
 	}
 }];
 const data = [];
@@ -259,6 +267,7 @@ class SaleDo extends React.Component{
       visible : false,
       title : '',
       ModalText : '',
+      roles : {},
       changeId : false,  // 删除id
       publishId : false, // 发布ids
       MA_RStatus : false, // 发布状态,
@@ -282,7 +291,17 @@ class SaleDo extends React.Component{
     modalState = this.showModal;
     modalStatePublish = this.showModalPublish;
 
-
+    setTimeout(function(){
+      var roles = {
+        add : _G.hasRole(pageName,2),
+        edit : _G.hasRole(pageName,3),
+        del : _G.hasRole(pageName,4)
+      }
+      this.setState({
+        roles : roles
+      })
+    }.bind(this),200)
+    
   }
   componentWillUnmount(){
     modalState = false;
@@ -460,9 +479,7 @@ class SaleDo extends React.Component{
 			<div className="m-list">
 				<Row>
 					<Col span="3">
-						<Link to='/sale/do/add'>
-							<Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
-	          			</Link>
+          <Add Name={pageName} addLink='/sale/do/add' />
 					</Col>
 					<Col span="21">
 						<SelectForm changeTableState={this.changeTableState} />

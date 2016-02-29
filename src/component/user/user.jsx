@@ -29,6 +29,14 @@ const history = createHistory();
 
 const FormItem = Form.Item;
 
+import { Search } from '../btn-search'; // 查询按钮
+import { Export } from '../btn-export'; // 导出excel按钮
+import { Add } from '../btn-add'; // 新增按钮
+import { Edit } from '../btn-edit'; // 编辑，发布，设置等按钮
+import { Del } from '../btn-del'; // 删除
+
+let pageName = '企业用户管理'; // 按钮，验证权限使用
+
 
 import '../../entry/config';
 
@@ -241,9 +249,7 @@ class SelectForm extends React.Component{
             <Input placeholder="请输入登录名或真实姓名" style={{width:250}} id="Login_Name" name="Login_Name" onChange={this.setValue} value={this.state.Login_Name} />
           </FormItem>
           <FormItem>
-            <Button type="primary" shape="circle" size="large"  htmlType="submit">
-  		        <Icon type="search" />
-  		      </Button>
+            <Search Name={pageName} />
           </FormItem>
           <FormItem>
             <Button onClick={this.showMoreSearch}><span>更多搜索</span><Icon type="down" /></Button>
@@ -294,14 +300,7 @@ class SelectForm extends React.Component{
               </li>
               <li className="fleft">
                 <FormItem>
-                  <Button type="primary"  htmlType="submit">查询</Button>
-                </FormItem>
-              </li>
-              <li className="fleft">
-                <FormItem>
-                  <a href={this.state.excel}>
-                    <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
-                  </a>
+                  <Export Name={pageName} excel={this.state.excel} />
                 </FormItem>
               </li>
             </ul>
@@ -380,7 +379,12 @@ const columns = [{
   	var edit = '/user/user/edit/'+record.User_Code,
   		set = '/user/user/role/' + record.User_Code,
   		del = '/user/user/del/' + record.User_Code
-    return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><Link to={set}>设置角色</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.User_Code} data-index={index} data-name={record.User_Name} >删除</a></span>;
+    return <span>
+    <Edit editLink={edit} Name={pageName} value='编辑' />
+    <span className="ant-divider"></span>
+    <Edit editLink={set} Name={pageName} value='设置权限' />
+    <span className="ant-divider"></span>
+    <Del click={showModal} index={index} _name={record.User_Name} id={record.User_Code} Name={pageName} /></span>;
   }
 }];
 
@@ -562,9 +566,7 @@ class UserUser extends React.Component{
 			<div className="m-list">
 				<Row>
 					<Col span="2">
-          <Link to='/user/user/add'>
-						<Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
-          </Link>
+          <Add Name={pageName} addLink='/user/user/add' />
 					</Col>
 					<Col span="22">
 						<SelectForm query={this.props.location} changeTableState={this.changeTableState} />

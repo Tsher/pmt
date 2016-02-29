@@ -16,6 +16,16 @@ const confirm = Modal.confirm;
 const FormItem = Form.Item;
 
 import '../../entry/config';
+
+import { Search } from '../btn-search'; // 查询按钮
+import { Export } from '../btn-export'; // 导出excel按钮
+import { Add } from '../btn-add'; // 新增按钮
+import { Edit } from '../btn-edit'; // 编辑，发布，设置等按钮
+import { Del } from '../btn-del'; // 删除
+
+let pageName = '积分规则'; // 按钮，验证权限使用
+
+
 const ruleNumberList = config.__URL + config.rule.number.list;
 const ruleNumberDel  = config.__URL + config.rule.number.del;
 const ruleNumberExcel  = config.__URL + config.rule.number.excel;
@@ -48,7 +58,11 @@ const columns = [{
   render: function(text, record,index) {
     var edit = '/rule/number/edit/'+record.IntegralRule_Code,
       del = '/rule/number/del/' + record.IntegralRule_Code
-    return <span><Link to={edit}>编辑</Link><span className="ant-divider"></span><a href="#" onClick={showModal} data-id={record.IntegralRule_Code} data-index={index} data-name={record.IntegralRule_Name} >删除</a></span>;
+    return <span>
+    <Edit value='编辑' Name={pageName} editLink={edit} />
+    <span className="ant-divider"></span>
+    <Del click={showModal} index={index} _name={record.IntegralRule_Name} id={record.IntegralRule_Code} Name={pageName} />
+    </span>;
   }
 }];
 
@@ -228,14 +242,10 @@ class RuleNumber extends React.Component{
 			<div className="m-list">
         <Row>
 			  <Col span="2" style={{marginBottom:20}}>
-            <Link to='/rule/number/add'>
-              <Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
-                  </Link>
+        <Add Name={pageName} addLink='/rule/number/add' />
         </Col>
         <Col span="2">
-            <a href={this.state.excel}>
-              <Button type="primary" size="large"><Icon type="download" /><span>导出报表</span></Button>
-                  </a>
+        <Export Name={pageName} excel={this.state.excel} />
           </Col>
         </Row>
         <Table onChange={this.tableChange} columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}} />

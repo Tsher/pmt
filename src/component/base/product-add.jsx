@@ -622,13 +622,14 @@ class BaseProductAdd extends React.Component{
   productNameChange(e){
     var name = e.target.name,
         value = e.target.value;
+    this.setValue(e);
     setTimeout(function(){
       var value = e.target.value;
       let state = _G.assign({},this.state);
       state[name] = value;
       state.formData.Product_Name = (state.formData.SName||'') + (state.formData.Product_Spec||'') ;
       this.setState(state);
-    }.bind(this),200)
+    }.bind(this),500)
   }
 
   renderPackage(){
@@ -663,7 +664,7 @@ class BaseProductAdd extends React.Component{
       var that = this;
       function imgs(){
           return that.state.formData.DataImage.map( (item,index) =>{
-            return <img key={index} src={item.Image} />
+            return <img key={index} src={ location.host +  item.Image} />
         } )
       }
     return (<span key='renderImage'>{imgs()}</span>)
@@ -710,7 +711,7 @@ class BaseProductAdd extends React.Component{
                   wrapperCol={{span: 12}}
                   >
                     <Validator rules={[{required: false, message: '请输入产品简称',type:"string"}]}>
-                      <Input name="Brand" value={formData.Brand} onChange={this.productNameChange} />
+                      <Input name="Brand" value={formData.Brand}  />
                     </Validator>
                 </FormItem>
                 <FormItem
@@ -752,7 +753,7 @@ class BaseProductAdd extends React.Component{
                   id="Product_Spec"
                   labelCol={{span: 8}}
                   wrapperCol={{span: 12}} >
-                    <Input name="Product_Spec" value={formData.Product_Spec} onChange={this.setValue} />
+                    <Input name="Product_Spec" value={formData.Product_Spec} onChange={this.productNameChange} />
                 </FormItem>
             </Col>
             <Col span="24">
