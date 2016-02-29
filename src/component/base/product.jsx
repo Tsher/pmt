@@ -289,6 +289,7 @@ class BaseProduct extends React.Component{
     this.showSizechange = this.showSizechange.bind(this);
     this.renderButton = this.renderButton.bind(this);
     this.excelChange = this.excelChange.bind(this);
+    this.showTotal = this.showTotal.bind(this);
 	}
 
   componentDidMount(){
@@ -526,7 +527,9 @@ class BaseProduct extends React.Component{
     }
     return (<Button size="large" style={{ display : (this.state.roles.add?'block':'none') }} ><Icon type="plus" /><span>新增</span></Button>)
   }
-
+  showTotal(){
+    return '共'+this.state.total+'条'
+  }
 	render(){
 
     var that = this,level={};
@@ -573,7 +576,7 @@ class BaseProduct extends React.Component{
           <Col span="20">
 					 <Table onChange={this.tableChange}  onShowSizeChange={this.showSizechange}
             columns={columns} dataSource={this.state.data} 
-            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total}}  />
+            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,showTotal:this.showTotal}}  />
           </Col>
 				</Row>
         <Modal 

@@ -96,6 +96,7 @@ class RuleNumber extends React.Component{
     this.changeTableState = this.changeTableState.bind(this);
     this.tableChange = this.tableChange.bind(this);
     this.showSizechange = this.showSizechange.bind(this);
+    this.showTotal = this.showTotal.bind(this);
   }
 
 
@@ -237,6 +238,9 @@ class RuleNumber extends React.Component{
       visible : false
     })
   }
+  showTotal(){
+    return '共'+this.state.total+'条'
+  }
 	render(){
 		return(
 			<div className="m-list">
@@ -248,7 +252,7 @@ class RuleNumber extends React.Component{
         <Export Name={pageName} excel={this.state.excel} />
           </Col>
         </Row>
-        <Table onChange={this.tableChange} columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}} />
+        <Table onChange={this.tableChange} columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange,showTotal:this.showTotal}} />
         <Modal title="您正在进行删除操作，请确认！"
           visible={this.state.visible}
           onOk={this.handleOk}

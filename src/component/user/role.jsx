@@ -216,6 +216,7 @@ class UserRole extends React.Component{
     this.handleCancel = this.handleCancel.bind(this);
     this.changeTableState = this.changeTableState.bind(this);
     this.tableChange = this.tableChange.bind(this);
+    this.showTotal = this.showTotal.bind(this);
 	}
 
   componentDidMount(){
@@ -341,6 +342,9 @@ class UserRole extends React.Component{
     this.changeTableState(opts);
 
   }
+  showTotal(){
+    return '共'+this.state.total+'条'
+  }
 	render(){
 		return(
 			<div className="m-list">
@@ -355,7 +359,7 @@ class UserRole extends React.Component{
 				<Row>
 					<Table onChange={this.tableChange}  onShowSizeChange={this.showSizechange}
             columns={columns} dataSource={this.state.data} 
-            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:1,showSizeChanger:true,total:this.state.total}}  />
+            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:1,showSizeChanger:true,total:this.state.total,showTotal:this.showTotal}}  />
 				</Row>
         <Modal title="您正在进行删除操作，请确认！"
           visible={this.state.visible}

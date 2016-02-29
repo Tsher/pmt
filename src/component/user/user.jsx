@@ -416,6 +416,7 @@ class UserUser extends React.Component{
     this.changeTableState = this.changeTableState.bind(this);
     this.tableChange = this.tableChange.bind(this);
     this.showSizechange = this.showSizechange.bind(this);
+    this.showTotal = this.showTotal.bind(this);
 	}
 
   // 点击分页
@@ -557,6 +558,9 @@ class UserUser extends React.Component{
   handleClick(e){
     console.log(e);
   }
+  showTotal(){
+    return '共'+this.state.total+'条'
+  }
 	render(){
     const rowKey = function(record) {
       return record.User_Code;  // 比如你的数据主键是 uid
@@ -578,7 +582,7 @@ class UserUser extends React.Component{
             key={rowKey} 
             columns={columns} 
             dataSource={this.state.data} 
-            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange}}  />
+            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,onShowSizeChange:this.showSizechange,showTotal:this.showTotal}}  />
 				</Row>
         <Modal title="您正在进行删除操作，请确认！"
           visible={this.state.visible}

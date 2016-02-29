@@ -281,6 +281,7 @@ class RuleArea extends React.Component{
     this.changeTableState = this.changeTableState.bind(this);
     this.tableChange = this.tableChange.bind(this);
     this.showSizechange = this.showSizechange.bind(this);
+    this.showTotal = this.showTotal.bind(this);
 	}
 
   // 点击分页
@@ -411,6 +412,9 @@ class RuleArea extends React.Component{
   handleClick(e){
     console.log(e);
   }
+  showTotal(){
+    return '共'+this.state.total+'条'
+  }
 	render(){
 		return(
 			<div className="m-list">
@@ -423,7 +427,7 @@ class RuleArea extends React.Component{
             loading={this.state.loading} 
             columns={columns} 
             dataSource={this.state.data} 
-            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total}}  />
+            pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,showTotal:this.showTotal}}  />
 				</Row>
         <Modal 
           visible={this.state.visible}

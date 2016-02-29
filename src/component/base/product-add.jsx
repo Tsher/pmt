@@ -81,7 +81,7 @@ const upload_props = {
 };
 
 let uploadSuccess
-window['uploadSuccess'] = uploadSuccess;
+
 
 const columns = [{
   title: '序号',
@@ -264,7 +264,7 @@ class BaseProductAdd extends React.Component{
     packingUnitChange = this.packingUnitChange;
     modalState = this.modalState;
 
-    uploadSuccess = this.uploadSuccess;
+     window['uploadSuccess'] = this.uploadSuccess;
 
     // 获取有效期
     var that = this;
@@ -664,7 +664,7 @@ class BaseProductAdd extends React.Component{
       var that = this;
       function imgs(){
           return that.state.formData.DataImage.map( (item,index) =>{
-            return <img key={index} src={ location.host +  item.Image} />
+            return <img key={index} src={ 'http://' + location.host +  item.Image} style={{width:100}} />
         } )
       }
     return (<span key='renderImage'>{imgs()}</span>)

@@ -285,6 +285,7 @@ class SaleDo extends React.Component{
     this.showModalPublish = this.showModalPublish.bind(this);
     this.changeTableState = this.changeTableState.bind(this);
     this.tableChange = this.tableChange.bind(this);
+    this.showTotal = this.showTotal.bind(this);
 	}
 
   componentDidMount(){
@@ -474,6 +475,9 @@ class SaleDo extends React.Component{
   handleClick(e){
     console.log(e);
   }
+  showTotal(){
+    return '共'+this.state.total+'条'
+  }
 	render(){
 		return(
 			<div className="m-list">
@@ -493,7 +497,8 @@ class SaleDo extends React.Component{
                             current:this.state.opts.page,
                             showSizeChanger:true,
                             total:this.state.total,
-                            onShowSizeChange:this.showSizechange}}  />
+                            onShowSizeChange:this.showSizechange,
+                            showTotal:this.showTotal}}  />
 				</Row>
         <Modal 
           visible={this.state.visible}

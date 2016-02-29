@@ -229,6 +229,7 @@ class SaleVip extends React.Component {
         this.changeTableState = this.changeTableState.bind(this);
         this.tableChange = this.tableChange.bind(this);
         this.showSizechange = this.showSizechange.bind(this);
+        this.showTotal = this.showTotal.bind(this);
     }
 
     componentDidMount() {
@@ -316,7 +317,9 @@ class SaleVip extends React.Component {
             }.bind(this)
         })
     }
-
+    showTotal(){
+        return '共'+this.state.total+'条'
+    }
     render() {
       return(
         <div className="m-list">
@@ -331,7 +334,7 @@ class SaleVip extends React.Component {
                   onShowSizeChange={this.showSizechange}
                   columns={columns} 
                   dataSource={this.state.data} 
-                  pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total}} />
+                  pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,showTotal:this.showTotal}} />
             </Row>
             <Modal visible={this.state.visible} onOk={this.handleOk} confirmLoading={this.state.confirmLoading} onCancel={this.handleCancel}>
                 <p>{this.state.ModalText}</p>
