@@ -307,10 +307,15 @@ class BaseArea extends React.Component{
 	          this.setState({
 	            visible : false
 	          })
-	          console.log('删除成功');
+	          //console.log('删除成功');
 	          var d = [].concat(this.state.Data);
-	          d.splice(d[this.state.index],1);
-	          console.log(this.state.index)
+	          for(var i=0;i<d.length;i++){
+	          	if (d[i].SalesRegion_Code == code) {
+	          		d.splice(i,1);
+	          	};
+	          }
+	          //d.splice(d[this.state.index],1);
+	          //console.log(this.state.index)
 	          var ad = this.state.data;
 	          ad.showInfo = 'none';
 	          this.setState({
