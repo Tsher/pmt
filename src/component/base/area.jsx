@@ -34,10 +34,11 @@ const baseAreaDel = config.__URL + config.base.area.del;
 const regionUrlOne = config.__URL + config.base.area.regionOne;
 
 
+
+
 var changeTableState;
 
 var dataIndex = '';
-
 
 var _data = [
 	{
