@@ -129,7 +129,7 @@ window['_G']={
 	},
 	getExcel:function(opts){
 		var url = opts.url;
-		var data = Object.assign({},opts.data);
+		var data = this.assign({},opts.data);
 		var callback = opts.callback;
 		var type = opts.type || 'get';
 		var str = '';

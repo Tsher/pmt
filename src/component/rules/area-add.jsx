@@ -320,7 +320,7 @@ class SelectForm extends React.Component{
                           validateStatus={this.renderValidateStyle('batchNumEnd')}
                           help={status.batchNumEnd.errors ? status.batchNumEnd.errors.join(',') : null}
                           required>
-                            <Validator rules={[{required: true, message: '请输入结束批次号'}],{validator: this.rulesNum}}>
+                            <Validator rules={[{required: true, message: '请输入结束批次号'},{validator: this.rulesNum}]}>
                               <Input placeholder="" id="batchNumEnd" name="batchNumEnd" onChange={this.setValue} value={formData.batchNumEnd} />
                             </Validator>
                         </FormItem>
