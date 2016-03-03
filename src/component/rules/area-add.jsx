@@ -283,7 +283,7 @@ class SelectForm extends React.Component{
     if (re.test(value)) {
       callback()
     }else{
-      callback([new Error('请输入正确的箱号')]);
+      callback([new Error('请输入正确的号')]);
     }
   }
 
@@ -307,7 +307,7 @@ class SelectForm extends React.Component{
                                 validateStatus={this.renderValidateStyle('batchNumStart')}
                                 help={status.batchNumStart.errors ? status.batchNumStart.errors.join(',') : null}
                                 required>
-                                  <Validator rules={[{required: true, message: '请输入起始批次号'}]}>
+                                  <Validator rules={[{required: true, message: '请输入起始批次号'},{validator: this.rulesNum}]}>
                                     <Input placeholder="" id="batchNumStart" name="batchNumStart" onChange={this.setValue} value={formData.batchNumStart} />
                                   </Validator>
                             </FormItem>
@@ -320,7 +320,7 @@ class SelectForm extends React.Component{
                           validateStatus={this.renderValidateStyle('batchNumEnd')}
                           help={status.batchNumEnd.errors ? status.batchNumEnd.errors.join(',') : null}
                           required>
-                            <Validator rules={[{required: true, message: '请输入结束批次号'}]}>
+                            <Validator rules={[{required: true, message: '请输入结束批次号'},{validator: this.rulesNum}]}>
                               <Input placeholder="" id="batchNumEnd" name="batchNumEnd" onChange={this.setValue} value={formData.batchNumEnd} />
                             </Validator>
                         </FormItem>
