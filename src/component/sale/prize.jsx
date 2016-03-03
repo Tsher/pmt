@@ -229,7 +229,7 @@ const columns = [
   	var edit = '/sale/prize/edit/'+record.Prize_Code,
   		del = '/sale/prize/del/' + record.Prize_Code
     return <span>
-    <Edit Name={pageName} editLink={edit} />
+    <Edit Name={pageName} editLink={edit} value="编辑" />
     <span className="ant-divider"></span>
     <Del Name={pageName} id={record.Prize_Code} _name={record.Prize_Name} click={showModal} />
     </span>;

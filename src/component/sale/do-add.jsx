@@ -224,6 +224,7 @@ class SaleDoAdd extends React.Component{
     // type 类型
     // data 子节点传进来的数据，this.state
     function t(s){
+      console.log(new Date(s).getTime())
       return new Date(s).getTime();
     }
     
@@ -277,6 +278,9 @@ class SaleDoAdd extends React.Component{
     var all = _G.assign({},this.state.formData);
     // 修改
     if(data.index || data.index == 0 ){
+      console.log('x')
+      console.log(data.SActivityTime)
+      console.log(_G.timeFormat(data.SActivityTime))
       all.PromotionDetail[type][data.index] = {
         key : data.index,
         Prize_Code : data.Prize_Code, // 奖品编码,

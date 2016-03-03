@@ -241,7 +241,7 @@ const columns = [{
     return <span>
     <Del Name={pageName} do={1} click={showModalPublish} id={record.MA_Code} index={index} status={record.MA_RStatus} value={record.MA_RStatus} />
     <span className="ant-divider"></span>
-    <Edit Name={pageName} editLink={edit} />
+    <Edit Name={pageName} editLink={edit} value="编辑" />
     <span className="ant-divider"></span>
     <Del Name={pageName} click={showModal} _name={record.MA_Name} index={index} id={record.MA_Code} />
     </span>;

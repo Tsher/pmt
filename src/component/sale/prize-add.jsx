@@ -103,7 +103,7 @@ class SalePrizeAdd extends React.Component{
 
   renderImage(){
     return this.state.formData.ImageDetail.map(function(elem,index) {
-        return <img key={index} src={ 'http://' + location.host + elem.Image} style={{width: 100}} />
+        return <img key={index} src={ 'http://' + location.host + '/' + elem.Image} style={{width: 100}} />
     })
   }
 

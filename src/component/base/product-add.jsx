@@ -664,7 +664,7 @@ class BaseProductAdd extends React.Component{
       var that = this;
       function imgs(){
           return that.state.formData.DataImage.map( (item,index) =>{
-            return <img key={index} src={ 'http://' + location.host +  item.Image} style={{width:100}} />
+            return <img key={index} src={ 'http://' + location.host + '/' +  item.Image} style={{width:100}} />
         } )
       }
     return (<span key='renderImage'>{imgs()}</span>)
