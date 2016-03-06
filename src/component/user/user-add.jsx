@@ -94,7 +94,8 @@ class UserUserAdd extends React.Component{
         Email : {}, // 电子邮件
         Phone_Code : {}, // 手机
         
-        User_Status : {} // 状态
+        User_Status : {}, // 状态
+        User_IDCard : {} // 身份证
         
       },
       formData: {
@@ -114,6 +115,7 @@ class UserUserAdd extends React.Component{
         Marital_Status : undefined, // 婚姻
         User_Status : undefined, // 状态
         User_IDCard : undefined , // 身份证号
+        User_Sex : undefined, // 性别
         Home_Phone : undefined // 家庭电话
       },
       treeData : [],
@@ -201,6 +203,10 @@ class UserUserAdd extends React.Component{
           }
           res = res.Data;
           console.log(res)
+          
+          res.User_Birthday = res.User_Birthday || '-NaN-';
+          res.Register_On = res.Register_On || '-NaN-';
+
           var d = {
               User_Code : this.props.params.id,
               title : '编辑用户',
@@ -287,8 +293,8 @@ class UserUserAdd extends React.Component{
       let u = this.props.params.id ? urlUserEdit : urlUserAdd;
       let t = this.props.params.id ? 'PUT' : 'POST';
       var data = _G.assign({},this.state.formData);
-      data.User_Birthday = _G.timeFormat( new Date(data.User_Birthday), 'YYYY-MM-DD');
-      data.Register_On = _G.timeFormat( new Date(data.Register_On), 'YYYY-MM-DD');
+      data.User_Birthday = data.User_Birthday ? _G.timeFormat( new Date(data.User_Birthday), 'YYYY-MM-DD')  : '';
+      data.Register_On = data.Register_On ? _G.timeFormat( new Date(data.Register_On), 'YYYY-MM-DD') : '' ; 
       _G.ajax({
         url  : u,
         data : data,
@@ -341,7 +347,7 @@ class UserUserAdd extends React.Component{
 
     var name = e.target.id || e.target.name;
     var value = e.target.value;
-
+    console.log(name,value)
     var data = _G.assign( {}, this.state.formData );
 
     data[name] = value;
@@ -363,6 +369,10 @@ class UserUserAdd extends React.Component{
 
   // datepicker change
   onChange(field,value){
+    if(field == 'User_Sex'){
+      value = value.target.value;
+    }
+    console.log(value)
    var data = _G.assign({},this.state);
     data.formData[field]=value;
     this.setState(data)
@@ -420,7 +430,7 @@ class UserUserAdd extends React.Component{
                   validateStatus={this.renderValidateStyle('Phone_Code')}
                   help={status.Phone_Code.errors ? status.Phone_Code.errors.join(',') : null}
                   required>
-                    <Validator rules={[{required: true, message: '请输入手机号'}]}>
+                    <Validator rules={[{required: true, message: '请输入正确手机号',pattern:/^1[356789](\d){9}$/}]}>
                       <Input name="Phone_Code" value={formData.Phone_Code} />
                     </Validator>
                 </FormItem>
@@ -479,8 +489,23 @@ class UserUserAdd extends React.Component{
                   label="身份证号："
                   id="User_IDCard"
                   labelCol={{span: 8}}
-                  wrapperCol={{span: 12}} >
-                    <Input name="User_IDCard" value={formData.User_IDCard} onChange={this.setValue} />
+                  wrapperCol={{span: 12}} 
+                  >
+                    <Validator rules={[{ required: false, message: '请输入正确的身份证号', pattern : /\d{18}/ }]}>
+                      <Input name="User_IDCard" value={formData.User_IDCard} onChange={this.setValue} />
+                    </Validator>
+                </FormItem>
+                <FormItem
+                  label="性别："
+                  id="User_Sex"
+                  labelCol={{span: 8}}
+                  wrapperCol={{span: 12}} 
+                  >
+                    <RadioGroup name="User_Sex" value={formData.User_Sex} onChange={this.onChange.bind(this,'User_Sex')} >
+                        <Radio value="1">男</Radio>
+                        <Radio value="2">女</Radio>
+                        <Radio value="0">神秘</Radio>
+                    </RadioGroup>
                 </FormItem>
             </Col>
             <Col span="8">

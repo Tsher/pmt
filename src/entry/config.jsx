@@ -1,4 +1,4 @@
-import moment from 'moment';
+
 import { createHistory } from 'history';
 import message from 'antd/lib/message';
 const msg_error = function(text){
@@ -62,6 +62,7 @@ window['_G']={
 		var f = f || 'YYYY-MM-DD HH:mm:ss';
 		var t = typeof t == 'number'? t : t.replace(/\D/g,'')*1;
 		t = new Date(t);
+		//t = _G.timeFormat(t.getTime(),f);
 		t = moment(t).format(f);
 		return t;
 	},
@@ -72,8 +73,10 @@ window['_G']={
 		}
 		var f = f || 'YYYY-MM-DD HH:mm:ss';
 		//var t = typeof t == 'number'? t : t.replace(/\D/g,'')*1;
+		if( (''+t).indexOf('-') > -1 ){
+			t = (''+t).replace(/\-/g,'/');
+		}
 		t = new Date(t);
-		//t = moment(t).format(f);
 		var y = t.getFullYear(),
 			m = t.getMonth()*1+1,
 			d = t.getDate(),
@@ -143,7 +146,7 @@ window['_G']={
 
 		})
 	},
-	get_data : get_data,
+	get_data : get_data
 }
 
 
@@ -327,7 +330,7 @@ window['config'] = {
 	login : '/api/SLogin/LoginIn', // 登录
 	valCode : '/api/SLogin/GetValidateCode', // 验证码
 	checkValCode : '/api/SLogin/CheckVailidateCode', // 校验验证码
-	updatePWD : '/api/SUser/UpdateUserPwd', // 修改密码
+	updatePWD : '/api/SUser/UpdateUserPwd' // 修改密码
 }
 
 function get_data(url,name,params,cb){
@@ -366,7 +369,7 @@ if(_G.Token){
 	get_data(config['user']['role']['all'],'user_role_all');
 }
 
-(function(window,undefined){
+;(function(window,undefined){
 
 var PENDING = undefined, FULFILLED = 1, REJECTED = 2;
 

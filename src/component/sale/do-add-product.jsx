@@ -235,7 +235,7 @@ class SelectForm extends React.Component{
       <ul className="clearfix do-add-time">
         <li span="8" className="fleft" style={{width:'30%'}}>
           <label className="do-add-time-title">选择产品：</label>
-          <Select size="large" placeholder="请选择区域" style={{width: 140}} name="Product_Code"  value={this.state.Product_Code} onChange={this.onChange.bind(this,'Product_Code')}>
+          <Select size="large" placeholder="请选择产品" style={{width: 140}} name="Product_Code"  value={this.state.Product_Code} onChange={this.onChange.bind(this,'Product_Code')}>
             {this.state.sale_all_productName}
           </Select>
         </li>

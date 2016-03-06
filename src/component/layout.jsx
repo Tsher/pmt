@@ -196,7 +196,7 @@ class Layout extends React.Component{
 			let w = $(window).width();
 			
 			that.setState({
-				width : w - that.state.menuWidth-50
+				width : Math.max(1000, w - that.state.menuWidth-50)
 			})
 		}
 		size();
@@ -277,7 +277,8 @@ class Layout extends React.Component{
 	logout(){
 		// 登出
 		Cookie.dispose('Token');
-        Cookie.dispose('UserRole');
+        Cookie.dispose('UserRole1');
+        Cookie.dispose('UserRole2');
 		location.reload();
 	}
 	userInfo(){

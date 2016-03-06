@@ -110,12 +110,12 @@ class SelectForm extends React.Component {
                           <ul className="clearfix">
                               <li className="fleft">
                                   <FormItem label="登录名：">
-                                      <Input placeholder="" name="Member_Name" onChange={this.setValue} value={this.state.Member_Name} />
+                                      <Input placeholder="" style={{width:100}} name="Member_Name" onChange={this.setValue} value={this.state.Member_Name} />
                                   </FormItem>
                               </li>
                               <li className="fleft">
                                   <FormItem label="昵称：" >
-                                      <Input placeholder="" name="Member_SName" onChange={this.setValue} value={this.state.Member_SName} />
+                                      <Input placeholder="" style={{width:100}} name="Member_SName" onChange={this.setValue} value={this.state.Member_SName} />
                                   </FormItem>
                               </li>
                               <li className="fleft date-picker">
@@ -135,7 +135,7 @@ class SelectForm extends React.Component {
                               </li>
                               <li className="fleft">
                                   <FormItem label="手机号：">
-                                      <Input placeholder="" name="Member_Phone" onChange={this.setValue} value={this.state.Member_Phone} />
+                                      <Input placeholder="" style={{width:100}} name="Member_Phone" onChange={this.setValue} value={this.state.Member_Phone} />
                                   </FormItem>
                               </li>
                               <li className="fleft">

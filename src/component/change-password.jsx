@@ -127,7 +127,7 @@ class ChangePassword extends React.Component{
   handleSubmit(e){
     e.preventDefault();
     var data = _G.assign({},this.state.formData);
-    data.Token = _G.Token;
+    //data.Token = _G.Token;
     // 修改密码
     _G.ajax({
       url : updatePWD,

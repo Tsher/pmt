@@ -136,7 +136,7 @@ class SelectForm extends React.Component{
 	            	<FormItem
 		            label="奖品名称："
 		            id="Prize_Name">
-		              <Input placeholder="" id="Prize_Name" name="Prize_Name" onChange={this.setValue} value={this.state.Prize_Name} />
+		              <Input placeholder="" style={{width:100}} id="Prize_Name" name="Prize_Name" onChange={this.setValue} value={this.state.Prize_Name} />
 		          </FormItem>
             	</li>
             	<li className="fleft">
@@ -357,13 +357,13 @@ class SalePrize extends React.Component{
 		return(
 			<div className="m-list">
 				<Row>
-					<Col span="2">
+					<Col span="2" style={{marginRight:10}}>
           <Add Name={pageName} addLink='/sale/prize/add' />
 	       </Col>
       		<Col span="2">
           <Export Name={pageName} excel={this.state.excel} />
 					</Col>
-					<Col span="20">
+					<Col span="18" style={{float:'right'}}>
 						<SelectForm excelChange={this.excelChange} changeTableState={this.changeTableState} />
 					</Col>
 				</Row>

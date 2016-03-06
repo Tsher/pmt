@@ -77,6 +77,7 @@ class SelectForm extends React.Component{
   // 文本框的值 同步到 state
   setValue(e){
     var name = e.target.id;
+    this.props.setOpt(name,e.target.value);
   	this.setState({
       [name] : e.target.value
   	})
@@ -130,6 +131,7 @@ class SelectForm extends React.Component{
         return;
       }
     }
+    this.props.setOpt(field,value);
     this.setState({
       [field] : value
     })
@@ -239,7 +241,7 @@ const columns = [{
   dataIndex: 'Register_Time',
   key: 'Register_Time',
   render:function(text,record,index){
-      return <span>{_G.timeFormat2(record.Add_On)}</span>
+      return <span>{_G.timeFormat2(record.Register_Time)}</span>
   }
 }, {
   title: '操作',
@@ -290,6 +292,7 @@ class BaseProduct extends React.Component{
     this.renderButton = this.renderButton.bind(this);
     this.excelChange = this.excelChange.bind(this);
     this.showTotal = this.showTotal.bind(this);
+    this.setOpt = this.setOpt.bind(this);
 	}
 
   componentDidMount(){
@@ -374,8 +377,17 @@ class BaseProduct extends React.Component{
 
   }
 
+  setOpt(key,value){
+    var opts = _G.assign({},this.state.opts);
+    opts[key] = value;
+    this.setState({
+      opts : opts
+    })
+  }
+
   changeTableState(opts){
     var opts = opts || {};
+    console.log(opts)
     opts.page = opts.page || this.state.opts.page;
     opts.pageSize = opts.pageSize ||  this.state.opts.pageSize;
     opts.Industry_Code = (this.state.checkedKeys||[]).join(',');
@@ -488,6 +500,7 @@ class BaseProduct extends React.Component{
       })
     }
     setTimeout(function(){
+      // 
       this.changeTableState(this.state.opts);
       
       //excel导出 begin
@@ -559,7 +572,7 @@ class BaseProduct extends React.Component{
 					</Col>
 					
 					<Col span="19" style={{float:'right'}}>
-						<SelectForm excelChange={this.excelChange} changeTableState={this.changeTableState} addBtnStatus={this.state.addBtnStatus} />
+						<SelectForm setOpt={this.setOpt} excelChange={this.excelChange} changeTableState={this.changeTableState} addBtnStatus={this.state.addBtnStatus} />
 					</Col>
 				</Row>
 				<Row>

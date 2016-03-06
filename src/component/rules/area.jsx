@@ -143,28 +143,28 @@ class SelectForm extends React.Component{
         <Col span="24" >
             <div className="">
             <ul className="clearfix">
-	            <li className="fleft">
+	            <li className="fleft" >
 		            	<FormItem
 			            label="起始批次号："
-			            id="batchNumStart">
-			              <Input placeholder="" id="batchNumStart" name="batchNumStart" onChange={this.setValue} value={this.state.batchNumStart} />
+			            id="batchNumStart"  >
+			              <Input placeholder="" style={{width:100}} id="batchNumStart" name="batchNumStart" onChange={this.setValue} value={this.state.batchNumStart} />
 			          </FormItem>
 			          <FormItem
 			            label="至　"
-			            id="batchNumEnd">
-			              <Input placeholder="" id="batchNumEnd" name="batchNumEnd" onChange={this.setValue} value={this.state.batchNumEnd} />
+			            id="batchNumEnd"  >
+			              <Input placeholder="" style={{width:100}} id="batchNumEnd" name="batchNumEnd" onChange={this.setValue} value={this.state.batchNumEnd} />
 			          </FormItem>
 	            </li>
 	            <li className="fleft">
 		            	<FormItem
 			            label="起始箱号："
-			            id="boxNumStart">
-			              <Input placeholder="" id="boxNumStart" name="boxNumStart" onChange={this.setValue} value={this.state.boxNumStart} />
+			            id="boxNumStart"  >
+			              <Input placeholder="" style={{width:100}} id="boxNumStart" name="boxNumStart" onChange={this.setValue} value={this.state.boxNumStart} />
 			          </FormItem>
 			          <FormItem
 			            label="至　"
-			            id="boxNumEnd">
-			              <Input placeholder="" id="boxNumEnd" name="boxNumEnd" onChange={this.setValue} value={this.state.boxNumEnd} />
+			            id="boxNumEnd"  >
+			              <Input placeholder="" style={{width:100}} id="boxNumEnd" name="boxNumEnd" onChange={this.setValue} value={this.state.boxNumEnd} />
 			          </FormItem>
 	            </li>
               
@@ -173,7 +173,7 @@ class SelectForm extends React.Component{
 			    <FormItem
 		            label="销售区域："
 		            id="saleRegion">
-		            	<Select size="large" placeholder="选择销售区域" style={{width: 200}} name="saleRegion"  value={this.state.saleRegion} onChange={this.onChange.bind(this,'saleRegion')}>
+		            	<Select size="large" placeholder="选择销售区域" style={{width: 150}} name="saleRegion"  value={this.state.saleRegion} onChange={this.onChange.bind(this,'saleRegion')}>
 
                     {
                        [{'SalesRegion_Code':'','SalesRegion_Name':'全部'}].concat(this.state.selesD).map(function(d){
@@ -191,11 +191,12 @@ class SelectForm extends React.Component{
             </ul>
           </div>
           <Row className="clearfix" style={{marginBottom:'20px'}}>
-              <Col span="2" >
+              <Col span="2" style={{marginRight:'20px'}}>
                 <Add addLink='/rule/area/add' Name={pageName} />
               </Col>
+              <Col span="1" > </Col>
               <Col span="2" >
-              <Export Name={pageName} excel={this.state.excel} />
+                <Export Name={pageName} excel={this.state.excel} />
               </Col>
             </Row>
         </Col>

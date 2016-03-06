@@ -185,7 +185,7 @@ class SaleDoAdd extends React.Component{
     var name = e.target.id;
     var data = _G.assign({},this.state.formData);
     if(name == 'MA_InitialDraw'){
-        data[name] = ''+ parseInt(e.target.value);
+        data[name] = ''+ (parseInt(e.target.value)||'');
     }else{
         data[name] = e.target.value;
     }
@@ -251,7 +251,10 @@ class SaleDoAdd extends React.Component{
       d = d.concat(this.state.formData.PromotionDetail.time);
       
       
-      // 时间重叠判断,1、时间不允许重复，2、如果出现，必须是同一类别抽奖和不同的商品
+      // 时间重叠判断,
+      // 1、时间不允许重复，
+      // 2、如果出现，必须是同一类别抽奖和不同的商品
+      // 3、
       console.log(startTime,endTime)
       console.log(d,data)
       for(var i =0,l=d.length; i<l; i++){
@@ -467,14 +470,14 @@ class SaleDoAdd extends React.Component{
                 <FormItem
                 label="活动名称："
                 id="MA_Name">
-                  <Input placeholder="" id="MA_Name" name="MA_Name" onChange={this.setValue} value={this.state.formData.MA_Name} />
+                  <Input placeholder="" style={{width:100}} id="MA_Name" name="MA_Name" onChange={this.setValue} value={this.state.formData.MA_Name} />
               </FormItem>
               </li>
               <li className="fleft">
                 <FormItem
                 label="活动彩页："
                 id="MA_BrochureURL">
-                  <Input placeholder="" id="MA_BrochureURL" name="MA_BrochureURL" onChange={this.setValue} value={this.state.formData.MA_BrochureURL} />
+                  <Input placeholder="" style={{width:100}} id="MA_BrochureURL" name="MA_BrochureURL" onChange={this.setValue} value={this.state.formData.MA_BrochureURL} />
                   <Button type="primary" onClick={this.handleUrl} data-url={formData.MA_BrochureURL}>浏览</Button>
               </FormItem>
               </li>
@@ -482,7 +485,7 @@ class SaleDoAdd extends React.Component{
                 <FormItem
                 label="初始首次参与抽奖次数："
                 id="MA_InitialDraw">
-                  <Input placeholder="" id="MA_InitialDraw" name="MA_InitialDraw" onChange={this.setValue} value={this.state.formData.MA_InitialDraw} />
+                  <Input placeholder="" style={{width:50}} id="MA_InitialDraw" name="MA_InitialDraw" onChange={this.setValue} value={this.state.formData.MA_InitialDraw} />
                   
               </FormItem>
               </li>

@@ -249,7 +249,7 @@ class UserRoleAdd extends React.Component{
             validateStatus={this.renderValidateStyle('Role_Type')}
             help={status.Role_Type.errors ? status.Role_Type.errors.join(',') : null}
             required>
-              <Validator rules={[{required: true, message: '请选择角色类型'},{validator: this.checkRoleType}]}>
+              <Validator rules={[{required: true, message: '请选择角色类型'}]}>
                 <Select onChange={this.handleSelectChange.bind(this,'Role_Type')} size="large" placeholder="请选择角色类型" style={{width: '100%'}} name="Role_Type" value={formData.Role_Type}>
                   {this.state.role_all_type}
                 </Select>
@@ -264,7 +264,7 @@ class UserRoleAdd extends React.Component{
             validateStatus={this.renderValidateStyle('Role_Name')}
             help={status.Role_Name.errors ? status.Role_Name.errors.join(',') : null}
             required>
-              <Validator rules={[{required: true, message: '请输入角色名称'},{validator: this.checkRoleName}]}>
+              <Validator rules={[{required: true, message: '请输入角色名称'}]}>
                 <Input name="Role_Name" value={formData.Role_Name} />
               </Validator>
           </FormItem>

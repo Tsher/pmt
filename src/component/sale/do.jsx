@@ -217,7 +217,7 @@ const columns = [{
   dataIndex: 'MA_StartTime',
   key: 'MA_StartTime',
   render:function(text,record){
-    var time = _G.timeFormat(text);
+    var time = _G.timeFormat2(text);
     return <span>{time}</span>
   }
 },{
@@ -225,7 +225,7 @@ const columns = [{
   dataIndex: 'MA_EndTime',
   key: 'MA_EndTime',
   render:function(text,record){
-    var time = _G.timeFormat(text);
+    var time = _G.timeFormat2(text);
     return <span>{time}</span>
   }
 }, {

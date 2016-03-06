@@ -93,6 +93,7 @@ class UserGroup extends React.Component{
       this.hideRightClickMenu = this.hideRightClickMenu.bind(this);
       this.renderEdit = this.renderEdit.bind(this);
       this.renderDel = this.renderDel.bind(this);
+      this.renderRightMenu = this.renderRightMenu.bind(this);
 	}
 
   hideRightClickMenu(){
@@ -267,6 +268,37 @@ class UserGroup extends React.Component{
       return (<span></span>)
     }
   }
+
+  renderRightMenu(){
+    if(this.state.roles.add && this.state.roles.edit){
+      return (<div className="layerMenu" style={{left:this.state.rightClickMenuStyle.left,top:this.state.rightClickMenuStyle.top}}>
+            
+                <a href={"#/user/group/add/"+this.state.selectedKeys[0]+','+this.state.info.Organization_Name}>新增</a>
+             
+                <a href={"#/user/group/edit/"+this.state.selectedKeys[0]+',edit'}>修改</a>
+              
+          </div>)
+    }
+    if(!this.state.roles.add && this.state.roles.edit){
+        return (<div className="layerMenu" style={{left:this.state.rightClickMenuStyle.left,top:this.state.rightClickMenuStyle.top}}>
+            
+                
+             
+                <a href={"#/user/group/edit/"+this.state.selectedKeys[0]+',edit'}>修改</a>
+              
+          </div>)
+    }
+    if(this.state.roles.add && !this.state.roles.edit){
+        return (<div className="layerMenu" style={{left:this.state.rightClickMenuStyle.left,top:this.state.rightClickMenuStyle.top}}>
+            
+                <a href={"#/user/group/add/"+this.state.selectedKeys[0]+','+this.state.info.Organization_Name}>新增</a>
+              
+          </div>)
+    }
+    if(!this.state.roles.add && !this.state.roles.edit){
+      return (<div className="layerMenu"></div>)
+    }
+  }
   
   render(){
 	  const loop = (data) => {
@@ -347,7 +379,7 @@ class UserGroup extends React.Component{
 	          onCancel={this.handleCancel}>
 	          <p>{this.state.ModalText}</p>
 	        </Modal>
-          <div className="layerMenu" style={{left:this.state.rightClickMenuStyle.left,top:this.state.rightClickMenuStyle.top}}><a href={"#/user/group/add/"+this.state.selectedKeys[0]+','+this.state.info.Organization_Name}>新增</a><a href={"#/user/group/edit/"+this.state.selectedKeys[0]+',edit'}>修改</a></div>
+          {this.renderRightMenu()}
 			</div>
 		)
 	}

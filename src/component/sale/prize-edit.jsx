@@ -1,6 +1,6 @@
 //  促销数据   奖品  新增 and 编辑
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+var _extends = _G.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 import React from 'react';
 import Form from 'antd/lib/form';
@@ -110,7 +110,7 @@ class SalePrizeEdit extends React.Component{
 
   // datepicker change
   onChange(field, value) {
-      var data = Object.assign({}, this.state);
+      var data = _G.assign({}, this.state);
       data.formData[field] = value;
       this.setState(data)
   }
@@ -129,7 +129,7 @@ class SalePrizeEdit extends React.Component{
                 img.push({"Image":el.Image})
               });
               this.setState({
-                  formData: Object.assign(res.Data, {
+                  formData: _G.assign(res.Data, {
                       ImageDetail: img.length?img:[{}],
                       RegisterOn: _G.timeFormat2(res.Data.RegisterOn,"YYYY-MM-DD")
                   })
@@ -196,7 +196,7 @@ class SalePrizeEdit extends React.Component{
   // 文本框的值 同步到 state
   setValue(e) {
       var name = e.target.id;
-      var data = Object.assign({}, this.state);
+      var data = _G.assign({}, this.state);
       data.formData[name] = e.target.value;
       this.setState(data);
   }
@@ -215,7 +215,7 @@ class SalePrizeEdit extends React.Component{
 
   handlePrizeType(value) {
      this.setState({
-         formData: Object.assign(this.state.formData, {
+         formData: _G.assign(this.state.formData, {
              Prize_Type: value
          })
      })

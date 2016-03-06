@@ -259,16 +259,16 @@ class SelectForm extends React.Component{
         <Col span="24" style={{ display : this.state.show }}>
             <div className="fright">
             <ul className="fleft clearfix">
-              <li className="fleft">
+              <li className="fleft" style={{width:210}}>
                   <FormItem id="Register_On_S" >
                   <Col span="11">
-                    <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this,'Register_On_S')} />
+                    <DatePicker  placeholder="开始日期" onChange={this.onChange.bind(this,'Register_On_S')} />
                   </Col>
                   <Col span="1">
                     <p className="ant-form-split">-</p>
                   </Col>
                    <Col span="11">
-                    <DatePicker disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'Register_On_E')} />
+                    <DatePicker style={{width:100}} disabledDate={this.disabledEndDate} placeholder="结束日期" onChange={this.onChange.bind(this,'Register_On_E')} />
                   </Col>
                 </FormItem>
               </li>

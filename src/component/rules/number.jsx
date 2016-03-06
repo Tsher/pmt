@@ -245,7 +245,7 @@ class RuleNumber extends React.Component{
 		return(
 			<div className="m-list">
         <Row>
-			  <Col span="2" style={{marginBottom:20}}>
+			  <Col span="2" style={{marginBottom:20,marginRight:20}}>
         <Add Name={pageName} addLink='/rule/number/add' />
         </Col>
         <Col span="2">

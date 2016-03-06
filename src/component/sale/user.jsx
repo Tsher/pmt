@@ -113,17 +113,17 @@ class SelectForm extends React.Component{
                           <ul className="clearfix">
                               <li className="fleft">
                                   <FormItem label="姓名：">
-                                      <Input placeholder="" name="SalesPerson_Name" style={{width:80}} onChange={this.setValue} value={this.state.SalesPerson_Name} />
+                                      <Input placeholder="" name="SalesPerson_Name" style={{width:60}} onChange={this.setValue} value={this.state.SalesPerson_Name} />
                                   </FormItem>
                               </li>
                               <li className="fleft">
                                   <FormItem label="昵称：">
-                                      <Input placeholder="" name="SalesPerson_SName" style={{width:80}} onChange={this.setValue} value={this.state.SalesPerson_SName} />
+                                      <Input placeholder="" name="SalesPerson_SName" style={{width:60}} onChange={this.setValue} value={this.state.SalesPerson_SName} />
                                   </FormItem>
                               </li>
-                              <li className="fleft date-picker">
+                              <li className="fleft date-picker" style={{width:280}}>
                                   <FormItem id="Register_On_S" label="注册时段：" labelCol={{span : 5}}>
-                                      <Row span="24">
+                                      <Row span="24" >
                                           <Col span="10">
                                               <DatePicker placeholder="开始日期" onChange={this.onChange.bind(this, 'Register_On_S')} />
                                           </Col>
@@ -138,7 +138,7 @@ class SelectForm extends React.Component{
                               </li>
                               <li className="fleft">
                                   <FormItem id="Phone" label="手机号：">
-                                      <Input placeholder="" name="Phone" onChange={this.setValue} value={this.state.Phone} />
+                                      <Input placeholder="" style={{"minWidth":80}} name="Phone" onChange={this.setValue} value={this.state.Phone} />
                                   </FormItem>
                               </li>
                               <li className="fleft">
