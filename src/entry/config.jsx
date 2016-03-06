@@ -62,8 +62,8 @@ window['_G']={
 		var f = f || 'YYYY-MM-DD HH:mm:ss';
 		var t = typeof t == 'number'? t : t.replace(/\D/g,'')*1;
 		t = new Date(t);
-		//t = _G.timeFormat(t.getTime(),f);
-		t = moment(t).format(f);
+		t = _G.timeFormat(t.getTime(),f);
+		//t = moment(t).format(f);
 		return t;
 	},
 	// 
@@ -73,9 +73,9 @@ window['_G']={
 		}
 		var f = f || 'YYYY-MM-DD HH:mm:ss';
 		//var t = typeof t == 'number'? t : t.replace(/\D/g,'')*1;
-		if( (''+t).indexOf('-') > -1 ){
-			t = (''+t).replace(/\-/g,'/');
-		}
+		// if( (''+t).indexOf('-') > -1 ){
+		// 	t = (''+t).replace(/\-/g,'/');
+		// }
 		t = new Date(t);
 		var y = t.getFullYear(),
 			m = t.getMonth()*1+1,
@@ -368,6 +368,7 @@ if(_G.Token){
 	// 获取所有角色信息
 	get_data(config['user']['role']['all'],'user_role_all');
 }
+
 
 ;(function(window,undefined){
 
