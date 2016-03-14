@@ -175,13 +175,13 @@ class SelectForm extends React.Component{
 
     // 修改已有数据
     if(this.state.index){
-      updateTableData(this.state); // 调用父节点的更新方法
+      updateTableData(this.state,this.clean); // 调用父节点的更新方法
     }else{
-      updateTableData(this.state);
+      updateTableData(this.state,this.clean);
     }
 
 
-    this.clean();
+    //this.clean();
 
     
   }
@@ -387,7 +387,7 @@ class SaleADDTime extends React.Component{
   }
 
   // update table data
-  updateTableData(opts){
+  updateTableData(opts,cb){
     
     console.log(opts);
     
@@ -396,20 +396,37 @@ class SaleADDTime extends React.Component{
       return;
     }
     if(!opts.FirstWinningRate){
-      opts.FirstWinningRate = 0;
+      msg_error('请填写内容');
+      return;
     }
     if(!opts.NFirstWinningRate){
-      opts.NFirstWinningRate = 0;
+      msg_error('请填写内容');
+      return;
     }
     if(!opts.WinningPlaces){
-      opts.WinningPlaces = 0;
+      msg_error('请填写内容');
+      return;
     }
     opts.FirstWinningRate = parseFloat(opts.FirstWinningRate);
     opts.NFirstWinningRate = parseFloat(opts.NFirstWinningRate);
     opts.WinningPlaces = parseFloat(opts.WinningPlaces);
 
+    if(!opts.FirstWinningRate){
+      msg_error('中奖率及中奖名额请输入数字');
+      return;
+    }
+    console.log(opts.NFirstWinningRate)
+    if(!opts.NFirstWinningRate){
+      msg_error('中奖率及中奖名额请输入数字');
+      return;
+    }
+    if(!opts.WinningPlaces){
+      msg_error('中奖率及中奖名额请输入数字');
+      return;
+    }
 
-    this.props.addPrizeTime('time',opts); // 同步到父页面
+
+    this.props.addPrizeTime('time',opts,cb); // 同步到父页面
   }
 
   

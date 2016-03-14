@@ -256,7 +256,7 @@ class BaseProductAdd extends React.Component{
 
   uploadSuccess(src){
     var state = _G.assign({},this.state);
-    state.formData.DataImage.push({Image : src});
+    state.formData.DataImage = [{Image : src}];
     this.setState(state);
   }
 
@@ -663,6 +663,9 @@ class BaseProductAdd extends React.Component{
   renderImage(){
       var that = this;
       function imgs(){
+          if(that.state.formData.DataImage.length == 0){
+            return <img src="./default.jpg" style={{width:100}} />
+          }
           return that.state.formData.DataImage.map( (item,index) =>{
             return <img key={index} src={ 'http://' + location.host + '/' +  item.Image} style={{width:100}} />
         } )

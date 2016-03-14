@@ -218,7 +218,7 @@ const columns = [{
   key: 'MA_StartTime',
   render:function(text,record){
     var time = _G.timeFormat2(text);
-    return <span>{time}</span>
+    return <span>{text}</span>
   }
 },{
   title: '活动结束时间',
@@ -226,7 +226,7 @@ const columns = [{
   key: 'MA_EndTime',
   render:function(text,record){
     var time = _G.timeFormat2(text);
-    return <span>{time}</span>
+    return <span>{text}</span>
   }
 }, {
   title: '操作',
@@ -364,8 +364,9 @@ class SaleDo extends React.Component{
         for(var i=0,l=res.Data.length;i<l;i++){
           d[i]=res.Data[i];
           d[i]['key'] = i;
-          d[i].MA_EndTime = _G.timeFormat2(d[i].MA_EndTime,'YYYY-MM-DD');
-          d[i].MA_StartTime = _G.timeFormat2(d[i].MA_StartTime,'YYYY-MM-DD');
+          d[i].MA_EndTime = _G.timeFormat2(d[i].MA_EndTime);
+          d[i].MA_StartTime = _G.timeFormat2(d[i].MA_StartTime);
+
         }
         console.log(d)
         this.setState({

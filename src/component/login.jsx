@@ -127,6 +127,9 @@ class Login extends React.Component{
         url = url.split('#');
         location.href = url[0]+'#';
         _G.UserRole = res.UserRole;
+
+        _G.setUserName();
+        
       }.bind(this)
     })
     

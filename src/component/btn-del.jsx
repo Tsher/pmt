@@ -35,12 +35,13 @@ class Del extends React.Component{
 	}
 
   componentDidMount(){
+    var that = this;
     setTimeout(function(){
-      var hasRole = _G.hasRole(this.props.Name,4);
-      this.setState({
+      var hasRole = _G.hasRole(that.props.Name,4);
+      that.setState({
         hasRole : hasRole
       })
-    }.bind(this),500)
+    },500)
     
   }
 

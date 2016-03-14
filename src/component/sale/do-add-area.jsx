@@ -178,13 +178,13 @@ class SelectForm extends React.Component{
 
     // 修改已有数据
     if(this.state.index){
-      updateTableData(this.state); // 调用父节点的更新方法
+      updateTableData(this.state,this.clean); // 调用父节点的更新方法
     }else{
-      updateTableData(this.state);
+      updateTableData(this.state,this.clean);
     }
 
 
-    this.clean();
+    //this.clean();
 
     
   }
@@ -439,32 +439,59 @@ class SaleADDArea extends React.Component{
   }
 
   // update table data
-  updateTableData(opts){
+  updateTableData(opts,cb){
     
     console.log(opts);
     
+    // Prize_Code : undefined, // 奖品编码,
+    // Prize_Name : undefined, // 奖品名称
+    // Prize_Level : undefined, // 奖品级别
+    // SalesRegion_Code : undefined, // 销售区域编码
+    // SalesRegion_Name : undefined, // 销售区域名称
+    // Prize_Level_Name : undefined, // 奖品级别名称
+    // FirstWinningRate : undefined, // 首次中奖率
+    // NFirstWinningRate : undefined, // 非首次中奖率
+    // SActivityTime : undefined, // 中奖开始时间
+    // EActivityTime : undefined, // 中奖结束时间
+    // WinningPlaces : undefined, // 中奖名额
     if(!opts.SalesRegion_Code || !opts.Prize_Code || !opts.Prize_Level  || !opts.SActivityTime || !opts.EActivityTime ){
       msg_error('请填写内容');
       return;
     }
     if(!opts.FirstWinningRate){
-      opts.FirstWinningRate = 0;
+      msg_error('请填写内容');
+      return;
     }
     if(!opts.NFirstWinningRate){
-      opts.NFirstWinningRate = 0;
+      msg_error('请填写内容');
+      return;
     }
     if(!opts.WinningPlaces){
-      opts.WinningPlaces = 0;
+      msg_error('请填写内容');
+      return;
     }
     opts.FirstWinningRate = parseFloat(opts.FirstWinningRate);
     opts.NFirstWinningRate = parseFloat(opts.NFirstWinningRate);
     opts.WinningPlaces = parseFloat(opts.WinningPlaces);
+
+    if(!opts.FirstWinningRate){
+      msg_error('中奖率及中奖名额请输入数字');
+      return;
+    }
+    if(!opts.NFirstWinningRate){
+      msg_error('中奖率及中奖名额请输入数字');
+      return;
+    }
+    if(!opts.WinningPlaces){
+      msg_error('中奖率及中奖名额请输入数字');
+      return;
+    }
     
     
     
 
 
-    this.props.addPrizeTime('area',opts); // 同步到父页面
+    this.props.addPrizeTime('area',opts,cb); // 同步到父页面
   }
 
   

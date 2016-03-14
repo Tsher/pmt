@@ -293,6 +293,7 @@ class BaseProduct extends React.Component{
     this.excelChange = this.excelChange.bind(this);
     this.showTotal = this.showTotal.bind(this);
     this.setOpt = this.setOpt.bind(this);
+    this.notAdd = this.notAdd.bind(this);
 	}
 
   componentDidMount(){
@@ -530,6 +531,9 @@ class BaseProduct extends React.Component{
           excel : src
       })
   }
+  notAdd(){
+    message.success('请您先选择3级产品类别后，再进行新增操作')
+  }
 
   renderButton(){
     if(this.state.addBtnStatus){
@@ -538,7 +542,7 @@ class BaseProduct extends React.Component{
               <Button type="primary" size="large"><Icon type="plus" /><span>新增</span></Button>
             </Link>)
     }
-    return (<Button size="large" style={{ display : (this.state.roles.add?'block':'none') }} ><Icon type="plus" /><span>新增</span></Button>)
+    return (<Button onClick={this.notAdd} size="large" style={{ display : (this.state.roles.add?'block':'none') }} ><Icon type="plus" /><span>新增</span></Button>)
   }
   showTotal(){
     return '共'+this.state.total+'条'

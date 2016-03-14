@@ -227,6 +227,12 @@ class SaleDoAdd extends React.Component{
       console.log(new Date(s).getTime())
       return new Date(s).getTime();
     }
+    console.log('活动时间');
+    console.log(this.state.formData.MA_StartTime,this.state.formData.MA_EndTime)
+    if(!this.state.formData.MA_StartTime || !this.state.formData.MA_EndTime){
+      msg_error('请先选择活动时间');
+      return;
+    }
     
     var types = {
         time : '时间抽奖',
@@ -234,8 +240,8 @@ class SaleDoAdd extends React.Component{
         product : '产品抽奖'
     }
 
-    // 新增，需要判断时间重叠
-    if(!data.index && data.index != 0){
+    // 新增,编辑，需要判断时间重叠
+    //if(!data.index && data.index != 0){
       // 时间排重
       var startTime = t(data.SActivityTime),
           endTime = t(data.EActivityTime);
@@ -253,30 +259,104 @@ class SaleDoAdd extends React.Component{
       
       // 时间重叠判断,
       // 1、时间不允许重复，
-      // 2、如果出现，必须是同一类别抽奖和不同的商品
-      // 3、
-      console.log(startTime,endTime)
-      console.log(d,data)
+      // 2、时间抽奖中，如果时间有交叉的话，不能是相同奖品
+      // 3、区域抽奖中，如果时间有交叉的话，不能是相同区域、相同产品、相同奖品。（不选产品的话说明是这个区域下的所有产品）
+      // 4、产品抽奖中，如果时间有交叉的话，不能是相同产品、相同奖品
+
       for(var i =0,l=d.length; i<l; i++){
-        if( startTime >= t(d[i].SActivityTime) && startTime <= t(d[i].EActivityTime) || endTime <= t(d[i].EActivityTime) && endTime >= t(d[i].SActivityTime) ){
-          s = false; 
+        // 时间交叉
+        if( startTime >= t(d[i].SActivityTime) && startTime <= t(d[i].EActivityTime) || 
+            endTime <= t(d[i].EActivityTime) && endTime >= t(d[i].SActivityTime) ||
+            startTime == t(d[i].SActivityTime) || endTime == t(d[i].EActivityTime) ){
+          
+          //s = false;
+
+          // 时间类型, 不同奖品
+          if( type == 'time'  ){
+            if(d[i].Prize_Code != data.Prize_Code ){
+              s = s&&true
+            }else{
+              s = false;
+            }
+          }
+
+          // 区域抽奖，不同区域、不同产品、不同奖品
+          if( type == 'area'){
+            // 区域，产品，奖品有一个不同即可
+            if(d[i].SalesRegion_Code != data.SalesRegion_Code || d[i].Product_Code != data.Product_Code || d[i].Prize_Code != data.Prize_Code ){
+              console.log('area true')
+              s = s&&true
+            }else{
+              console.log('area false')
+              s = false;
+            }
+            // // 相同产品
+            // if(d[i].Product_Code != data.Product_Code ){
+            //   s = true
+            // }else{
+            //   s = false;
+            // }
+            // // 相同奖品
+            // if(d[i].Prize_Code != data.Prize_Code ){
+            //   s = true
+            // }else{
+            //   s = false;
+            // }
+          }
+
+          // 产品抽奖中，如果时间有交叉的话，不能是相同产品、相同奖品
+          if( type== 'product' ){
+            // 产品、奖品 有一个不同即可
+            if(d[i].Product_Code != data.Product_Code || d[i].Prize_Code != data.Prize_Code ){
+              s = s&&true
+            }else{
+              s = false;
+            }
+            // // 相同奖品
+            // if(d[i].Prize_Code != data.Prize_Code ){
+            //   s = true
+            // }else{
+            //   s = false;
+            // }
+          }
+
+
         }
-        if(startTime == t(d[i].SActivityTime) || endTime == t(d[i].EActivityTime) ){
-          s = false;
-        }
+        // if(startTime == t(d[i].SActivityTime) || endTime == t(d[i].EActivityTime) ){
+        //   s = false;
+        // }
         // 允许重叠的情况
-        console.log(types[data.prize_type],d[i].MarketingType);
-        console.log(data.Prize_Code,d[i].Prize_Code)
-        if( types[data.prize_type] == d[i].MarketingType && data.Prize_Code != d[i].Prize_Code){
-            s = true;
-        }
+        // if( types[data.prize_type] == d[i].MarketingType && data.Prize_Code != d[i].Prize_Code){
+        //     s = true;
+        // }
+        // 类型相同并且不是同一奖品时
+        // if( types[type] == d[i].MarketingType && data.Prize_Code != d[i].Prize_Code){
+        //     s = true;
+        // }
+
+        // 区域抽奖类别下 ： 同一个产品、同一个奖品、同一个时间，但是销售区域不一样
+        // if( type == 'area' ){
+        //   if( d[i].Prize_Code == data.Prize_Code && 
+        //       d[i].Product_Code == data.Product_Code && 
+        //       d[i].SActivityTime == data.SActivityTime && 
+        //       d[i].EActivityTime == data.EActivityTime &&
+        //       d[i].SalesRegion_Code != data.SalesRegion_Code){
+        //     s = true;
+        //   }
+        // }
+
+        // 不同产品、同一个奖品、同一个时间、同一个销售区域
+        
+
       }
       
       if(!s){
         msg_error('时间重叠，请重新填写');
         return;
       }
-    }
+
+
+    //}
 
     var all = _G.assign({},this.state.formData);
     // 修改
@@ -486,7 +566,6 @@ class SaleDoAdd extends React.Component{
                 label="初始首次参与抽奖次数："
                 id="MA_InitialDraw">
                   <Input placeholder="" style={{width:50}} id="MA_InitialDraw" name="MA_InitialDraw" onChange={this.setValue} value={this.state.formData.MA_InitialDraw} />
-                  
               </FormItem>
               </li>
               <li className="fleft date-picker">

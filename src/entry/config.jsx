@@ -61,8 +61,10 @@ window['_G']={
 		}
 		var f = f || 'YYYY-MM-DD HH:mm:ss';
 		var t = typeof t == 'number'? t : t.replace(/\D/g,'')*1;
+		console.log(t)
 		t = new Date(t);
 		t = _G.timeFormat(t.getTime(),f);
+		console.log(t)
 		//t = moment(t).format(f);
 		return t;
 	},
@@ -106,6 +108,15 @@ window['_G']={
 			type : opts.type || opts.method || 'post',
 			data : opts.data || {},
 			success : function(res){
+				// token 失效
+				if(res.ReturnOperateStatus == 402){
+					msg_error('登录已过期,请重新登录');
+					Cookie.dispose('Token');
+			        Cookie.dispose('UserRole1');
+			        Cookie.dispose('UserRole2');
+					location.reload();
+					return;
+				}
 				if( !res.Data && res.ReturnOperateStatus == null){
 					msg_error('数据异常，请联系管理员！',opts.url,opts.data);
 					return;
@@ -117,6 +128,15 @@ window['_G']={
 				opts.success(res);
 			},
 			error:function(res){
+				// token 失效
+				if(res.ReturnOperateStatus == 402){
+					msg_error('登录已过期,请重新登录');
+					Cookie.dispose('Token');
+			        Cookie.dispose('UserRole1');
+			        Cookie.dispose('UserRole2');
+					location.reload();
+					return;
+				}
 				msg_error('数据异常，请联系管理员',opts.url);
 				// if(res.ReturnOperateStatus == null){
 				// 	msg_error('数据异常，请联系管理员',opts.url);

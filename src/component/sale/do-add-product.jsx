@@ -403,6 +403,20 @@ class SaleADDProduct extends React.Component{
   updateTableData(opts,cb){
     
     console.log(opts);
+
+    // Prize_Code : undefined, // 奖品编码,
+    // Prize_Name : undefined, // 奖品名称
+    // Prize_Level : undefined, // 奖品级别
+    // Product_Code : undefined, // 产品编码
+    // Product_Name : undefined, // 产品名称
+    // SalesRegion_Code : undefined, // 销售区域编码
+    // SalesRegion_Name : undefined, // 销售区域名称
+    // Prize_Level_Name : undefined, // 奖品级别名称
+    // FirstWinningRate : undefined, // 首次中奖率
+    // NFirstWinningRate : undefined, // 非首次中奖率
+    // SActivityTime : undefined, // 中奖开始时间
+    // EActivityTime : undefined, // 中奖结束时间
+    // WinningPlaces : undefined, // 中奖名额
     
     if(!opts.Product_Code || !opts.Prize_Code || !opts.Prize_Level  || !opts.SActivityTime || !opts.EActivityTime ){
       console.log(opts)
@@ -410,17 +424,33 @@ class SaleADDProduct extends React.Component{
       return;
     }
     if(!opts.FirstWinningRate){
-      opts.FirstWinningRate = 0;
+      msg_error('请填写内容');
+      return;
     }
     if(!opts.NFirstWinningRate){
-      opts.NFirstWinningRate = 0;
+      msg_error('请填写内容');
+      return;
     }
     if(!opts.WinningPlaces){
-      opts.WinningPlaces = 0;
+      msg_error('请填写内容');
+      return;
     }
     opts.FirstWinningRate = parseFloat(opts.FirstWinningRate);
     opts.NFirstWinningRate = parseFloat(opts.NFirstWinningRate);
     opts.WinningPlaces = parseFloat(opts.WinningPlaces);
+
+    if(!opts.FirstWinningRate){
+      msg_error('中奖率及中奖名额请输入数字');
+      return;
+    }
+    if(!opts.NFirstWinningRate){
+      msg_error('中奖率及中奖名额请输入数字');
+      return;
+    }
+    if(!opts.WinningPlaces){
+      msg_error('中奖率及中奖名额请输入数字');
+      return;
+    }
 
 
     this.props.addPrizeTime('product',opts,cb); // 同步到父页面

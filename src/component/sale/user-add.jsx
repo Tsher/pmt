@@ -59,7 +59,7 @@ class SaleUserAdd extends React.Component {
               check : {
                   SalesPerson_Name: {
                     reg : /[\w\W]+/,
-                    error : '名称不正确'
+                    error : '名称不能为空或输入的内容不正确'
                   },
                   Card_Code: {
                     reg : function(cardNumber) {
@@ -116,15 +116,15 @@ class SaleUserAdd extends React.Component {
                             }
 
                           },
-                    error : '身份证号不正确'
+                    error : '身份证号不能为空或输入的内容不正确'
                   },
                   Phone: {
                     reg : /^1[3|4|5|7|8][0-9]{9}$/,
-                    error : '手机不正确'
+                    error : '手机不能为空或输入的内容不正确'
                   }, // 手机
                   Email: {
                     reg : /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/,
-                    error : '邮箱不正确'
+                    error : '邮箱不能为空或输入的内容不正确'
                   }, // Email
               },
 

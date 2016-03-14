@@ -53,8 +53,8 @@ function cx(classNames) {
 }
 
 
-const msg_error = function(){
-  message.error('数据错误,请检查后重新提交')
+const msg_error = function(text){
+  message.error(text || '数据错误,请检查后重新提交')
 }
 const msg_success = function(){
   message.success('数据提交成功，等待后台处理')
@@ -279,6 +279,10 @@ class UserUserAdd extends React.Component{
     //   isEmailOver: true
     // });
     const validation = this.refs.validation;
+    if(!/^(\d{18})$/.test(this.state.User_IDCard) && !this.state.User_IDCard ){
+        msg_error('请输入正确的身份证号！');
+        return;
+      }
     validation.validate((valid) => {
       if (!valid) {
         console.log('error in form');
@@ -287,6 +291,8 @@ class UserUserAdd extends React.Component{
       } else {
         console.log('submit');
       }
+
+      
       
 
       // 提交数据

@@ -7,6 +7,9 @@ import Tag from 'antd/lib/tag';
 import { Link } from 'react-router';
 
 
+import '../entry/config';
+_G.setUserName = function(){}
+
 class Layout extends React.Component{
 	constructor(props){
 		super(props)
@@ -88,6 +91,7 @@ class Layout extends React.Component{
 		this.tagClick = this.tagClick.bind(this);
 		this.logout = this.logout.bind(this);
         this.SetUserRole = this.SetUserRole.bind(this);
+        this.setUserName = this.setUserName.bind(this);
 	}
 	// 一级菜单变更
 	topMenuChange(info){
@@ -176,7 +180,7 @@ class Layout extends React.Component{
 	}
 	renderContent(){
 		return (
-			<div className="m-right-content" style={{width: this.state.width + 'px'}}>
+			<div className="m-right-content" style={{width: this.state.width + 'px',position:'relative'}}>
 				<div className="m-right-tags" style={{ display: this.state.tags.length? 'block' : 'none' }}>
 					{this.state.menusNodes}
 				</div>
@@ -201,6 +205,11 @@ class Layout extends React.Component{
 		}
 		size();
 		$(window).on('resize',size);
+
+		var username = Cookie.read('userName');
+			// this.setState({
+			// 	username : username
+			// })
         
         
         // 设置用户权限菜单
@@ -268,11 +277,14 @@ class Layout extends React.Component{
         //     } )
         // } )
 	    // console.log(_G.UserRole) 
-		var username = Cookie.read('userName');
-		this.setState({
-			username : username
-		})
+		_G.setUserName = this.setUserName;
 		
+	}
+	setUserName(){
+		var username = Cookie.read('userName');
+			this.setState({
+				username : username
+			})
 	}
 	logout(){
 		// 登出
@@ -309,8 +321,8 @@ class Layout extends React.Component{
 					{this.renderContent()}
 				</div>
 				<div className="m-footer clearfix">
-					<p>粤府新函[2001]87号 粤网文[2014]0633-233号 网络视听许可证1904073号 增值电信业务经营许可证：粤B2-20090059 B2-20090028 </p>
-					<p>Copyright © 1998 - 2016 Tencent. All Rights Reserved</p>
+					<p>京ICP备13000015号-5  V2.1.6</p>
+					<p>Copyright © 1998 - 2016 北京华信瑞德信息技术有限公司. All Rights Reserved</p>
 				</div>
 			</div>
 		)

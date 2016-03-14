@@ -260,6 +260,8 @@ class SalePrize extends React.Component{
     this.changeTableState = this.changeTableState.bind(this);
     this.excelChange = this.excelChange.bind(this);
     this.showTotal = this.showTotal.bind(this);
+    this.tableChange = this.tableChange.bind(this);
+    this.showSizechange = this.showSizechange.bind(this);
 	}
 
   componentDidMount(){
@@ -322,6 +324,7 @@ class SalePrize extends React.Component{
       })
   }
 
+
   // 发送ajax请求，获取table值
     changeTableState(opts) {
         var opts = opts || {};
@@ -350,9 +353,42 @@ class SalePrize extends React.Component{
             }.bind(this)
         })
     }
-    showTotal(){
+  showTotal(){
     return '共'+this.state.total+'条'
   }
+
+  // 点击分页
+  tableChange(pagination, filters, sorter){
+    var opts = _G.assign({},this.state.opts);
+    opts.page = pagination.current;
+    opts.pageSize = pagination.pageSize;
+
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+  }
+  // 每页数据条数变化
+  showSizechange(current, pageSize){
+    var opts = _G.assign({},this.state.opts);
+    opts.pageSize = pageSize;
+    opts.page = current;
+
+    console.log(opts);
+    
+
+    this.setState({
+      opts : opts
+    })
+
+    this.changeTableState(opts);
+
+  }
+
+
 	render(){
 		return(
 			<div className="m-list">
@@ -368,7 +404,17 @@ class SalePrize extends React.Component{
 					</Col>
 				</Row>
 				<Row>
-					<Table columns={columns} dataSource={this.state.data} pagination={{showQuickJumper:true,pageSize:this.state.opts.pageSize,current:this.state.opts.page,showSizeChanger:true,total:this.state.total,showTotal:this.showTotal}} />
+					<Table onChange={this.tableChange}  columns={columns} dataSource={this.state.data} 
+            pagination={{
+                showQuickJumper:true,
+                pageSize:this.state.opts.pageSize,
+                current:this.state.opts.page,
+                showSizeChanger:true,
+                total:this.state.total,
+                onShowSizeChange:this.showSizechange,
+                showTotal:this.showTotal
+              }}
+          />
 				</Row>
         <Modal 
           visible={this.state.visible}

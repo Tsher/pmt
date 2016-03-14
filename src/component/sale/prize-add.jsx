@@ -72,6 +72,7 @@ class SalePrizeAdd extends React.Component{
               Unit: '', // 单位
               Prize_Type: '', // 奖品类别
               ImageDetail: [], // 奖品图片
+              Money : '', // 金额
               Brand: '', // 品牌
               RegisterOn: _G.timeFormat2(new Date().getTime(),'YYYY-MM-DD'), // 入网日期
               Spec: '' // 规格
@@ -97,11 +98,14 @@ class SalePrizeAdd extends React.Component{
   // 上传成功回调
   uploadSuccess(src){
     var state = _G.assign({},this.state);
-    state.formData.ImageDetail.push({"Image" : src});
+    state.formData.ImageDetail = [{"Image" : src}];
     this.setState(state);
   }
 
   renderImage(){
+    if(this.state.formData.ImageDetail.length == 0){
+      return <img src="./default.jpg" style={{width:100}} />
+    }
     return this.state.formData.ImageDetail.map(function(elem,index) {
         return <img key={index} src={ 'http://' + location.host + '/' + elem.Image} style={{width: 100}} />
     })
@@ -142,6 +146,7 @@ class SalePrizeAdd extends React.Component{
         "Prize_Type":this.state.formData.Prize_Type,
         "RegisterOn":this.state.formData.RegisterOn,
         "Brand":this.state.formData.Brand,
+        "Money":this.this.state.formData.Money,
         "Spec":this.state.formData.Spec,
         "ImageDetail":this.state.formData.ImageDetail.length?this.state.formData.ImageDetail : [{}]
       }
@@ -169,9 +174,18 @@ class SalePrizeAdd extends React.Component{
   }
 
   // 文本框的值 同步到 state
-  setValue(e) {
-      var name = e.target.id;
-      var data = _G.assign({}, this.state);
+  setValue(e,v) {
+    var data = _G.assign({}, this.state);
+    if(e == 'Money'){
+      if(typeof v == 'string'){
+        v = v.replace(/[^0-9\.]/g,''); 
+      }
+      data.formData['Money'] = v;
+      this.setState(data);
+      return;
+    }
+      var name = e.target.id || e.target.name;
+      
       data.formData[name] = e.target.value;
       this.setState(data);
   }
@@ -226,6 +240,9 @@ class SalePrizeAdd extends React.Component{
                                 </FormItem>
                                 <FormItem label="规格：" id="Spec" labelCol={{span: 8}} wrapperCol={{span: 12}}>
                                     <Input id="Spec" name="Spec" value={this.state.formData.Spec} onChange={this.setValue} />
+                                </FormItem>
+                                 <FormItem label="金额：" id="Money" labelCol={{span: 8}} wrapperCol={{span: 12}}>
+                                    <InputNumber step="0.01" min="0.00" name="Money" value={this.state.formData.Money} onChange={this.setValue.bind(this,'Money')} />
                                 </FormItem>
                             </Col>
                             <Col span="12">

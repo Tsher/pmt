@@ -131,7 +131,7 @@ class SelectForm extends React.Component{
         <FormItem
           id="Role_Type">
           <label className="ant-checkbox-inline">角色类型：</label>
-          <Select id="select" name="Role_Type" size="large" value={this.state.Role_Type} style={{width:200}} onChange={this.handleSelectChange.bind(this,'Role_Type')}>
+          <Select id="select" allowClear="true" name="Role_Type" size="large" value={this.state.Role_Type} style={{width:200}} onChange={this.handleSelectChange.bind(this,'Role_Type')}>
 	         {this.state.role_all_type}
 	        </Select>
         </FormItem>
