@@ -69,8 +69,8 @@ class DateRange extends React.Component{
 	constructor() {
 		super();
 		this.state =  {
-	      Send_Time_S : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
-        Send_Time_E : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
+	      Send_Time_S : new Date(),
+        Send_Time_E : new Date(),
         excel : 'javascript:;',
 	    };
 	    this.handleSubmit = this.handleSubmit.bind(this);

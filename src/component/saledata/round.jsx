@@ -25,7 +25,10 @@ let pageName = '消费者抽奖流水'; // 按钮，验证权限使用
 const saledataRoundList = config.__URL + config.saledata.round.list;
 const saledataRoundExcel = config.__URL + config.saledata.round.excel;
 
-
+var aTimes = {
+  MA_StartTime : '',
+  MA_EndTime : ''
+}
 const columns = [{
   title: '抽奖地区',
   dataIndex: 'ScanAddress',
@@ -51,12 +54,13 @@ const columns = [{
   dataIndex: 'WinTimes',
   key: 'WinTimes',
   render: function(text,record) {
-  	//var href= '/saledata/round/info/'+record.lotteryNo;
     var arr = {
        ScanAddress:record.ScanAddress,
        ScanPhone:record.ScanPhone,
        ScanWeiXinNo:record.ScanWeiXinNo,
        Prize_Name:record.Prize_Name,
+       MA_StartTime:aTimes.MA_StartTime,
+       MA_EndTime : aTimes.MA_EndTime,
     }
     var href= '/saledata/round/info/'+JSON.stringify(arr);
     return <Link to={href}>{text}</Link>;
@@ -75,8 +79,8 @@ class DateRange extends React.Component{
 	constructor() {
 		super();
 		this.state =  {
-      MA_StartTime : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
-      MA_EndTime : ''+_G.timeFormat2( new Date().getTime() ,'YYYY-MM-DD'),
+      MA_StartTime : new Date(),
+      MA_EndTime : new Date(),
       excel : 'javascript:;',
     };
 	    this.handleSubmit = this.handleSubmit.bind(this);
@@ -128,6 +132,10 @@ class DateRange extends React.Component{
     var data = _G.assign({},this.state);
     data.page =1;
     this.props.changeTableState(data);
+
+
+    aTimes.MA_StartTime = _G.timeFormat2( new Date(_this.state.MA_StartTime).getTime() , 'YYYY-MM-DD' );
+    aTimes.MA_EndTime = _G.timeFormat2( new Date(_this.state.MA_EndTime).getTime() , 'YYYY-MM-DD' );
 
   }
   render() {
