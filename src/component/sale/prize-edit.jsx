@@ -171,7 +171,7 @@ class SalePrizeEdit extends React.Component{
         "Prize_Type":this.state.formData.Prize_Type,
         "RegisterOn":this.state.formData.RegisterOn,
         "Brand":this.state.formData.Brand,
-        "Money":this.this.state.formData.Money,
+        "Money":this.state.formData.Money,
         "Spec":this.state.formData.Spec,
         "ImageDetail":this.state.formData.ImageDetail
       }
@@ -199,7 +199,7 @@ class SalePrizeEdit extends React.Component{
   }
 
   // 文本框的值 同步到 state
-  setValue(e) {
+  setValue(e,v) {
     var data = _G.assign({}, this.state);
     if(e == 'Money'){
       if(typeof v == 'string'){

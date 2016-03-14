@@ -146,7 +146,7 @@ class SalePrizeAdd extends React.Component{
         "Prize_Type":this.state.formData.Prize_Type,
         "RegisterOn":this.state.formData.RegisterOn,
         "Brand":this.state.formData.Brand,
-        "Money":this.this.state.formData.Money,
+        "Money":this.state.formData.Money,
         "Spec":this.state.formData.Spec,
         "ImageDetail":this.state.formData.ImageDetail.length?this.state.formData.ImageDetail : [{}]
       }
