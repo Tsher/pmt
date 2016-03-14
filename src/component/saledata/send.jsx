@@ -56,8 +56,6 @@ const columns = [{
        Send_Status:record.Send_Status,
        Send_Time_S:timeS,
        Send_Time_E:timeE,
-       Page:rPages.page,
-       PageSize:rPages.pageSize
     }
     var href= '/saledata/send/info/'+JSON.stringify(arr);
     return <Link to={href}>{text}</Link>;

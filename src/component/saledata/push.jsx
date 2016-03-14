@@ -59,8 +59,6 @@ const columns = [{
        Recharge_Status:record.Recharge_Status,
        Recharge_Time_S:timeS,
        Recharge_Time_E:timeE,
-       Page:rPages.page,
-       PageSize:rPages.pageSize
     }
     var href= '/saledata/push/info/'+JSON.stringify(arr);
     return <Link to={href}>{text}</Link>;
